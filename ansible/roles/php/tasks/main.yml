@@ -21,9 +21,10 @@
   yum: pkg={{ item }} state=present enablerepo=remi
   with_items: php.packages
 
+- name: Create PHP session directory
+  shell: mkdir /var/lib/php/session creates=/var/lib/php/session
+
 - name: Configure XDebug
   copy: src=xdebug.ini dest=/etc/php.d/15-xdebug.ini
   notify: Restart php-fpm
 
-- name: Create PHP session directory
-  shell: mkdir /var/lib/php/session creates=/var/lib/php/session
