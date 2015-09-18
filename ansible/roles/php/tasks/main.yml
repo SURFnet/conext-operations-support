@@ -26,7 +26,6 @@
 
 - name: Configure XDebug
   copy: src=xdebug.ini dest=/etc/php.d/15-xdebug.ini
-  copy: src=xdebug.ini dest=/etc/php-zts/15-xdebug.ini
   notify: Restart php-fpm
 
 - name: Remove known default distro files in /etc/php-fpm.d/
