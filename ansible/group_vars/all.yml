@@ -1,4 +1,5 @@
 ---
+user: conext-operations-support
 timezone: Europe/Amsterdam
 server:
   name: ops-dev.engine.coin.surf.net
@@ -14,4 +15,5 @@ php:
       - php-pecl-xdebug
       - php-mysql
       - php-gmp
+      - php-xml
 
