@@ -1,15 +1,13 @@
 {
 	"composerBinDir": "vendor\/bin",
-	"projectName": "StepupSelfService",
+	"projectName": "Conext Operations Support",
 	"buildArtifacts": {
 		"enabled": false
 	},
 	"travis": {
 		"enabled": true,
 		"phpVersions": {
-			"1": "5.6",
-			"2": "5.5",
-			"3": "5.4"
+			"1": "5.6"
 		},
 		"env": {
 			"enabled": true,
