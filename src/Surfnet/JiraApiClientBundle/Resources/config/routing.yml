@@ -1,3 +1,0 @@
-jira_api_client_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: JiraApiClientBundle:Default:index }
