@@ -20,6 +20,6 @@ namespace Surfnet\JiraApiClientBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class JiraApiClientBundle extends Bundle
+class SurfnetJiraApiClientBundle extends Bundle
 {
 }
