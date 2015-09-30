@@ -1,1 +1,4 @@
+jira_api_client:
+    resource: "@JiraApiClientBundle/Resources/config/routing.yml"
+    prefix:   /
 
