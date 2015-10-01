@@ -16,22 +16,10 @@
  * limitations under the License.
  */
 
-namespace AppBundle\Controller;
+namespace Surfnet\JiraApiClientBundle;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class DefaultController extends Controller
+class SurfnetJiraApiClientBundle extends Bundle
 {
-    /**
-     * @Route("/", name="homepage")
-     */
-    public function indexAction(Request $request)
-    {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
-        ));
-    }
 }

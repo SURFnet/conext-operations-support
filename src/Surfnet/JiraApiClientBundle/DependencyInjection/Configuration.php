@@ -16,19 +16,21 @@
  * limitations under the License.
  */
 
-namespace AppBundle\Tests\Controller;
+namespace Surfnet\JiraApiClientBundle\DependencyInjection;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 
-class DefaultControllerTest extends WebTestCase
+class Configuration implements ConfigurationInterface
 {
-    public function testIndex()
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfigTreeBuilder()
     {
-        $client = static::createClient();
+        $treeBuilder = new TreeBuilder();
+        $treeBuilder->root('jira_api_client');
 
-        $crawler = $client->request('GET', '/');
-
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertContains('Welcome to Symfony', $crawler->filter('#container h1')->text());
+        return $treeBuilder;
     }
 }
