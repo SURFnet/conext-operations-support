@@ -9,6 +9,7 @@
         <pathconvert property="changeset.php.raw" pathsep="${line.separator}">
             <fileset dir="src">
                 <include name="**/*.php"/>
+                <exclude name="**/Tests/**"/>
                 <modified/>
             </fileset>
         </pathconvert>
@@ -63,6 +64,7 @@
             <!-- Don't show warnings-->
             <arg value="--warning-severity=0"/>
             <arg value="--extensions=php"/>
+            <arg value="--ignore=*/Tests/*"/>
             <arg path="src"/>
         </exec>
     </target>
@@ -70,7 +72,7 @@
     <target name="phpcpd-ci" description="Find duplicate code using PHPCPD">
         <exec executable="vendor/bin/phpcpd" failonerror="false">
             <arg value="--exclude"/>
-            <arg value="src/Tests/*"/>
+            <arg value="*/Tests/*"/>
             <arg path="src"/>
         </exec>
     </target>
