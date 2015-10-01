@@ -115,18 +115,18 @@
         </condition>
     </target>
 
+    <target name="php-lint" depends="get-changeset.php-absolute.newlinesep" if="changeset.php.notempty">
+        <exec executable="sh" failonerror="true">
+            <arg value="-c"/>
+            <arg value="echo '${changeset.php.absolute.newlinesep}' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
+        </exec>
+        <echo message="OK"/>
+    </target>
+
     <target name="get-changeset.without-tests" depends="get-changeset.php-commasep.notests" if="changeset.php.notempty">
         <condition property="changeset.php.absolute.notests.notempty">
             <isset property="changeset.php.absolute.notests"/>
         </condition>
-    </target>
-
-    <target name="php-lint" depends="get-changeset.without-tests" if="changeset.php.absolute.notests.notempty">
-        <exec executable="sh" failonerror="true">
-            <arg value="-c"/>
-            <arg value="echo '${changeset.php.absolute.notests}' | xargs -n 1 -P 4 php -l 1>/dev/null"/>
-        </exec>
-        <echo message="OK"/>
     </target>
 
     <target name="phpmd" depends="get-changeset.without-tests" if="changeset.php.absolute.notests.notempty">
