@@ -24,6 +24,7 @@ class AssertionFailedException extends InvalidArgumentException
     private $value;
     private $constraints;
 
+    // @codingStandardsIgnoreStart
     public function __construct($message, $code, $propertyPath = null, $value, array $constraints = array())
     {
         parent::__construct($message, $code);
@@ -32,6 +33,7 @@ class AssertionFailedException extends InvalidArgumentException
         $this->value        = $value;
         $this->constraints  = $constraints;
     }
+    // @codingStandardsIgnoreEnd
 
     /**
      * User controlled way to define a sub-property causing

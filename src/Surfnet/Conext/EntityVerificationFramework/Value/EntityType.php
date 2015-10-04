@@ -51,6 +51,7 @@ final class EntityType
         return new EntityType(self::TYPE_SP);
     }
 
+    // @codingStandardsIgnoreStart
     /**
      * Creates a new IdentityProvider Type
      * @return EntityType
@@ -61,6 +62,7 @@ final class EntityType
     {
         return new EntityType(self::TYPE_IDP);
     }
+    // @codingStandardsIgnoreEnd
 
     /**
      * @param EntityType $other

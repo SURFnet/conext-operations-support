@@ -67,9 +67,11 @@ class Runner implements VerificationRunner
 
     public function run(VerificationReporter $reporter)
     {
-        $this->logger->debug(sprintf(
-            'Running Entity Verification Framework with "%d" suites',
-            count($this->verificationSuites))
+        $this->logger->debug(
+            sprintf(
+                'Running Entity Verification Framework with "%d" suites',
+                count($this->verificationSuites)
+            )
         );
 
         $connections = $this->janusMetadataRepository->getAllConnections();
