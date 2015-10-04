@@ -28,6 +28,7 @@ interface VerificationRunner
 
     /**
      * @param VerificationReporter $report
+     * @return void
      */
     public function run(VerificationReporter $report);
 }

@@ -25,6 +25,7 @@ interface VerificationReporter
     /**
      * @param Entity                 $entity
      * @param VerificationTestResult $test
+     * @return void
      */
     public function reportFailedVerificationFor(Entity $entity, VerificationTestResult $test);
 }

@@ -39,8 +39,8 @@ final class NameResolver
 
         $className = get_class($class);
 
-        if (array_key_exists($className, static::$resolved)) {
-            return static::$resolved[$className];
+        if (array_key_exists($className, self::$resolved)) {
+            return self::$resolved[$className];
         }
 
         if (!($class instanceof VerificationTest || $class instanceof VerificationSuite)) {
@@ -49,7 +49,7 @@ final class NameResolver
             );
         }
 
-        return static::$resolved[$className] = strtolower(
+        return self::$resolved[$className] = strtolower(
             preg_replace(
                 [
                     '~^Surfnet\\\\VerificationSuite\\\\([a-zA-Z]+)\\\\([a-zA-Z]+$)?~',

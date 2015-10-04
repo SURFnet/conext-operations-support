@@ -40,17 +40,22 @@ final class TestResult implements VerificationTestResult
     /**
      * @var string
      */
-    protected $reason;
+    private $reason;
 
     /**
      * @var string
      */
-    protected $explanation;
+    private $explanation;
 
     /**
      * @var int
      */
-    protected $severity;
+    private $severity;
+
+    /**
+     * @var string
+     */
+    private $status;
 
     /**
      * @return TestResult
