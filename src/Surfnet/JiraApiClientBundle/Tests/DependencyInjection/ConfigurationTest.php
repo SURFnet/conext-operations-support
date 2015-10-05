@@ -16,38 +16,90 @@
  * limitations under the License.
  */
 
-namespace Surfnet\JiraApiClientBundle\DependencyInjection\Tests;
+namespace Surfnet\JiraApiClientBundle\Tests\DependencyInjection;
 
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\JiraApiClientBundle\DependencyInjection\Configuration;
+use Surfnet\JiraApiClientBundle\Tests\DataProvider\DataProvider;
 
 class ConfigurationTest extends TestCase
 {
     use ConfigurationTestCaseTrait;
+    use DataProvider;
+
+    private $validConfig = [
+        "host" => "example-host.test",
+        "username" => "test user",
+        "password" => "test password",
+        "project_key" => "TST_000",
+        "default_assignee_name" => "default assignee",
+    ];
 
     /**
      * @test
+     * @group JiraApiClientBundle
+     * @dataProvider notNonStringScalarProvider
      */
-    public function api_url_cannot_be_other_than_string()
+    public function host_cannot_be_other_than_string($value)
     {
-        $config = [
-            "api_url"  => 1,
-            "username" => "name",
-            "password" => "pass"
-        ];
+        $config = $this->validConfig;
+        $config["host"] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The JIRA API URL should be a string");
-
-        $config = [
-            "api_url"  => false,
-            "username" => "name",
-            "password" => "pass"
-        ];
-
-        $this->assertConfigurationIsInvalid([$config], "The JIRA API URL should be a string");
+        $this->assertConfigurationIsInvalid([$config], "The JIRA API host URL should be a string");
     }
 
+    /**
+     * @test
+     * @group JiraApiClientBundle
+     * @dataProvider notNonStringScalarProvider
+     */
+    public function username_cannot_be_other_than_string($value)
+    {
+        $config = $this->validConfig;
+        $config["username"] = $value;
+
+        $this->assertConfigurationIsInvalid([$config], "The JIRA API username should be a string");
+    }
+
+    /**
+     * @test
+     * @group JiraApiClientBundle
+     * @dataProvider notNonStringScalarProvider
+     */
+    public function password_cannot_be_other_than_string($value)
+    {
+        $config = $this->validConfig;
+        $config["password"] = $value;
+
+        $this->assertConfigurationIsInvalid([$config], "The JIRA API password should be a string");
+    }
+
+    /**
+     * @test
+     * @group JiraApiClientBundle
+     * @dataProvider notNonStringScalarProvider
+     */
+    public function project_key_cannot_be_other_than_string($value)
+    {
+        $config = $this->validConfig;
+        $config["project_key"] = $value;
+
+        $this->assertConfigurationIsInvalid([$config], "The project key should be a string");
+    }
+
+    /**
+     * @test
+     * @group JiraApiClientBundle
+     * @dataProvider notNonStringScalarProvider
+     */
+    public function default_assignee_name_cannot_be_other_than_string($value)
+    {
+        $config = $this->validConfig;
+        $config["default_assignee_name"] = $value;
+
+        $this->assertConfigurationIsInvalid([$config], "The default assignee name should be a string");
+    }
 
     /**
      * Return the instance of ConfigurationInterface that should be used by the

@@ -33,26 +33,60 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('api_url')
-                    ->info('The JIRA API URL')
+                ->scalarNode('host')
+                    ->info('The URL of the JIRA API host')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                    ->ifTrue(function ($url) {
-                        return !is_string($url);
-                    })
-                        ->thenInvalid('The JIRA API URL should be a string')
+                        ->ifTrue(function ($host) {
+                            return !is_string($host);
+                        })
+                        ->thenInvalid('The JIRA API host URL should be a string')
                     ->end()
                 ->end()
                 ->scalarNode('username')
                     ->info('The username of the user that will act as a reporter in JIRA')
                     ->isRequired()
                     ->cannotBeEmpty()
+                    ->validate()
+                        ->ifTrue(function ($username) {
+                            return !is_string($username);
+                        })
+                        ->thenInvalid('The JIRA API username should be a string')
+                    ->end()
                 ->end()
                 ->scalarNode('password')
                     ->info('The password of the user that will act as a reporter in JIRA')
                     ->isRequired()
                     ->cannotBeEmpty()
+                    ->validate()
+                        ->ifTrue(function ($password) {
+                        return !is_string($password);
+                        })
+                        ->thenInvalid('The JIRA API password should be a string')
+                    ->end()
+                ->end()
+                ->scalarNode('project_key')
+                    ->info('The key of the project that will be reported to in JIRA')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                    ->validate()
+                        ->ifTrue(function ($projectKey) {
+                            return !is_string($projectKey);
+                        })
+                        ->thenInvalid('The project key should be a string')
+                    ->end()
+                ->end()
+                ->scalarNode('default_assignee_name')
+                    ->info('The name of the user that will be the default assignee')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                    ->validate()
+                        ->ifTrue(function ($projectKey) {
+                            return !is_string($projectKey);
+                        })
+                        ->thenInvalid('The default assignee name should be a string')
+                    ->end()
                 ->end()
             ->end();
 
