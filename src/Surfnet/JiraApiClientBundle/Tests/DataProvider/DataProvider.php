@@ -20,9 +20,10 @@ namespace Surfnet\JiraApiClientBundle\Tests\DataProvider;
 
 trait DataProvider
 {
-    public function notNonStringScalarProvider()
+    public function nonStringScalarProvider()
     {
         return [
+            'null'         => [null],
             'boolean'      => [true],
             'integer'      => [1],
             'float'        => [1.2],
