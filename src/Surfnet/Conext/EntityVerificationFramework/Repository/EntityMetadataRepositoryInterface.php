@@ -25,7 +25,7 @@ interface EntityMetadataRepositoryInterface
 {
     /**
      * @param Entity $entity
-     * @return EntityMetadata
+     * @return EntityMetadata|null NULL when the metadata is not available
      */
     public function getMetadataFor(Entity $entity);
 }
