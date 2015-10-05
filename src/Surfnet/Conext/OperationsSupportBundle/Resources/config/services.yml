@@ -1,0 +1,4 @@
+services:
+#    surfnet_conext_operations_support.example:
+#        class: Surfnet\Conext\OperationsSupportBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
