@@ -19,11 +19,11 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Exception;
 
 /**
- * Interface Exceptional
+ * Interface Exception
  * @package Surfnet\Conext\EntityVerificationFramework\Exception
  *
  * Marker Interface
  */
-interface Exceptional
+interface Exception
 {
 }

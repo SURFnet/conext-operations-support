@@ -20,6 +20,6 @@ namespace Surfnet\Conext\EntityVerificationFramework\Exception;
 
 use InvalidArgumentException as CoreInvalidArgumentException;
 
-class InvalidArgumentException extends CoreInvalidArgumentException implements Exceptional
+class InvalidArgumentException extends CoreInvalidArgumentException implements Exception
 {
 }
