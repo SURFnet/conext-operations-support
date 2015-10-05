@@ -24,8 +24,8 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepositoryInterface;
-use Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepositoryInterface;
+use Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepository;
+use Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 
 class Runner implements VerificationRunner
@@ -36,12 +36,12 @@ class Runner implements VerificationRunner
     private $verificationSuites = [];
 
     /**
-     * @var JanusMetadataRepositoryInterface
+     * @var JanusMetadataRepository
      */
     private $janusMetadataRepository;
 
     /**
-     * @var EntityMetadataRepositoryInterface
+     * @var EntityMetadataRepository
      */
     private $entityMetadataRepository;
 
@@ -51,8 +51,8 @@ class Runner implements VerificationRunner
     private $logger;
 
     public function __construct(
-        JanusMetadataRepositoryInterface $janusMetadataRepository,
-        EntityMetadataRepositoryInterface $entityMetadataRepository,
+        JanusMetadataRepository $janusMetadataRepository,
+        EntityMetadataRepository $entityMetadataRepository,
         LoggerInterface $logger
     ) {
         $this->janusMetadataRepository  = $janusMetadataRepository;

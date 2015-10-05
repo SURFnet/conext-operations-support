@@ -22,7 +22,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\ConnectionCollection;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\JanusMetadata;
 
-interface JanusMetadataRepositoryInterface
+interface JanusMetadataRepository
 {
     /**
      * @param Entity $entity

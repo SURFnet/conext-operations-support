@@ -21,7 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Repository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityMetadata;
 
-interface EntityMetadataRepositoryInterface
+interface EntityMetadataRepository
 {
     /**
      * @param Entity $entity

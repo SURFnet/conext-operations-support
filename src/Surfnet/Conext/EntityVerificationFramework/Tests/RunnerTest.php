@@ -39,12 +39,12 @@ class RunnerTest extends UnitTest
     private static $connections;
 
     /**
-     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepositoryInterface mocked
+     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepository mocked
      */
     private $janusMetadataRepository;
 
     /**
-     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepositoryInterface mocked
+     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepository mocked
      */
     private $entityMetadataRepository;
 
@@ -64,13 +64,13 @@ class RunnerTest extends UnitTest
     public function setUp()
     {
         $this->janusMetadataRepository = m::mock(
-            'Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepositoryInterface'
+            'Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepository'
         );
         $this->janusMetadataRepository->shouldReceive('getAllConnections')->andReturn(static::$connections);
         $this->janusMetadataRepository->shouldReceive('getMetadataFor')->andReturn(new JanusMetadata());
 
         $this->entityMetadataRepository = m::mock(
-            'Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepositoryInterface'
+            'Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepository'
         );
         $this->entityMetadataRepository->shouldReceive('getMetadataFor')->andReturnNull();
 
