@@ -25,6 +25,10 @@ Vagrant.configure("2") do |config|
     config.vm.hostname = "ops-dev.engine.coin.surf.net"
     config.vm.network :private_network, ip: "192.168.67.10"
 
+    config.hostsupdater.aliases = [
+        config.vm.hostname
+    ]
+
     if which('ansible-playbook')
         config.vm.provision "ansible" do |ansible|
             ansible.playbook       = "ansible/development.yml"
