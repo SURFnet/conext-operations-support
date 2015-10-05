@@ -21,13 +21,6 @@ namespace Surfnet\Conext\EntityVerificationFramework\Api;
 interface VerificationSuiteResult
 {
     /**
-     * @param VerificationTestResult $verificationTestResult
-     * @param VerificationTest       $failedTest
-     * @return VerificationSuiteResult
-     */
-    public static function failedTest(VerificationTestResult $verificationTestResult, VerificationTest $failedTest);
-
-    /**
      * @return bool
      */
     public function hasTestFailed();
