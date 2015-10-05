@@ -101,12 +101,6 @@ final class ConfigurationTest extends TestCase
         $this->assertConfigurationIsInvalid([$config], "The default assignee name should be a string");
     }
 
-    /**
-     * Return the instance of ConfigurationInterface that should be used by the
-     * Configuration-specific assertions in this test-case
-     *
-     * @return \Symfony\Component\Config\Definition\ConfigurationInterface
-     */
     protected function getConfiguration()
     {
         return new Configuration();
