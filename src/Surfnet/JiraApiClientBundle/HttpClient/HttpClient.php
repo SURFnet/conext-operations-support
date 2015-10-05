@@ -40,14 +40,6 @@ final class HttpClient implements JiraApiClientInterface
         $this->logger = $logger;
     }
 
-    /**
-     * @param $method
-     * @param $url
-     * @param array $data
-     * @param $endpoint
-     * @param AuthenticationInterface $credential
-     * @return \Psr\Http\Message\StreamInterface
-     */
     // @codingStandardsIgnoreStart (arguments with default values must be at the end; sadly, our JiraClient does not agree)
     public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential)
     {
