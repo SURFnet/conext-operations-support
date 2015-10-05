@@ -24,27 +24,26 @@ use Psr\Log\NullLogger;
 use Surfnet\Conext\EntityVerificationFramework\Runner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
-use Surfnet\Conext\EntityVerificationFramework\Value\Connection;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConnectionCollection;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntityCollection;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
-use Surfnet\Conext\EntityVerificationFramework\Value\JanusMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
 
 class RunnerTest extends UnitTest
 {
     /**
-     * @var ConnectionCollection
+     * @var EntityCollection
      */
-    private static $connections;
+    private static $entities;
 
     /**
-     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepository mocked
+     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository mocked
      */
     private $janusMetadataRepository;
 
     /**
-     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepository mocked
+     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository mocked
      */
     private $entityMetadataRepository;
 
@@ -55,22 +54,22 @@ class RunnerTest extends UnitTest
 
     public static function setUpBeforeClass()
     {
-        static::$connections = new ConnectionCollection([
-            new Connection(new Entity(new EntityId('mock'), EntityType::SP())),
-            new Connection(new Entity(new EntityId('mock'), EntityType::IdP())),
+        static::$entities = new EntityCollection([
+            new Entity(new EntityId('mock'), EntityType::SP()),
+            new Entity(new EntityId('mock'), EntityType::IdP()),
         ]);
     }
 
     public function setUp()
     {
         $this->janusMetadataRepository = m::mock(
-            'Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepository'
+            'Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository'
         );
-        $this->janusMetadataRepository->shouldReceive('getAllConnections')->andReturn(static::$connections);
-        $this->janusMetadataRepository->shouldReceive('getMetadataFor')->andReturn(new JanusMetadata());
+        $this->janusMetadataRepository->shouldReceive('getConfiguredEntities')->andReturn(static::$entities);
+        $this->janusMetadataRepository->shouldReceive('getMetadataFor')->andReturn(new ConfiguredMetadata());
 
         $this->entityMetadataRepository = m::mock(
-            'Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepository'
+            'Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository'
         );
         $this->entityMetadataRepository->shouldReceive('getMetadataFor')->andReturnNull();
 
@@ -151,7 +150,7 @@ class RunnerTest extends UnitTest
 
     public function every_entity_is_verified()
     {
-        $count = count(static::$connections);
+        $count = count(static::$entities);
 
         $failedResult = SuiteResult::failedTest(
             TestResult::failed('reason', 'explanation', 3),

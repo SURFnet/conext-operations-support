@@ -23,8 +23,8 @@ use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\JanusMetadata;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
 
 class Context implements VerificationContext
 {
@@ -34,7 +34,7 @@ class Context implements VerificationContext
     private $entity;
 
     /**
-     * @var JanusMetadata
+     * @var ConfiguredMetadata
      */
     private $janusMetadata;
 
@@ -44,7 +44,7 @@ class Context implements VerificationContext
     private $remoteMetadataCallable;
 
     /**
-     * @var EntityMetadata;
+     * @var PublishedMetadata;
      */
     private $remoteMetadata;
 
@@ -55,7 +55,7 @@ class Context implements VerificationContext
 
     public function __construct(
         Entity $entity,
-        JanusMetadata $janusMetadata,
+        ConfiguredMetadata $janusMetadata,
         Closure $remoteMetadataCallable,
         LoggerInterface $logger
     ) {

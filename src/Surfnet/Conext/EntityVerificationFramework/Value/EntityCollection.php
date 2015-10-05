@@ -23,47 +23,42 @@ use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
-final class ConnectionCollection implements Countable, IteratorAggregate
+final class EntityCollection implements Countable, IteratorAggregate
 {
     /**
-     * @var Connection[]
+     * @var Entity[]
      */
-    private $connections = [];
+    private $entities = [];
 
     /**
-     * @param Connection[] $connections
+     * @param Entity[] $entities
      */
-    public function __construct(array $connections)
+    public function __construct(array $entities)
     {
-        foreach ($connections as $connection) {
-            $this->initializeWith($connection);
+        foreach ($entities as $entity) {
+            $this->initializeWith($entity);
         }
     }
 
     public function getIterator()
     {
-        return new ArrayIterator($this->connections);
+        return new ArrayIterator($this->entities);
     }
 
     public function count()
     {
-        return count($this->connections);
+        return count($this->entities);
     }
 
-    private function initializeWith(Connection $connection)
+    private function initializeWith(Entity $entity)
     {
-        $entities = array_map(function (Connection $connection) {
-            return $connection->getEntity();
-        }, $this->connections);
-
-        $entityToAdd = $connection->getEntity();
-        if (in_array($entityToAdd, $entities)) {
+        if (in_array($entity, $this->entities)) {
             throw new LogicException(sprintf(
-                'Connection "%s" has already been added, cannot add it again',
-                $connection->getEntity()
+                'Entity "%s" has already been added, cannot add it again',
+                $entity
             ));
         }
 
-        $this->connections[] = $connection;
+        $this->entities[] = $entity;
     }
 }
