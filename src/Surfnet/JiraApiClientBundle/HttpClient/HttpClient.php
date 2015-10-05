@@ -18,11 +18,10 @@
 
 namespace Surfnet\JiraApiClientBundle\HttpClient;
 
-use Surfnet\JiraApiClientBundle\HttpClient\Exception\CouldNotConnectToApi;
 use GuzzleHttp\ClientInterface as HttpClientInterface;
-use GuzzleHttp\Exception\RequestException;
 use Jira_Api_Authentication_AuthenticationInterface as AuthenticationInterface;
 use Jira_Api_Client_ClientInterface as JiraApiClientInterface;
+use Psr\Log\LoggerInterface;
 
 class HttpClient implements JiraApiClientInterface
 {
@@ -31,9 +30,14 @@ class HttpClient implements JiraApiClientInterface
      */
     private $client;
 
-    public function __construct(HttpClientInterface $client)
+    /**
+     * @param HttpClientInterface $client
+     * @param LoggerInterface $logger
+     */
+    public function __construct(HttpClientInterface $client, LoggerInterface $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     /**
@@ -48,21 +52,12 @@ class HttpClient implements JiraApiClientInterface
     public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential)
     {
         // @codingStandardsIgnoreEnd
-        try {
-            $response = $this->client->request($method, $endpoint.$url, [
-                "auth" => [
-                    $credential->getId(),
-                    $credential->getPassword()
-                ]
-            ]);
-
-        } catch (RequestException $requestException) {
-            throw new CouldNotConnectToApi(sprintf(
-                'Could not connect to JIRA API: %s. Request: %s.',
-                $requestException->getMessage(),
-                $requestException->getRequest()->getUri()
-            ));
-        }
+        $response = $this->client->request($method, $endpoint.$url, [
+            "auth" => [
+                $credential->getId(),
+                $credential->getPassword()
+            ]
+        ]);
 
         return $response->getBody();
     }

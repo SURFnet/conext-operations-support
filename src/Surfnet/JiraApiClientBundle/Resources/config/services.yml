@@ -9,3 +9,4 @@ jira_api_client.http_client:
     class: Surfnet\Conext\JiraApiClientBundle\HttpClient
     arguments:
       - @jira_api_client.guzzle
+      - @logger
