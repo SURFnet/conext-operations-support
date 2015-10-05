@@ -1,4 +1,11 @@
 services:
-#    jira_api_client.example:
-#        class: Surfnet\JiraApiClientBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+jira_api_client.guzzle:
+    class: GuzzleHttp\Client
+    arguments:
+      base_uri: @jira_api_client.api_url
+    public: false
+
+jira_api_client.http_client:
+    class: Surfnet\Conext\JiraApiClientBundle\HttpClient
+    arguments:
+      - @jira_api_client.guzzle

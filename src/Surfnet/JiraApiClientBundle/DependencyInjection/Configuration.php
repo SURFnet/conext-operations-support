@@ -29,7 +29,32 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('jira_api_client');
+        $rootNode = $treeBuilder->root('jira_api_client');
+
+        $rootNode
+            ->children()
+                ->scalarNode('api_url')
+                    ->info('The JIRA API URL')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                    ->validate()
+                    ->ifTrue(function ($url) {
+                        return !is_string($url);
+                    })
+                        ->thenInvalid('The JIRA API URL should be a string')
+                    ->end()
+                ->end()
+                ->scalarNode('username')
+                    ->info('The username of the user that will act as a reporter in JIRA')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+                ->scalarNode('password')
+                    ->info('The password of the user that will act as a reporter in JIRA')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }
