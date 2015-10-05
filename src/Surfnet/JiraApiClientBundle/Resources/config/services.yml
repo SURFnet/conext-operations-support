@@ -1,24 +1,24 @@
 services:
   jira_api_client.guzzle:
-      class: GuzzleHttp\Client
-      arguments:
-        host: %jira_api_client.host%
-      public: false
+    class: GuzzleHttp\Client
+    arguments:
+      host: %jira_api_client.base_url%
+    public: false
 
   jira_api_client.http_client:
-      class: Surfnet\Conext\JiraApiClientBundle\HttpClient
-      arguments:
-        - @jira_api_client.guzzle
-        - @logger
+    class: Surfnet\Conext\JiraApiClientBundle\HttpClient
+    arguments:
+      - @jira_api_client.guzzle
+      - @logger
 
   jira_api_client.authentication:
-      class: Jira_Api_Authentication_Basic
-      arguments:
-        - @jira_api_client.username
-        - @jira_api_client.password
+    class: Jira_Api_Authentication_Basic
+    arguments:
+      - @jira_api_client.username
+      - @jira_api_client.password
 
   jira_api_client.jira_client:
-      class: Jira_Api
-      arguments:
-        - @jira_api_client.http_client
-        - @jira_api_client.authentication
+    class: Jira_Api
+    arguments:
+      - @jira_api_client.http_client
+      - @jira_api_client.authentication
