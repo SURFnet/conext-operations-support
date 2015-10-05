@@ -21,6 +21,15 @@ namespace Surfnet\Conext\EntityVerificationFramework\Api;
 interface VerificationTestResult
 {
     /**
+     * Severity Constants
+     */
+    const SEVERITY_CRITICAL = 5;
+    const SEVERITY_HIGH     = 4;
+    const SEVERITY_MEDIUM   = 3;
+    const SEVERITY_LOW      = 2;
+    const SEVERITY_TRIVIAL  = 1;
+
+    /**
      * @return bool
      */
     public function hasTestFailed();
