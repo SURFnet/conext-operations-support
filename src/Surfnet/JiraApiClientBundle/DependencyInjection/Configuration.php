@@ -30,15 +30,15 @@ final class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('host')
-                    ->info('The URL of the JIRA API host')
+                ->scalarNode('base_url')
+                    ->info('The base URL of the JIRA API host')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($host) {
                             return !is_string($host);
                         })
-                        ->thenInvalid('The JIRA API host URL should be a string')
+                        ->thenInvalid('The JIRA API base URL should be a string')
                     ->end()
                 ->end()
                 ->scalarNode('username')

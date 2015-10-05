@@ -29,7 +29,7 @@ final class ConfigurationTest extends TestCase
     use DataProvider;
 
     private $validConfig = [
-        "host" => "example-host.test",
+        "base_url" => "http://example-host.test",
         "username" => "test user",
         "password" => "test password",
         "project_key" => "TST_000",
@@ -41,12 +41,12 @@ final class ConfigurationTest extends TestCase
      * @group JiraApiClientBundle
      * @dataProvider notNonStringScalarProvider
      */
-    public function host_cannot_be_other_than_string($value)
+    public function base_url_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config["host"] = $value;
+        $config["base_url"] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The JIRA API host URL should be a string");
+        $this->assertConfigurationIsInvalid([$config], "The JIRA API base URL should be a string");
     }
 
     /**
