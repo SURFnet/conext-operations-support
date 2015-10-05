@@ -40,12 +40,12 @@ class RunnerTest extends UnitTest
     /**
      * @var \Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository mocked
      */
-    private $janusMetadataRepository;
+    private $configuredMetadataRepository;
 
     /**
      * @var \Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository mocked
      */
-    private $entityMetadataRepository;
+    private $publishedMetadataRepository;
 
     /**
      * @var \Surfnet\Conext\EntityVerificationFramework\Runner
@@ -62,20 +62,20 @@ class RunnerTest extends UnitTest
 
     public function setUp()
     {
-        $this->janusMetadataRepository = m::mock(
+        $this->configuredMetadataRepository = m::mock(
             'Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository'
         );
-        $this->janusMetadataRepository->shouldReceive('getConfiguredEntities')->andReturn(static::$entities);
-        $this->janusMetadataRepository->shouldReceive('getMetadataFor')->andReturn(new ConfiguredMetadata());
+        $this->configuredMetadataRepository->shouldReceive('getConfiguredEntities')->andReturn(static::$entities);
+        $this->configuredMetadataRepository->shouldReceive('getMetadataFor')->andReturn(new ConfiguredMetadata());
 
-        $this->entityMetadataRepository = m::mock(
+        $this->publishedMetadataRepository = m::mock(
             'Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository'
         );
-        $this->entityMetadataRepository->shouldReceive('getMetadataFor')->andReturnNull();
+        $this->publishedMetadataRepository->shouldReceive('getMetadataFor')->andReturnNull();
 
         $this->runner = new Runner(
-            $this->janusMetadataRepository,
-            $this->entityMetadataRepository,
+            $this->configuredMetadataRepository,
+            $this->publishedMetadataRepository,
             new NullLogger()
         );
     }
