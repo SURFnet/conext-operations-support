@@ -23,7 +23,7 @@ use Jira_Api_Authentication_AuthenticationInterface as AuthenticationInterface;
 use Jira_Api_Client_ClientInterface as JiraApiClientInterface;
 use Psr\Log\LoggerInterface;
 
-class HttpClient implements JiraApiClientInterface
+final class HttpClient implements JiraApiClientInterface
 {
     /**
      * @var HttpClientInterface

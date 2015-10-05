@@ -23,7 +23,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-class JiraApiClientExtension extends Extension
+final class JiraApiClientExtension extends Extension
 {
     /**
      * {@inheritdoc}

@@ -23,7 +23,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\JiraApiClientBundle\DependencyInjection\Configuration;
 use Surfnet\JiraApiClientBundle\Tests\DataProvider\DataProvider;
 
-class ConfigurationTest extends TestCase
+final class ConfigurationTest extends TestCase
 {
     use ConfigurationTestCaseTrait;
     use DataProvider;
