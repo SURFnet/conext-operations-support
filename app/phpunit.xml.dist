@@ -9,11 +9,15 @@
 >
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>../src/*/*/*Bundle/Tests</directory>
-            <directory>../src/*/*Bundle/Tests</directory>
-            <directory>../src/*/*/*/Tests</directory>
+            <directory>../src/*/*/*Bundle/Tests</directory> <!-- Surfnet\Conext\OperationsSupportBundle         -->
+            <directory>../src/*Bundle/Tests</directory>     <!-- Surfnet\JanusApiClientBundle                   -->
+            <directory>../src/*/*/*/Tests</directory>       <!-- Surfnet\Context\EntityVerificationFramework    -->
         </testsuite>
     </testsuites>
+
+    <listeners>
+        <listener class="\Mockery\Adapter\Phpunit\TestListener" />
+    </listeners>
 
     <!--
     <php>
@@ -27,8 +31,8 @@
             <exclude>
                 <directory>../src/*/*/*Bundle/Resources</directory>
                 <directory>../src/*/*/*Bundle/Tests</directory>
-                <directory>../src/*/*Bundle/Resources</directory>
-                <directory>../src/*/*Bundle/Tests</directory>
+                <directory>../src/*Bundle/Resources</directory>
+                <directory>../src/*Bundle/Tests</directory>
                 <directory>../src/*/*/*/Tests</directory>
             </exclude>
         </whitelist>
