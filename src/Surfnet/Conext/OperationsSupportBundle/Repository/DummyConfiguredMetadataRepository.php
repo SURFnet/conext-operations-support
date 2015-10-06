@@ -20,6 +20,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntityCollection;
 use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 
 final class DummyConfiguredMetadataRepository implements ConfiguredMetadataRepository
@@ -33,6 +34,6 @@ final class DummyConfiguredMetadataRepository implements ConfiguredMetadataRepos
 
     public function getConfiguredEntities()
     {
-        return [];
+        return new EntityCollection([]);
     }
 }
