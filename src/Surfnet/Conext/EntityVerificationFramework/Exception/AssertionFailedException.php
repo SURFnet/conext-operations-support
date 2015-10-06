@@ -18,7 +18,9 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Exception;
 
-class AssertionFailedException extends InvalidArgumentException
+use Assert\AssertionFailedException as AssertAssertionFailedException;
+
+class AssertionFailedException extends InvalidArgumentException implements AssertAssertionFailedException
 {
     private $propertyPath;
     private $value;
