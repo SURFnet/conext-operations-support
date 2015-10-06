@@ -19,7 +19,6 @@
 namespace Surfnet\Conext\EntityVerificationFramework;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
-use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 
 /**
@@ -40,9 +39,9 @@ final class SuiteResult implements VerificationSuiteResult
     private $testResult;
 
     /**
-     * @var VerificationTest
+     * @var string
      */
-    private $failedTest;
+    private $failedTestName;
 
     /**
      * @var string
@@ -54,12 +53,12 @@ final class SuiteResult implements VerificationSuiteResult
         return new self(self::STATUS_SUCCESS);
     }
 
-    public static function failedTest(VerificationTestResult $verificationTestResult, VerificationTest $failedTest)
+    public static function failedTest(VerificationTestResult $verificationTestResult, $failedTestName)
     {
         $result = new self(self::STATUS_FAILED);
 
         $result->testResult = $verificationTestResult;
-        $result->failedTest = $failedTest;
+        $result->failedTestName = $failedTestName;
 
         return $result;
     }
@@ -74,9 +73,9 @@ final class SuiteResult implements VerificationSuiteResult
         return $this->testResult && $this->testResult->hasTestFailed();
     }
 
-    public function getFailedTestResult()
+    public function getFailedTestName()
     {
-        return $this->testResult;
+        return $this->failedTestName;
     }
 
     public function getSeverity()

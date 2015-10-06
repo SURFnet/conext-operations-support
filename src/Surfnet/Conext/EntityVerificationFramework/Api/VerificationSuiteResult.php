@@ -26,9 +26,9 @@ interface VerificationSuiteResult
     public function hasTestFailed();
 
     /**
-     * @return VerificationTestResult|null
+     * @return string
      */
-    public function getFailedTestResult();
+    public function getFailedTestName();
 
     /**
      * @return int
