@@ -1,0 +1,9 @@
+imports:
+    - { resource: config.yml }
+
+monolog:
+    handlers:
+        syslog:
+            type:     syslog
+            ident:    conext-operations-support
+            facility: user
