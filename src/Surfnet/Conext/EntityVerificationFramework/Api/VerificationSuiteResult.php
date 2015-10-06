@@ -31,7 +31,7 @@ interface VerificationSuiteResult
     public function getFailedTestName();
 
     /**
-     * @return int
+     * @return int One of the VerificationTestResult::SEVERITY_* constants
      */
     public function getSeverity();
 
