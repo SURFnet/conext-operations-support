@@ -34,31 +34,16 @@ final class HttpClient implements JiraApiClientInterface
      * @var LoggerInterface
      */
     private $logger;
-    /**
-     * @var string
-     */
-    private $projectId;
-    /**
-     * @var string
-     */
-    private $defaultAssignee;
+
 
     /**
      * @param HttpClientInterface $client
      * @param LoggerInterface $logger
-     * @param string $projectId
-     * @param string $defaultAssignee
      */
-    public function __construct(
-        HttpClientInterface $client,
-        LoggerInterface $logger,
-        $projectId,
-        $defaultAssignee
-    ) {
+    public function __construct(HttpClientInterface $client, LoggerInterface $logger)
+    {
         $this->client = $client;
         $this->logger = $logger;
-        $this->projectId = $projectId;
-        $this->defaultAssignee = $defaultAssignee;
     }
 
     // @codingStandardsIgnoreStart (arguments with default values must be at the end; sadly, our JiraClient does not agree)
