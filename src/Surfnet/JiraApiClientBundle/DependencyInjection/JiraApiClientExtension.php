@@ -33,10 +33,17 @@ final class JiraApiClientExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $container->setParameter('jira_api_client.host', $config['host']);
-        $container->setParameter('jira_api_client.username', $config['username']);
-        $container->setParameter('jira_api_client.password', $config['password']);
-        $container->setParameter('jira_api_client.project_key', $config['project_key']);
-        $container->setParameter('jira_api_client.default_assignee', $config['default_assignee']);
+        $container->getDefinition('jira_api_client.authentication')
+            ->replaceArgument(0, $config['username'])
+            ->replaceArgument(1, $config['password']);
+
+        $container->getDefinition('jira_api_client.guzzle')
+            ->replaceArgument(0, [
+                'base_url' => $config['base_url']
+            ]);
+
+        $container->getDefinition('jira_api_client.http_client')
+            ->replaceArgument(2, $config['project_id'])
+            ->replaceArgument(3, $config['default_assignee']);
     }
 }

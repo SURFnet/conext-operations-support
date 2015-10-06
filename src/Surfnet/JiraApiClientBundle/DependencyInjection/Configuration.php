@@ -35,10 +35,14 @@ final class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(function ($host) {
-                            return !is_string($host);
+                        ->ifTrue(function ($baseUrl) {
+                            return !is_string($baseUrl);
                         })
                         ->thenInvalid('The JIRA API base URL should be a string')
+                        ->ifTrue(function ($baseUrl) {
+                            return filter_var($baseUrl, FILTER_VALIDATE_URL);
+                        })
+                        ->thenInvalid('The JIRA API base URL should be a valid URL')
                     ->end()
                 ->end()
                 ->scalarNode('username')
@@ -58,20 +62,20 @@ final class Configuration implements ConfigurationInterface
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($password) {
-                        return !is_string($password);
+                            return !is_string($password);
                         })
                         ->thenInvalid('The JIRA API password should be a string')
                     ->end()
                 ->end()
-                ->scalarNode('project_key')
-                    ->info('The key of the project that will be reported to in JIRA')
+                ->scalarNode('project_id')
+                    ->info('The id of the project that will be reported to in JIRA')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($projectKey) {
                             return !is_string($projectKey);
                         })
-                        ->thenInvalid('The project key should be a string')
+                        ->thenInvalid('The project id should be a string')
                     ->end()
                 ->end()
                 ->scalarNode('default_assignee_name')

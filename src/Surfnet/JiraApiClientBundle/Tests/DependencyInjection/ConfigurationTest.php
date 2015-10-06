@@ -29,10 +29,10 @@ final class ConfigurationTest extends TestCase
     use DataProvider;
 
     private $validConfig = [
-        "base_url" => "http://example-host.test",
+        "base_url" => "http://api.invalid",
         "username" => "test user",
         "password" => "test password",
-        "project_key" => "TST_000",
+        "project_id" => "10000",
         "default_assignee_name" => "default assignee",
     ];
 
@@ -47,6 +47,18 @@ final class ConfigurationTest extends TestCase
         $config["base_url"] = $value;
 
         $this->assertConfigurationIsInvalid([$config], "The JIRA API base URL should be a string");
+    }
+
+    /**
+     * @test
+     * @group JiraApiClientBundle
+     */
+    public function base_url_has_to_be_valid_uri()
+    {
+        $config = $this->validConfig;
+        $config["base_url"] = "not a valid URL";
+
+        $this->assertConfigurationIsInvalid([$config], "The JIRA API base URL should be a valid");
     }
 
     /**
@@ -80,12 +92,12 @@ final class ConfigurationTest extends TestCase
      * @group JiraApiClientBundle
      * @dataProvider notNonStringScalarProvider
      */
-    public function project_key_cannot_be_other_than_string($value)
+    public function project_id_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config["project_key"] = $value;
+        $config["project_id"] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The project key should be a string");
+        $this->assertConfigurationIsInvalid([$config], "The project id should be a string");
     }
 
     /**
