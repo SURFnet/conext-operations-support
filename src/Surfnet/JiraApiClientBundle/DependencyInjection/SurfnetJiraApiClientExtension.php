@@ -41,9 +41,5 @@ final class SurfnetJiraApiClientExtension extends Extension
             ->replaceArgument(0, [
                 'base_url' => $config['base_url']
             ]);
-
-        $container->getDefinition('surfnet_jira_api_client.http_client')
-            ->replaceArgument(2, $config['project_id'])
-            ->replaceArgument(3, $config['default_assignee']);
     }
 }
