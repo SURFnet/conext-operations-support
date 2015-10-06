@@ -30,7 +30,7 @@ notifications:
       - secure: cskDfmquVPNzn/RCl6NB/5CLd5iwgDBg8In7TB5j1ttIWlOCOidX3V5NgfxYlVFe4xvRscNijQ5FvprQresbSo0s7avq8GVuL/bCtSirB7dUS/zVktlwpH4sf4l29wASQ1j0wDYAxE4ORUa62GBvZjwOtIE0ESQIEg+FH7yeR/HyAFfdZpNgVP7aNWcYLR96upgmz8Q00fBf8ZjwsqrGGVn778orHtbrOLeJ6CsJYtjNG/pPAX7QQlZYvRYt1NsqEtMUZdiTqU0Xt7iCTRw6yKllqJ0JhKMLMpOcXnDACJTmp25NzS6jFk5SXomJoxMlfepgoMseOJn+JGB5fP8xcGbRz9VhD++bBgGNUaQDdCSGdNeAuEGpnvjr8O1IkZf6p+KdVJSH6uVsVHYwWhnHSjcuErXj8LiBZ8RVjWffvZdkO9DBNItMrT0IKgZd1hPzvJG4f9E76EGhPP4J0rSqeEwDGn0d1C2woO9PnTJ9eI6DyykeG9XhQjFg6Oyo9jeimb+5FNSy7ozQSecXe/QciA8AKB2VbZeQ2Fp4NcGCzzsZJ8RPbpat8HLnV7OgS8wp4wuuiS+STCcxjEXlujsjBOpVw7bVR/aiQu3dS6n8f/lM1URlp1sqyA1AwcCsC5gJyD0Zy30VNYdHOMaEr9e3sxQbw6lI1Mbia68bw791VTw=
     on_success: [change] # default: always
     on_failure: [always] # default: always
-    on_start: [never]    # default: always
+    on_start: [always]    # default: always
 
 branches:
   only:
