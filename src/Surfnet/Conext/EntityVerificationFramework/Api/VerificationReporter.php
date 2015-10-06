@@ -23,9 +23,9 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 interface VerificationReporter
 {
     /**
-     * @param Entity                 $entity
-     * @param VerificationTestResult $test
+     * @param Entity                  $entity
+     * @param VerificationSuiteResult $result
      * @return void
      */
-    public function reportFailedVerificationFor(Entity $entity, VerificationTestResult $test);
+    public function reportFailedVerificationFor(Entity $entity, VerificationSuiteResult $result);
 }
