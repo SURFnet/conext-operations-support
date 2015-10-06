@@ -10,7 +10,7 @@
     <testsuites>
         <testsuite name="Project Test Suite">
             <directory>../src/*/*/*Bundle/Tests</directory> <!-- Surfnet\Conext\OperationsSupportBundle         -->
-            <directory>../src/*Bundle/Tests</directory>     <!-- Surfnet\JanusApiClientBundle                   -->
+            <directory>../src/*/*Bundle/Tests</directory>   <!-- Surfnet\JanusApiClientBundle                   -->
             <directory>../src/*/*/*/Tests</directory>       <!-- Surfnet\Context\EntityVerificationFramework    -->
         </testsuite>
     </testsuites>
