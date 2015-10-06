@@ -28,7 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class CliReporter implements VerificationReporter
 {
     const REPORT = <<<REPORT
-<comment>%8s</comment> <info>%s</info> failed
+<comment>%8s</comment> <info>%s</info> failed for entity <info>%s</info>
     Reason: %s
 
     %s
@@ -56,7 +56,7 @@ REPORT;
         $reason         = $result->getReason();
         $explanation    = $result->getExplanation();
 
-        $this->output->writeln(sprintf(self::REPORT, $severityName, $failedTestName, $reason, $explanation));
+        $this->output->writeln(sprintf(self::REPORT, $severityName, $failedTestName, $entity, $reason, $explanation));
     }
 
     /**
