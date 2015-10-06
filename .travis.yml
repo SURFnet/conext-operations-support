@@ -1,38 +1,26 @@
 language: php
-
 php:
-  - 5.6
-  - 7.0
-
+- 5.6
+- 7.0
 matrix:
   allow_failures:
-    - php: 7.0
-
+  - php: 7.0
 env:
   global:
-    - SYMFONY_ENV=test
-
+  - SYMFONY_ENV=test
 cache:
   directories:
-    - "~/.composer"
-
+  - "~/.composer"
 before_script:
-  - phpenv config-add .travis.php.ini
-  - composer self-update
-  - composer install --prefer-dist
-
+- phpenv config-add .travis.php.ini
+- composer self-update
+- composer install --prefer-dist
 script:
-  - ant
-
+- ant
 notifications:
   slack:
-    rooms:
-      secure: cskDfmquVPNzn/RCl6NB/5CLd5iwgDBg8In7TB5j1ttIWlOCOidX3V5NgfxYlVFe4xvRscNijQ5FvprQresbSo0s7avq8GVuL/bCtSirB7dUS/zVktlwpH4sf4l29wASQ1j0wDYAxE4ORUa62GBvZjwOtIE0ESQIEg+FH7yeR/HyAFfdZpNgVP7aNWcYLR96upgmz8Q00fBf8ZjwsqrGGVn778orHtbrOLeJ6CsJYtjNG/pPAX7QQlZYvRYt1NsqEtMUZdiTqU0Xt7iCTRw6yKllqJ0JhKMLMpOcXnDACJTmp25NzS6jFk5SXomJoxMlfepgoMseOJn+JGB5fP8xcGbRz9VhD++bBgGNUaQDdCSGdNeAuEGpnvjr8O1IkZf6p+KdVJSH6uVsVHYwWhnHSjcuErXj8LiBZ8RVjWffvZdkO9DBNItMrT0IKgZd1hPzvJG4f9E76EGhPP4J0rSqeEwDGn0d1C2woO9PnTJ9eI6DyykeG9XhQjFg6Oyo9jeimb+5FNSy7ozQSecXe/QciA8AKB2VbZeQ2Fp4NcGCzzsZJ8RPbpat8HLnV7OgS8wp4wuuiS+STCcxjEXlujsjBOpVw7bVR/aiQu3dS6n8f/lM1URlp1sqyA1AwcCsC5gJyD0Zy30VNYdHOMaEr9e3sxQbw6lI1Mbia68bw791VTw=
-    on_success: [always] # default: always
-    on_failure: [always] # default: always
-    on_start: [always]    # default: always
-
+    secure: vT+tzkDR3ObcqZL9fKIXjfcx00osXddsrf9XAXYB+Keag2V+x2ARC4vubJoChLROqGiu8lHuMc+jxICOedeXfpjzzBhrA9H5faeC2ttXxPIU+raDVK9xhMIWZYU+O5HTKMXFRQu0EyJx9W3ZfyBgQPzVzAnyQLU3G/W1umUS7yU1s1LRIcBZOXL8cI2pbs4PureeTcmE3Hdn41Ck5ig3ZdIzgc75cvAKUIa27sSOhZplKSGcalTZWqJKZEVbH4qOSpGO0SuscBHWoxJ7rSAsTdgoDC6NljbyxO77GjjX9peoiMpaEvhna0GttESOtC3k7E7kXJ8BDOJeRLr2C6+5lyD2xCKbb5x7wQTL/oBsUiKFOlhGxa62a6QJm5VNXdTFyLLiYi1TZCiqbr0VcjRldh5io9qM8uBbeH/W14Qzsgr9gKyVAmCGg+zo/361xxyBYUML1FoDQNmE30U3tmwTAYIXOFsXSn5Tx6arL7RTIX5T6sTeh9ooIoIQRGnOqkiFuQX88kmSL+Aetc91jWPWNFkcS27MjsRpmblDdObUJuk4k981D/NM03OzLo9QnKKQgXmD661SOfqLu7pzAy3aPxAbKqTnMnOM55krmkfFKo+ghNjdpL0OkgWIjRVGA/ed5E16YfFDb5NWLfzGLq+8a8I/+eurGmYEslLlJEo4MdY=
 branches:
   only:
-    - master
-    - develop
+  - master
+  - develop
