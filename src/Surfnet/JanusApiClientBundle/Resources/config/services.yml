@@ -1,4 +1,12 @@
 services:
-#    surfnet_janus_api_client.example:
-#        class: Surfnet\JanusApiClientBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+  surfnet_janus_api_client.guzzle:
+    class: GuzzleHttp\Client
+    arguments:
+      - "" # Client configuration
+    public: false
+
+  surfnet_janus_api_client.service.api:
+    public: false
+    class: Surfnet\JanusApiClientBundle\Service\ApiService
+    arguments:
+      - @surfnet_janus_api_client.guzzle
