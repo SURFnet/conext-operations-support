@@ -53,7 +53,7 @@ final class ConfigurationTest extends TestCase
      * @test
      * @group JiraApiClientBundle
      */
-    public function base_url_has_to_be_valid_uri()
+    public function base_url_has_to_be_valid_url()
     {
         $config = $this->validConfig;
         $config["base_url"] = "not a valid URL";
