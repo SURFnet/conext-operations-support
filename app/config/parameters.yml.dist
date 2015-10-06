@@ -16,4 +16,4 @@ parameters:
     jira_api_username: someuser
     jira_api_password: superSecret
     jira_api_project_id: "10000"
-    jira_api_default_assignee: "@ Studenten Supportteam"
+    jira_api_default_assignee: "@@ Studenten Supportteam"
