@@ -24,6 +24,9 @@ framework:
     fragments:       ~
     http_method_override: true
 
+monolog:
+    handlers: []
+
 doctrine:
     dbal:
         driver:   pdo_mysql
