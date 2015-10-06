@@ -8,5 +8,12 @@ framework:
     profiler:
         collect: false
 
+monolog:
+    handlers:
+        stream:
+            type:   stream
+            path:   "%kernel.logs_dir%/%kernel.environment%.log"
+            level:  DEBUG
+
 swiftmailer:
     disable_delivery: true
