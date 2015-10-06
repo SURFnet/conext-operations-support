@@ -56,7 +56,10 @@ final class CliReporterTest extends TestCase
      */
     public function it_should_throw_an_exception_when_reporting_a_successful_result()
     {
-        $reporter = new CliReporter(m::mock(OutputInterface::class));
+        $output = m::mock(OutputInterface::class);
+        $output->shouldNotReceive('writeln');
+
+        $reporter = new CliReporter($output);
         $reporter->reportFailedVerificationFor(
             new Entity(new EntityId('meh'), EntityType::SP()),
             SuiteResult::success()
