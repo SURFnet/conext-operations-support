@@ -38,7 +38,7 @@ class Runner implements VerificationRunner
     /**
      * @var ConfiguredMetadataRepository
      */
-    private $janusMetadataRepository;
+    private $configuredMetadataRepository;
 
     /**
      * @var PublishedMetadataRepository
@@ -55,9 +55,9 @@ class Runner implements VerificationRunner
         PublishedMetadataRepository $publishedMetadataRepository,
         LoggerInterface $logger
     ) {
-        $this->janusMetadataRepository     = $configuredMetadataRepository;
-        $this->publishedMetadataRepository = $publishedMetadataRepository;
-        $this->logger                      = $logger;
+        $this->configuredMetadataRepository = $configuredMetadataRepository;
+        $this->publishedMetadataRepository  = $publishedMetadataRepository;
+        $this->logger                       = $logger;
     }
 
     public function addVerificationSuite(VerificationSuite $verificationSuite)
@@ -74,8 +74,8 @@ class Runner implements VerificationRunner
             )
         );
 
-        $entities = $this->janusMetadataRepository->getConfiguredEntities();
-        $this->logger->debug(sprintf('Retrieved %d configured entities from Janus', count($entities)));
+        $entities = $this->configuredMetadataRepository->getConfiguredEntities();
+        $this->logger->debug(sprintf('Retrieved %d configured entities from configured', count($entities)));
 
         $getRemoteMetadata = function (Entity $entity) {
             return $this->publishedMetadataRepository->getMetadataFor($entity);
@@ -86,7 +86,7 @@ class Runner implements VerificationRunner
 
             $context = new Context(
                 $entity,
-                $this->janusMetadataRepository->getMetadataFor($entity),
+                $this->configuredMetadataRepository->getMetadataFor($entity),
                 $getRemoteMetadata,
                 $this->logger
             );

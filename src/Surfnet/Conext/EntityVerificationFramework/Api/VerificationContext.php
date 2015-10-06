@@ -38,7 +38,7 @@ interface VerificationContext
     /**
      * @return \Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata
      */
-    public function getJanusMetadata();
+    public function getConfiguredMetadata();
 
     /**
      * @return \Psr\Log\LoggerInterface
