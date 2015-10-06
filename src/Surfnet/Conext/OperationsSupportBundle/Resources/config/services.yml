@@ -1,4 +1,13 @@
 services:
-#    surfnet_conext_operations_support.example:
-#        class: Surfnet\Conext\OperationsSupportBundle\Example
-#        arguments: [@service_id, "plain_value", %parameter%]
+    surfnet_conext_operations_support.verification_runner:
+        class: Surfnet\Conext\EntityVerificationFramework\Runner
+        arguments:
+            - @surfnet_conext_operations_support.repository.configured_metadata.dummy
+            - @surfnet_conext_operations_support.repository.published_metadata.dummy
+            - @logger
+
+    surfnet_conext_operations_support.repository.configured_metadata.dummy:
+        class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyConfiguredMetadataRepository
+
+    surfnet_conext_operations_support.repository.published_metadata.dummy:
+        class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyPublishedMetadataRepository
