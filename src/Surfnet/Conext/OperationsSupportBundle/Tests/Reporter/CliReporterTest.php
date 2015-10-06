@@ -37,7 +37,7 @@ final class CliReporterTest extends TestCase
     public function it_writes_a_report_to_output()
     {
         $output = m::mock(OutputInterface::class);
-        $output->shouldReceive('writeln');
+        $output->shouldReceive('writeln')->atLeast()->once();
 
         $reporter = new CliReporter($output);
         $reporter->reportFailedVerificationFor(
