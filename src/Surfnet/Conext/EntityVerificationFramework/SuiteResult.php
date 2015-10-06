@@ -55,6 +55,9 @@ final class SuiteResult implements VerificationSuiteResult
 
     public static function failedTest(VerificationTestResult $verificationTestResult, $failedTestName)
     {
+        Assert::string($failedTestName, "Failed test's name must be a string", 'failedTestName');
+        Assert::notEmpty($failedTestName, "Failed test's name may not be empty", 'failedTestName');
+
         $result = new self(self::STATUS_FAILED);
 
         $result->testResult = $verificationTestResult;

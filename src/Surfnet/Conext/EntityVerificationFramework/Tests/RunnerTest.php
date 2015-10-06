@@ -128,7 +128,7 @@ class RunnerTest extends UnitTest
 
         $failedResult = SuiteResult::failedTest(
             TestResult::failed('reason', 'explanation', 3),
-            m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest')
+            'evf.verification'
         );
         $failingSuite = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $failingSuite->shouldReceive('shouldBeSkipped')->andReturn(false);
@@ -154,7 +154,7 @@ class RunnerTest extends UnitTest
 
         $failedResult = SuiteResult::failedTest(
             TestResult::failed('reason', 'explanation', 3),
-            m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest')
+            'evf.verification'
         );
         $failingSuite = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $failingSuite->shouldReceive('shouldBeSkipped')->times($count)->andReturn(false);
