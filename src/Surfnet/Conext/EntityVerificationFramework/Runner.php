@@ -24,8 +24,8 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Repository\EntityMetadataRepository;
-use Surfnet\Conext\EntityVerificationFramework\Repository\JanusMetadataRepository;
+use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
+use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 
 class Runner implements VerificationRunner
@@ -36,14 +36,14 @@ class Runner implements VerificationRunner
     private $verificationSuites = [];
 
     /**
-     * @var JanusMetadataRepository
+     * @var ConfiguredMetadataRepository
      */
-    private $janusMetadataRepository;
+    private $configuredMetadataRepository;
 
     /**
-     * @var EntityMetadataRepository
+     * @var PublishedMetadataRepository
      */
-    private $entityMetadataRepository;
+    private $publishedMetadataRepository;
 
     /**
      * @var LoggerInterface
@@ -51,13 +51,13 @@ class Runner implements VerificationRunner
     private $logger;
 
     public function __construct(
-        JanusMetadataRepository $janusMetadataRepository,
-        EntityMetadataRepository $entityMetadataRepository,
+        ConfiguredMetadataRepository $configuredMetadataRepository,
+        PublishedMetadataRepository $publishedMetadataRepository,
         LoggerInterface $logger
     ) {
-        $this->janusMetadataRepository  = $janusMetadataRepository;
-        $this->entityMetadataRepository = $entityMetadataRepository;
-        $this->logger                   = $logger;
+        $this->configuredMetadataRepository = $configuredMetadataRepository;
+        $this->publishedMetadataRepository  = $publishedMetadataRepository;
+        $this->logger                       = $logger;
     }
 
     public function addVerificationSuite(VerificationSuite $verificationSuite)
@@ -74,20 +74,19 @@ class Runner implements VerificationRunner
             )
         );
 
-        $connections = $this->janusMetadataRepository->getAllConnections();
-        $this->logger->debug(sprintf('Retrieved %d connections from Janus', count($connections)));
+        $entities = $this->configuredMetadataRepository->getConfiguredEntities();
+        $this->logger->debug(sprintf('Retrieved %d configured entities from configured', count($entities)));
 
         $getRemoteMetadata = function (Entity $entity) {
-            return $this->entityMetadataRepository->getMetadataFor($entity);
+            return $this->publishedMetadataRepository->getMetadataFor($entity);
         };
 
-        foreach ($connections as $connection) {
-            $entity = $connection->getEntity();
+        foreach ($entities as $entity) {
             $this->logger->debug(sprintf('Verifying Entity "%s"', $entity));
 
             $context = new Context(
                 $entity,
-                $this->janusMetadataRepository->getMetadataFor($entity),
+                $this->configuredMetadataRepository->getMetadataFor($entity),
                 $getRemoteMetadata,
                 $this->logger
             );
@@ -131,7 +130,7 @@ class Runner implements VerificationRunner
 
         $this->logger->debug(sprintf(
             'Completed Run of Entity Verification Framework, "%d" Entities Verified with "%d" suites.',
-            count($connections),
+            count($entities),
             count($this->verificationSuites)
         ));
     }

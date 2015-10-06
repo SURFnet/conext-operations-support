@@ -23,8 +23,8 @@ use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\JanusMetadata;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
 
 class Context implements VerificationContext
 {
@@ -34,17 +34,17 @@ class Context implements VerificationContext
     private $entity;
 
     /**
-     * @var JanusMetadata
+     * @var ConfiguredMetadata
      */
-    private $janusMetadata;
+    private $configuredMetadata;
 
     /**
      * @var Closure
      */
-    private $remoteMetadataCallable;
+    private $publishedMetadataCallable;
 
     /**
-     * @var EntityMetadata;
+     * @var PublishedMetadata;
      */
     private $remoteMetadata;
 
@@ -55,14 +55,14 @@ class Context implements VerificationContext
 
     public function __construct(
         Entity $entity,
-        JanusMetadata $janusMetadata,
-        Closure $remoteMetadataCallable,
+        ConfiguredMetadata $configuredMetadata,
+        Closure $publishedMetadataCallable,
         LoggerInterface $logger
     ) {
-        $this->entity                 = $entity;
-        $this->janusMetadata          = $janusMetadata;
-        $this->remoteMetadataCallable = $remoteMetadataCallable;
-        $this->logger                 = $logger;
+        $this->entity                    = $entity;
+        $this->configuredMetadata        = $configuredMetadata;
+        $this->publishedMetadataCallable = $publishedMetadataCallable;
+        $this->logger                    = $logger;
     }
 
     public function getEntity()
@@ -73,7 +73,7 @@ class Context implements VerificationContext
     public function hasRemoteMetadata()
     {
         if (!isset($this->remoteMetadata)) {
-            $this->remoteMetadata = call_user_func($this->remoteMetadataCallable, $this->entity);
+            $this->remoteMetadata = call_user_func($this->publishedMetadataCallable, $this->entity);
         }
 
         return $this->remoteMetadata !== null;
@@ -91,9 +91,9 @@ class Context implements VerificationContext
         return $this->remoteMetadata;
     }
 
-    public function getJanusMetadata()
+    public function getConfiguredMetadata()
     {
-        return $this->janusMetadata;
+        return $this->configuredMetadata;
     }
 
     public function getLogger()

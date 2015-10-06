@@ -31,14 +31,14 @@ interface VerificationContext
     public function hasRemoteMetadata();
 
     /**
-     * @return \Surfnet\Conext\EntityVerificationFramework\Value\EntityMetadata
+     * @return \Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata
      */
     public function getRemoteMetadata();
 
     /**
-     * @return \Surfnet\Conext\EntityVerificationFramework\Value\JanusMetadata
+     * @return \Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata
      */
-    public function getJanusMetadata();
+    public function getConfiguredMetadata();
 
     /**
      * @return \Psr\Log\LoggerInterface

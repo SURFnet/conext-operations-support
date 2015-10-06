@@ -18,20 +18,20 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Repository;
 
-use Surfnet\Conext\EntityVerificationFramework\Value\ConnectionCollection;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntityCollection;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\JanusMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
 
-interface JanusMetadataRepository
+interface ConfiguredMetadataRepository
 {
     /**
      * @param Entity $entity
-     * @return JanusMetadata
+     * @return ConfiguredMetadata
      */
     public function getMetadataFor(Entity $entity);
 
     /**
-     * @return ConnectionCollection
+     * @return EntityCollection
      */
-    public function getAllConnections();
+    public function getConfiguredEntities();
 }

@@ -18,6 +18,6 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
-final class JanusMetadata
+final class ConfiguredMetadata
 {
 }

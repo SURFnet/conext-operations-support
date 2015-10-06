@@ -16,16 +16,8 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Repository;
+namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
-use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityMetadata;
-
-interface EntityMetadataRepository
+final class PublishedMetadata
 {
-    /**
-     * @param Entity $entity
-     * @return EntityMetadata|null NULL when the metadata is not available
-     */
-    public function getMetadataFor(Entity $entity);
 }
