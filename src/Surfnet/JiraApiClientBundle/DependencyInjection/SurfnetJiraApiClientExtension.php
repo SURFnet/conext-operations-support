@@ -23,7 +23,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-final class JiraApiClientExtension extends Extension
+final class SurfnetJiraApiClientExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -33,16 +33,16 @@ final class JiraApiClientExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $container->getDefinition('jira_api_client.authentication')
+        $container->getDefinition('surfnet_jira_api_client.authentication')
             ->replaceArgument(0, $config['username'])
             ->replaceArgument(1, $config['password']);
 
-        $container->getDefinition('jira_api_client.guzzle')
+        $container->getDefinition('surfnet_jira_api_client.guzzle')
             ->replaceArgument(0, [
                 'base_url' => $config['base_url']
             ]);
 
-        $container->getDefinition('jira_api_client.http_client')
+        $container->getDefinition('surfnet_jira_api_client.http_client')
             ->replaceArgument(2, $config['project_id'])
             ->replaceArgument(3, $config['default_assignee']);
     }

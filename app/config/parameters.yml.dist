@@ -12,7 +12,7 @@ parameters:
 
     secret:            ThisTokenIsNotSoSecretChangeIt
 
-    jira_api_base_url: https://jira.surfnet.invalid
+    jira_api_base_url: "https://jira.surfnet.invalid"
     jira_api_username: someuser
     jira_api_password: superSecret
     jira_api_project_id: "10000"

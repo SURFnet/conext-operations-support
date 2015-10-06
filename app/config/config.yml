@@ -46,7 +46,7 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
-jira_api_client:
+surfnet_jira_api_client:
     base_url: %jira_api_base_url%
     username: %jira_api_username%
     password: %jira_api_password%

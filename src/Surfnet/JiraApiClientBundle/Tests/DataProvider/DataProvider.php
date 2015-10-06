@@ -23,7 +23,6 @@ trait DataProvider
     public function nonStringScalarProvider()
     {
         return [
-            'null'         => [null],
             'boolean'      => [true],
             'integer'      => [1],
             'float'        => [1.2],

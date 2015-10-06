@@ -33,13 +33,13 @@ final class ConfigurationTest extends TestCase
         "username" => "test user",
         "password" => "test password",
         "project_id" => "10000",
-        "default_assignee_name" => "default assignee",
+        "default_assignee" => "default assignee",
     ];
 
     /**
      * @test
      * @group JiraApiClientBundle
-     * @dataProvider notNonStringScalarProvider
+     * @dataProvider nonStringScalarProvider
      */
     public function base_url_cannot_be_other_than_string($value)
     {
@@ -58,13 +58,13 @@ final class ConfigurationTest extends TestCase
         $config = $this->validConfig;
         $config["base_url"] = "not a valid URL";
 
-        $this->assertConfigurationIsInvalid([$config], "The JIRA API base URL should be a valid");
+        $this->assertConfigurationIsInvalid([$config], "The JIRA API base URL should be a valid URL");
     }
 
     /**
      * @test
      * @group JiraApiClientBundle
-     * @dataProvider notNonStringScalarProvider
+     * @dataProvider nonStringScalarProvider
      */
     public function username_cannot_be_other_than_string($value)
     {
@@ -77,7 +77,7 @@ final class ConfigurationTest extends TestCase
     /**
      * @test
      * @group JiraApiClientBundle
-     * @dataProvider notNonStringScalarProvider
+     * @dataProvider nonStringScalarProvider
      */
     public function password_cannot_be_other_than_string($value)
     {
@@ -90,7 +90,7 @@ final class ConfigurationTest extends TestCase
     /**
      * @test
      * @group JiraApiClientBundle
-     * @dataProvider notNonStringScalarProvider
+     * @dataProvider nonStringScalarProvider
      */
     public function project_id_cannot_be_other_than_string($value)
     {
@@ -103,14 +103,14 @@ final class ConfigurationTest extends TestCase
     /**
      * @test
      * @group JiraApiClientBundle
-     * @dataProvider notNonStringScalarProvider
+     * @dataProvider nonStringScalarProvider
      */
-    public function default_assignee_name_cannot_be_other_than_string($value)
+    public function default_assignee_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config["default_assignee_name"] = $value;
+        $config["default_assignee"] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The default assignee name should be a string");
+        $this->assertConfigurationIsInvalid([$config], "The default assignee should be a string");
     }
 
     protected function getConfiguration()

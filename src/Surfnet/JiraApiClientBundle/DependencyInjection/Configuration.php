@@ -26,7 +26,7 @@ final class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('jira_api_client');
+        $rootNode = $treeBuilder->root('surfnet_jira_api_client');
 
         $rootNode
             ->children()
@@ -39,8 +39,10 @@ final class Configuration implements ConfigurationInterface
                             return !is_string($baseUrl);
                         })
                         ->thenInvalid('The JIRA API base URL should be a string')
+                    ->end()
+                    ->validate()
                         ->ifTrue(function ($baseUrl) {
-                            return filter_var($baseUrl, FILTER_VALIDATE_URL);
+                            return !filter_var($baseUrl, FILTER_VALIDATE_URL);
                         })
                         ->thenInvalid('The JIRA API base URL should be a valid URL')
                     ->end()
@@ -78,7 +80,7 @@ final class Configuration implements ConfigurationInterface
                         ->thenInvalid('The project id should be a string')
                     ->end()
                 ->end()
-                ->scalarNode('default_assignee_name')
+                ->scalarNode('default_assignee')
                     ->info('The name of the user that will be the default assignee')
                     ->isRequired()
                     ->cannotBeEmpty()
@@ -86,7 +88,7 @@ final class Configuration implements ConfigurationInterface
                         ->ifTrue(function ($projectKey) {
                             return !is_string($projectKey);
                         })
-                        ->thenInvalid('The default assignee name should be a string')
+                        ->thenInvalid('The default assignee should be a string')
                     ->end()
                 ->end()
             ->end();
