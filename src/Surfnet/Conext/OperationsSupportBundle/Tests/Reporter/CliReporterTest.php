@@ -54,7 +54,7 @@ final class CliReporterTest extends TestCase
      * @group reporter
      * @expectedException \Surfnet\Conext\OperationsSupportBundle\Exception\LogicException
      */
-    public function it_should_thrown_when_asked_to_write_a_report_of_a_succeeded_test()
+    public function it_should_throw_an_exception_when_reporting_a_successful_result()
     {
         $reporter = new CliReporter(m::mock(OutputInterface::class));
         $reporter->reportFailedVerificationFor(
