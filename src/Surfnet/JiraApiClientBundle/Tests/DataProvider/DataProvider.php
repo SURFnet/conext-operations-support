@@ -16,10 +16,16 @@
  * limitations under the License.
  */
 
-namespace Surfnet\JiraApiClientBundle;
+namespace Surfnet\JiraApiClientBundle\Tests\DataProvider;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
-final class SurfnetJiraApiClientBundle extends Bundle
+trait DataProvider
 {
+    public function nonStringScalarProvider()
+    {
+        return [
+            'boolean'      => [true],
+            'integer'      => [1],
+            'float'        => [1.2],
+        ];
+    }
 }

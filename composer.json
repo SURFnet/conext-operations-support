@@ -29,7 +29,8 @@
   },
   "require-dev": {
     "sensio/generator-bundle": "~2.3",
-    "ibuildings/qa-tools": "^1.1"
+    "ibuildings/qa-tools": "^1.1",
+    "matthiasnoback/symfony-config-test": "^1.3"
   },
   "scripts": {
     "post-root-package-install": [
