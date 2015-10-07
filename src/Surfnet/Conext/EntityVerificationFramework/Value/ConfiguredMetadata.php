@@ -24,10 +24,7 @@ use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 /**
  * Class is not final, because it is mocked.
  *
- * @SuppressWarnings(PHPMD.UnusedPrivateFields)
- * @SuppressWarnings(PHPMD.NPathComplexity)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
- * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+ * @SuppressWarnings(PHPMD)
  */
 class ConfiguredMetadata
 {
