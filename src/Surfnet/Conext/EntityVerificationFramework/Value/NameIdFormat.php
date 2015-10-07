@@ -18,34 +18,39 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
-final class Entity
-{
-    /**
-     * @var EntityId
-     */
-    private $entityId;
-    /**
-     * @var EntityType
-     */
-    private $entityType;
+use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-    public function __construct(EntityId $entityId, EntityType $entityType)
+final class NameIdFormat
+{
+    /** @var string */
+    private $format;
+
+    /**
+     * @param mixed  $data
+     * @param string $propertyPath
+     * @return NameIdFormat
+     */
+    public static function deserialise($data, $propertyPath)
     {
-        $this->entityId = $entityId;
-        $this->entityType = $entityType;
+        Assert::string($data, 'NameIDFormat must be string', $propertyPath);
+
+        $format = new NameIdFormat();
+        $format->format = $data;
+
+        return $format;
     }
 
     /**
-     * @param Entity $other
+     * @param NameIdFormat $other
      * @return bool
      */
-    public function equals(Entity $other)
+    public function equals(NameIdFormat $other)
     {
-        return $this->entityId->equals($other->entityId) && $this->entityType->equals($other->entityType);
+        return $this == $other;
     }
 
     public function __toString()
     {
-        return $this->entityId . '[' . $this->entityType . ']';
+        return $this->format;
     }
 }

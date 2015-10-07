@@ -20,36 +20,47 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class EntityId
+final class PemEncodedX509Certificate
 {
     /**
      * @var string
      */
-    private $entityId;
+    private $certificate;
 
     /**
-     * @param string $entityId
+     * @param string $data
+     * @param string $propertyPath
+     * @return PemEncodedX509Certificate
      */
-    public function __construct($entityId)
+    public static function deserialise($data, $propertyPath)
     {
-        Assert::notEmpty($entityId);
-        Assert::string($entityId);
-        Assert::notBlank($entityId);
+        Assert::string($data, 'Certificate data must be a string', $propertyPath);
 
-        $this->entityId = $entityId;
+        $certificate = new PemEncodedX509Certificate();
+        $certificate->certificate = $data;
+
+        return $certificate;
     }
 
     /**
-     * @param EntityId $other
      * @return bool
      */
-    public function equals(EntityId $other)
+    public function isValid()
     {
-        return $this->entityId === $other->entityId;
+        return trim($this->certificate) !== '';
+    }
+
+    /**
+     * @param PemEncodedX509Certificate $other
+     * @return bool
+     */
+    public function equals(PemEncodedX509Certificate $other)
+    {
+        return $this == $other;
     }
 
     public function __toString()
     {
-        return $this->entityId;
+        return $this->certificate;
     }
 }
