@@ -11,8 +11,8 @@ The verification suites should all reside in the `Surfnet\VerificationSuite` nam
 ## Creating a new Suite
 
 1. Create a new Suite namespace in the `Surfnet\VerificationSuite` namespace, e.g. `Surfnet\VerificationSuite\ExampleSuite`
-2. Create a new Suite class, e.g. `Surfnet\VerificationSuite\ExampleSuite\ExampleSuite`. Although not strictly enforce,
- it is best to name the Suite class the same as the suite namespace. The Suite will be identified by its namespace
+2. Create a new Suite class, e.g. `Surfnet\VerificationSuite\ExampleSuite\ExampleSuite`. It is required to name the Suite 
+class the same as the suite namespace. The Suite will be identified by its namespace
  in the logs.
 3. Have your new Suite extend the `Surfnet\Conext\EntityVerificationFramework\Suite`. This takes care of all the heavy
  lifting. All you have to do is implement two methods:
