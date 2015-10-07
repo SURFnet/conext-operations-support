@@ -67,7 +67,7 @@ class NameResolverTest extends UnitTest
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      * @expectedExceptionMessage is not a valid object
      */
-    public function only_objects_can_be_converted($value)
+    public function only_objects_can_be_converted_to_strings($value)
     {
         NameResolver::resolveToString($value);
     }
@@ -96,5 +96,44 @@ class NameResolverTest extends UnitTest
     public function test_not_implementing_verification_test_cannot_be_converted()
     {
         NameResolver::resolveToString(new NoInterfaceTest());
+    }
+
+    /**
+     * @test
+     * @group EntityVerificationFramework
+     * @group NameResolver
+     */
+    public function suite_names_are_converted_to_class()
+    {
+        $class = NameResolver::resolveToClass('name_resolver_test_suite');
+
+        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite", $class);
+    }
+
+    /**
+     * @test
+     * @group EntityVerificationFramework
+     * @group NameResolver
+     */
+    public function test_names_are_converted_to_class()
+    {
+        $testClass = NameResolver::resolveToClass('name_resolver_test_suite.some_test');
+        $suiteClass = NameResolver::resolveToClass('name_resolver_test_suite.under_scored_test_name');
+
+        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite\\SomeTest", $testClass);
+        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite\\UnderScoredTestName", $suiteClass);
+    }
+
+    /**
+     * @test
+     * @group EntityVerificationFramework
+     * @group NameResolver
+     * @dataProvider notNonEmptyOrBlankStringProvider
+     *
+     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
+     */
+    public function only_strings_can_be_converted_to_classes($value)
+    {
+        NameResolver::resolveToClass($value);
     }
 }

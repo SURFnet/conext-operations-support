@@ -27,7 +27,13 @@ final class NameResolver
     /**
      * @var array internal cache
      */
-    private static $resolved = [];
+    private static $resolvedClasses = [];
+
+    /**
+     * @var array internal cache
+     */
+    private static $resolvedStrings = [];
+
 
     /**
      * @param $class
@@ -39,8 +45,8 @@ final class NameResolver
 
         $className = get_class($class);
 
-        if (array_key_exists($className, self::$resolved)) {
-            return self::$resolved[$className];
+        if (array_key_exists($className, self::$resolvedClasses)) {
+            return self::$resolvedClasses[$className];
         }
 
         if (!($class instanceof VerificationTest || $class instanceof VerificationSuite)) {
@@ -49,7 +55,7 @@ final class NameResolver
             );
         }
 
-        return self::$resolved[$className] = strtolower(
+        return self::$resolvedClasses[$className] = strtolower(
             preg_replace(
                 [
                     '~^Surfnet\\\\VerificationSuite\\\\([a-zA-Z]+)\\\\([a-zA-Z]+$)?~',
@@ -66,5 +72,26 @@ final class NameResolver
                 $className
             )
         );
+    }
+
+    public static function resolveToClass($name)
+    {
+        Assert::notEmpty($name);
+        Assert::string($name);
+        Assert::notBlank($name);
+
+        if (array_key_exists($name, self::$resolvedStrings)) {
+            return self::$resolvedStrings[$name];
+        }
+
+        $class = 'Surfnet\\VerificationSuite';
+
+        $namespaces = explode(".", $name);
+
+        foreach ($namespaces as $namespace) {
+            $class .= "\\" . str_replace(" ", "", ucwords(str_replace("_", " ", $namespace)));
+        }
+
+        return $class;
     }
 }
