@@ -74,6 +74,10 @@ final class NameResolver
         );
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     public static function resolveToClass($name)
     {
         Assert::notEmpty($name);
