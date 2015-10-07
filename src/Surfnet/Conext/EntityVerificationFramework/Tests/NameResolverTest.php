@@ -107,7 +107,7 @@ class NameResolverTest extends UnitTest
     {
         $class = NameResolver::resolveToClass('name_resolver_test_suite');
 
-        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite", $class);
+        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite\\NameResolverTestSuite", $class);
     }
 
     /**
@@ -120,8 +120,8 @@ class NameResolverTest extends UnitTest
         $testClass = NameResolver::resolveToClass('name_resolver_test_suite.some_test');
         $suiteClass = NameResolver::resolveToClass('name_resolver_test_suite.under_scored_test_name');
 
-        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite\\SomeTest", $testClass);
-        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite\\UnderScoredTestName", $suiteClass);
+        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite\\Test\\SomeTest", $testClass);
+        $this->assertEquals("Surfnet\\VerificationSuite\\NameResolverTestSuite\\Test\\UnderScoredTestName", $suiteClass);
     }
 
     /**
@@ -135,5 +135,17 @@ class NameResolverTest extends UnitTest
     public function only_strings_can_be_converted_to_classes($value)
     {
         NameResolver::resolveToClass($value);
+    }
+
+    /**
+     * @test
+     * @group EntityVerificationFramework
+     * @group NameResolver
+     *
+     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException
+     */
+    public function throw_exception_when_name_can_not_be_converted()
+    {
+        NameResolver::resolveToClass("no_test_suite.no_test");
     }
 }

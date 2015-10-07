@@ -27,12 +27,12 @@ final class NameResolver
     /**
      * @var array internal cache
      */
-    private static $resolvedClasses = [];
+    private static $resolvedStrings = [];
 
     /**
      * @var array internal cache
      */
-    private static $resolvedStrings = [];
+    private static $resolvedClasses = [];
 
 
     /**
@@ -45,8 +45,8 @@ final class NameResolver
 
         $className = get_class($class);
 
-        if (array_key_exists($className, self::$resolvedClasses)) {
-            return self::$resolvedClasses[$className];
+        if (array_key_exists($className, self::$resolvedStrings)) {
+            return self::$resolvedStrings[$className];
         }
 
         if (!($class instanceof VerificationTest || $class instanceof VerificationSuite)) {
@@ -55,7 +55,7 @@ final class NameResolver
             );
         }
 
-        return self::$resolvedClasses[$className] = strtolower(
+        return self::$resolvedStrings[$className] = strtolower(
             preg_replace(
                 [
                     '~^Surfnet\\\\VerificationSuite\\\\([a-zA-Z]+)\\\\([a-zA-Z]+$)?~',
@@ -75,21 +75,55 @@ final class NameResolver
     }
 
     /**
-     * @param string $name
+     * @param $className
      * @return string
      */
-    public static function resolveToClass($name)
+    public static function resolveToClass($className)
     {
-        Assert::notEmpty($name);
-        Assert::string($name);
-        Assert::notBlank($name);
+        Assert::string($className);
+        Assert::notBlank($className);
 
-        if (array_key_exists($name, self::$resolvedStrings)) {
-            return self::$resolvedStrings[$name];
+        if (array_key_exists($className, self::$resolvedStrings)) {
+            return self::$resolvedClasses[$className];
         }
 
-        $casedName = ucwords($name, "._");
+        $resolvedClassName = self::convertToClassName($className);
 
-        return 'Surfnet\\VerificationSuite\\' . str_replace([".", "_"], ["\\", ""], $casedName);
+        if (!class_exists($resolvedClassName)) {
+            throw new InvalidArgumentException(sprintf('Resolved class "%s" does not exist', $resolvedClassName));
+        }
+
+        return self::$resolvedClasses[$className] = $resolvedClassName;
+    }
+
+    /**
+     * @param $className
+     * @return string
+     */
+    private static function convertToClassName($className)
+    {
+        $namespace = 'Surfnet\\VerificationSuite\\';
+
+        if (strpos($className, '.') === false) {
+            $camelCased = self::underscoreToCamelCase($className);
+
+            return $namespace . $camelCased . '\\' . $camelCased;
+        }
+
+        $parts = explode('.', $className);
+
+        $suiteNamespace = self::underscoreToCamelCase($parts[0]);
+        $testName = self::underscoreToCamelCase($parts[1]);
+
+        return $namespace . $suiteNamespace . '\\Test\\' . $testName;
+    }
+
+    /**
+     * @param $string
+     * @return mixed
+     */
+    private static function underscoreToCamelCase($string)
+    {
+        return str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
     }
 }
