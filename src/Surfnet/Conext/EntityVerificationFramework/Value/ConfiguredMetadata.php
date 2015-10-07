@@ -82,7 +82,6 @@ class ConfiguredMetadata
         Assert::isArray($data['metadata'], '"metadata" key must contain an array structure');
         $metadataData = $data['metadata'];
 
-        Assert::keyExists('contacts', $metadataData, "Metadata doesn't contain contacts", 'metadata');
         if (isset($metadata['contacts'])) {
             $metadata->contacts = ContactSet::deserialise($metadataData['contacts'], 'metadata.contacts');
         }
