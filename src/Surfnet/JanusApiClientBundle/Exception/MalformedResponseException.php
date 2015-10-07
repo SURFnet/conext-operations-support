@@ -18,8 +18,6 @@
 
 namespace Surfnet\JanusApiClientBundle\Exception;
 
-use RuntimeException as CoreRuntimeException;
-
-class MalformedResponseException extends CoreRuntimeException implements SurfnetJanusApiClientException
+class MalformedResponseException extends RuntimeException
 {
 }

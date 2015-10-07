@@ -18,6 +18,8 @@
 
 namespace Surfnet\JanusApiClientBundle\Exception;
 
-class InvalidResponseException extends RuntimeException
+use RuntimeException as CoreRuntimeException;
+
+class RuntimeException extends CoreRuntimeException implements SurfnetJanusApiClientException
 {
 }

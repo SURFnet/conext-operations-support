@@ -19,11 +19,11 @@
 namespace Surfnet\JanusApiClientBundle\Service;
 
 use GuzzleHttp\ClientInterface;
-use RuntimeException as CoreRuntimeException;
-use InvalidArgumentException as CoreInvalidArgumentException;
+use Surfnet\JanusApiClientBundle\Exception\InvalidArgumentException;
 use Surfnet\JanusApiClientBundle\Exception\InvalidResponseException;
 use Surfnet\JanusApiClientBundle\Exception\MalformedResponseException;
 use Surfnet\JanusApiClientBundle\Exception\ResourceNotFoundException;
+use Surfnet\JanusApiClientBundle\Exception\RuntimeException;
 
 class ApiService
 {
@@ -66,7 +66,6 @@ class ApiService
         }
 
         if ($statusCode !== 200) {
-            // Consumer requested resource it is not authorised to access.
             throw new InvalidResponseException(sprintf(
                 'Request to resource "%s" returned an invalid response with status code %s',
                 $resource,
@@ -76,7 +75,7 @@ class ApiService
 
         try {
             $data = $this->parseJson((string)$response->getBody());
-        } catch (CoreInvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new MalformedResponseException(sprintf(
                 'Cannot read resource "%s": malformed JSON returned',
                 $resource
@@ -90,7 +89,7 @@ class ApiService
      * @param $path
      * @param array $parameters
      * @return string
-     * @throw CoreRuntimeException
+     * @throws RuntimeException
      */
     private function buildResourcePath($path, array $parameters)
     {
@@ -101,7 +100,7 @@ class ApiService
         }
 
         if (empty($resource)) {
-            throw new CoreRuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'Could not construct resource path from path "%s", parameters "%s"',
                     $path,
@@ -119,6 +118,7 @@ class ApiService
      *
      * @param string $json
      * @return mixed
+     * @throws InvalidArgumentException
      */
     private function parseJson($json)
     {
@@ -135,12 +135,13 @@ class ApiService
         if (JSON_ERROR_NONE !== json_last_error()) {
             $last = json_last_error();
 
-            throw new CoreInvalidArgumentException(
-                'Unable to parse JSON data: '
-                . (isset($jsonErrors[$last])
-                    ? $jsonErrors[$last]
-                    : 'Unknown error')
-            );
+            $errorMessage = $jsonErrors[$last];
+
+            if (!isset($errorMessage)) {
+                $errorMessage = 'Unknown error';
+            }
+
+            throw new InvalidArgumentException(sprintf('Unable to parse JSON data: %s', $errorMessage));
         }
 
         return $data;

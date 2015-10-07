@@ -18,8 +18,6 @@
 
 namespace Surfnet\JanusApiClientBundle\Exception;
 
-use RuntimeException as CoreRuntimeException;
-
-class ResourceNotFoundException extends CoreRuntimeException implements SurfnetJanusApiClientException
+class ResourceNotFoundException extends RuntimeException
 {
 }
