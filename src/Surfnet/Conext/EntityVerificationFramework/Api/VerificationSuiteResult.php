@@ -26,12 +26,12 @@ interface VerificationSuiteResult
     public function hasTestFailed();
 
     /**
-     * @return VerificationTestResult|null
+     * @return string
      */
-    public function getFailedTestResult();
+    public function getFailedTestName();
 
     /**
-     * @return int
+     * @return int One of the VerificationTestResult::SEVERITY_* constants
      */
     public function getSeverity();
 

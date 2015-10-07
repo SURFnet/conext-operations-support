@@ -118,7 +118,7 @@ class Runner implements VerificationRunner
                 if ($suiteResult->hasTestFailed()) {
                     $this->logger->debug(sprintf('Verification suite "%s" failed for "%s', $suiteName, $entity));
 
-                    $reporter->reportFailedVerificationFor($entity, $suiteResult->getFailedTestResult());
+                    $reporter->reportFailedVerificationFor($entity, $suiteResult);
                     continue;
                 }
 
