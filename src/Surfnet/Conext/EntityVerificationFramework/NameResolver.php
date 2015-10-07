@@ -88,14 +88,8 @@ final class NameResolver
             return self::$resolvedStrings[$name];
         }
 
-        $class = 'Surfnet\\VerificationSuite';
+        $casedName = ucwords($name, "._");
 
-        $namespaces = explode(".", $name);
-
-        foreach ($namespaces as $namespace) {
-            $class .= "\\" . str_replace(" ", "", ucwords(str_replace("_", " ", $namespace)));
-        }
-
-        return $class;
+        return 'Surfnet\\VerificationSuite\\' . str_replace([".", "_"], ["\\", ""], $casedName);
     }
 }
