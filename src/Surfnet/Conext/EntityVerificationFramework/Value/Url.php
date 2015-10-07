@@ -45,7 +45,12 @@ final class Url
     {
         $url = new self();
 
-        $parts = parse_url($data);
+        if (filter_var($data, FILTER_VALIDATE_URL) === false) {
+            $parts = false;
+        } else {
+            $parts = parse_url($data);
+        }
+
         $isValid = $parts !== false;
 
         $url->url   = $data;
