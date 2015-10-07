@@ -127,18 +127,9 @@ class ConfiguredMetadata
         }
 
         if (isset($metadataData['AssertionConsumerService'])) {
-            $assertionConsumerServiceData = $metadataData['AssertionConsumerService'];
-            Assert::isArray(
-                $assertionConsumerServiceData,
-                'SP metadata\'s "AssertionConsumerService" key must contain an array',
+            $metadata->assertionConsumerServices = AssertionConsumerServiceList::deserialise(
+                $metadataData['AssertionConsumerService'],
                 'metadata.AssertionConsumerService'
-            );
-
-            $metadata->assertionConsumerServices = array_map(
-                function ($data) {
-                    return AssertionConsumerService::deserialise($data);
-                },
-                $assertionConsumerServiceData
             );
         }
 
@@ -147,18 +138,9 @@ class ConfiguredMetadata
         }
 
         if (isset($metadataData['SingleSignOnService'])) {
-            $singleSignOnServiceData = $metadataData['SingleSignOnService'];
-            Assert::isArray(
-                $singleSignOnServiceData,
-                'SP metadata\'s "SingleSignOnService" key must contain an array',
+            $metadata->singleSignOnServices = SingleSignOnServiceList::deserialise(
+                $metadataData['SingleSignOnService'],
                 'metadata.SingleSignOnService'
-            );
-
-            $metadata->singleSignOnServices = array_map(
-                function ($data) {
-                    return SingleSignOnService::deserialise($data);
-                },
-                $singleSignOnServiceData
             );
         }
 

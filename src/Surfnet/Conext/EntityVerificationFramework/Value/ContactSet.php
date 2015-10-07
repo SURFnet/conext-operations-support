@@ -99,4 +99,9 @@ final class ContactSet implements IteratorAggregate, Countable
     {
         return count($this->contacts);
     }
+
+    public function __toString()
+    {
+        return sprintf('ContactSet(%s)', join(', ', array_map('strval', $this->contacts)));
+    }
 }
