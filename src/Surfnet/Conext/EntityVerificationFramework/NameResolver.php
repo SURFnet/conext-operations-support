@@ -36,20 +36,20 @@ final class NameResolver
 
 
     /**
-     * @param $class
+     * @param object $object
      * @return string
      */
-    public static function resolveToString($class)
+    public static function resolveToString($object)
     {
-        Assert::isObject($class);
+        Assert::isObject($object);
 
-        $className = get_class($class);
+        $className = get_class($object);
 
         if (array_key_exists($className, self::$resolvedStrings)) {
             return self::$resolvedStrings[$className];
         }
 
-        if (!($class instanceof VerificationTest || $class instanceof VerificationSuite)) {
+        if (!($object instanceof VerificationTest || $object instanceof VerificationSuite)) {
             throw new InvalidArgumentException(
                 'NameResolver may only be used for instances of VerificationTest or VerificationSuite'
             );
@@ -75,29 +75,29 @@ final class NameResolver
     }
 
     /**
-     * @param $className
+     * @param string $suiteOrTestName
      * @return string
      */
-    public static function resolveToClass($className)
+    public static function resolveToClass($suiteOrTestName)
     {
-        Assert::string($className);
-        Assert::notBlank($className);
+        Assert::string($suiteOrTestName);
+        Assert::notBlank($suiteOrTestName);
 
-        if (array_key_exists($className, self::$resolvedStrings)) {
-            return self::$resolvedClasses[$className];
+        if (array_key_exists($suiteOrTestName, self::$resolvedStrings)) {
+            return self::$resolvedClasses[$suiteOrTestName];
         }
 
-        $resolvedClassName = self::convertToClassName($className);
+        $resolvedClassName = self::convertToClassName($suiteOrTestName);
 
         if (!class_exists($resolvedClassName)) {
             throw new InvalidArgumentException(sprintf('Resolved class "%s" does not exist', $resolvedClassName));
         }
 
-        return self::$resolvedClasses[$className] = $resolvedClassName;
+        return self::$resolvedClasses[$suiteOrTestName] = $resolvedClassName;
     }
 
     /**
-     * @param $className
+     * @param string $className
      * @return string
      */
     private static function convertToClassName($className)
