@@ -44,26 +44,6 @@ final class ConfigurationTest extends TestCase
      * @test
      * @group EntityVerificationFramework
      * @group Configuration
-     */
-    public function suites_cannot_be_empty()
-    {
-        $config = [
-            'suites' => []
-        ];
-
-        $this->assertConfigurationIsInvalid([$config], 'should have at least 1 element');
-
-        $config = [
-            'suites' => null
-        ];
-
-        $this->assertConfigurationIsInvalid([$config], 'should have at least 1 element');
-    }
-
-    /**
-     * @test
-     * @group EntityVerificationFramework
-     * @group Configuration
      * @dataProvider notArrayProvider
      */
     public function suite_cannot_contain_other_than_array($value)
