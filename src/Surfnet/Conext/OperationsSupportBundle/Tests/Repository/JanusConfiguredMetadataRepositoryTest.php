@@ -41,7 +41,14 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
      */
     public function configured_entities_can_be_listed(array $connectionsData, array $expectedEntities)
     {
-        $apiService = $this->createConnectionsApiService($connectionsData);
+        /** @var ApiService|MockInterface $apiService */
+        $apiService = m::mock(ApiService::class);
+        $apiService
+            ->shouldReceive('read')
+            ->with('connections.json')
+            ->once()
+            ->andReturn(['connections' => $connectionsData]);
+
         $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
 
         $actualEntitySet   = $repository->getConfiguredEntities();
@@ -116,9 +123,15 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
      */
     public function name_state_type_must_be_present(array $connectionsData)
     {
-        $apiService = $this->createConnectionsApiService($connectionsData);
-        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
+        /** @var ApiService|MockInterface $apiService */
+        $apiService = m::mock(ApiService::class);
+        $apiService
+            ->shouldReceive('read')
+            ->with('connections.json')
+            ->once()
+            ->andReturn(['connections' => $connectionsData]);
 
+        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
         $repository->getConfiguredEntities();
     }
 
@@ -135,21 +148,5 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
                 [['name' => 'https://uva.invalid/sso', 'state' => 'prodaccepted']],
             ],
         ];
-    }
-
-    /**
-     * @param array $connectionsData
-     * @return MockInterface|ApiService
-     */
-    private function createConnectionsApiService(array $connectionsData)
-    {
-        $apiService = m::mock(ApiService::class);
-        $apiService
-            ->shouldReceive('read')
-            ->with('connections.json')
-            ->once()
-            ->andReturn(['connections' => $connectionsData]);
-
-        return $apiService;
     }
 }
