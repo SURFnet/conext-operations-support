@@ -33,6 +33,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('suites')
                     ->info('The test suites that should be run')
                     ->isRequired()
+                    ->performNoDeepMerging()
                     ->prototype('array')
                         ->info('The tests within the suites that should be run')
                         ->prototype('scalar')

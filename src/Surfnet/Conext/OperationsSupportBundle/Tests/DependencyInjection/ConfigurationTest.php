@@ -91,6 +91,36 @@ final class ConfigurationTest extends TestCase
         $this->assertConfigurationIsValid([$config]);
     }
 
+    /**
+     * @test
+     * @group EntityVerificationFramework
+     * @group Configuration
+     */
+    public function configurations_are_not_merged_deeply()
+    {
+        $configA = [
+            'suites' => [
+                'suite_name' => [
+                    'test1',
+                    'test2'
+                ],
+                'suite_name_2' => [
+                    'test1'
+                ]
+            ]
+        ];
+
+        $configB = [
+            'suites' => [
+                'the_only_suite' => [
+                    'the_only_test'
+                ]
+            ]
+        ];
+
+        $this->assertProcessedConfigurationEquals([$configA, $configB], $configB);
+    }
+
     protected function getConfiguration()
     {
         return new Configuration();
