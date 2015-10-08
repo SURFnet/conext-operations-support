@@ -33,11 +33,9 @@ final class EntityType
     /**
      * @param string $type
      */
-    private function __construct($type)
+    public function __construct($type)
     {
-        Assert::notEmpty($type);
-        Assert::string($type);
-        Assert::notBlank($type);
+        Assert::inArray($type, [self::TYPE_SP, self::TYPE_IDP]);
 
         $this->type = $type;
     }
