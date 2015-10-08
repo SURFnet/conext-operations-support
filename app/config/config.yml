@@ -60,3 +60,7 @@ surfnet_janus_api_client:
     base_url: %janus_api_base_url%
     username: %janus_api_username%
     password: %janus_api_password%
+
+surfnet_conext_operations_support:
+    suites:
+        %operations_support_suites%

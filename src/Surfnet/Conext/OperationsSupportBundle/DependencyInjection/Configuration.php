@@ -23,13 +23,31 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('surfnet_conext_operations_support');
+        $rootNode = $treeBuilder->root('surfnet_conext_operations_support');
+
+        $rootNode
+            ->children()
+                ->arrayNode('suites')
+                    ->info('The test suites that should be run')
+                    ->isRequired()
+                    ->requiresAtLeastOneElement()
+                    ->prototype('array')
+                        ->info('The tests within the suites that should be run')
+                        ->prototype('scalar')
+                            ->info('The name of the test that should be run')
+                            ->validate()
+                                ->ifTrue(function ($test) {
+                                    return !is_string($test);
+                                })
+                                ->thenInvalid('Test name should be a string')
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end();
 
         return $treeBuilder;
     }

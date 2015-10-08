@@ -21,3 +21,9 @@ parameters:
     janus_api_base_url: "https://service-registry.invalid/janus/api"
     janus_api_username: janusUser
     janus_api_password: secretPassword
+
+    operations_support_suites:
+            example:
+                - example_test
+            some_suite:
+                - my_custom_verification
