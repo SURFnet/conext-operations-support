@@ -20,6 +20,8 @@ namespace Surfnet\Conext\OperationsSupportBundle\Console\Command;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
+use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\Whitelist;
+use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\WhitelistAll;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\CliReporter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -56,6 +58,12 @@ final class RunSuitesCommand extends Command
             InputOption::VALUE_OPTIONAL,
             'The reporter to report issues with (eg. jira)'
         );
+        $this->addOption(
+            'whitelist',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'A comma-separated list of suites that should run exclusively (default: all suites are run)'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -82,8 +90,22 @@ final class RunSuitesCommand extends Command
             $reporter = $this->container->get($reporterServiceId);
         }
 
+        $whitelisted = $input->getOption('whitelist');
+        if ($whitelisted === null) {
+            $whitelist = new WhitelistAll();
+        } else {
+            $whitelistedSuiteNames = explode(',', $whitelisted);
+
+            $output->writeln([
+                '',
+                sprintf('Whitelisted: <info>%s</info>', implode(', ', $whitelistedSuiteNames))
+            ]);
+
+            $whitelist = new Whitelist($whitelistedSuiteNames);
+        }
+
         /** @var VerificationRunner $runner */
         $runner = $this->container->get('surfnet_conext_operations_support.verification_runner');
-        $runner->run($reporter);
+        $runner->run($reporter, $whitelist);
     }
 }
