@@ -52,11 +52,9 @@ final class EntitySet implements Countable, IteratorAggregate
             return false;
         }
 
-        $unequalOtherEntities = $other->entities;
         foreach ($this->entities as $myEntity) {
-            foreach ($unequalOtherEntities as $key => $otherEntity) {
+            foreach ($other->entities as $otherEntity) {
                 if ($myEntity->equals($otherEntity)) {
-                    unset($unequalOtherEntities[$key]);
                     continue 2;
                 }
             }
