@@ -30,6 +30,9 @@ final class EntityType
      */
     private $type;
 
+    /**
+     * @param string $type
+     */
     private function __construct($type)
     {
         Assert::notEmpty($type);
@@ -61,6 +64,22 @@ final class EntityType
     public static function IdP()
     {
         return new EntityType(self::TYPE_IDP);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSP()
+    {
+        return $this->type === self::TYPE_SP;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIdP()
+    {
+        return $this->type === self::TYPE_IDP;
     }
     // @codingStandardsIgnoreEnd
 
