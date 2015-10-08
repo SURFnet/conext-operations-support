@@ -23,6 +23,7 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
@@ -65,7 +66,7 @@ class Runner implements VerificationRunner
         $this->verificationSuites[] = $verificationSuite;
     }
 
-    public function run(VerificationReporter $reporter)
+    public function run(VerificationReporter $reporter, VerificationSuiteWhitelist $whitelist)
     {
         $this->logger->debug(
             sprintf(
@@ -92,6 +93,10 @@ class Runner implements VerificationRunner
             );
 
             foreach ($this->verificationSuites as $verificationSuite) {
+                if (!$whitelist->contains($verificationSuite)) {
+                    continue;
+                }
+
                 $suiteName = NameResolver::resolveToString($verificationSuite);
 
                 if ($verificationSuite->shouldBeSkipped($context)) {
