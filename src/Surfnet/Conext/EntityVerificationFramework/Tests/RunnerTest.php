@@ -25,7 +25,7 @@ use Surfnet\Conext\EntityVerificationFramework\Runner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityCollection;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
@@ -33,7 +33,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
 class RunnerTest extends UnitTest
 {
     /**
-     * @var EntityCollection
+     * @var EntitySet
      */
     private static $entities;
 
@@ -54,7 +54,7 @@ class RunnerTest extends UnitTest
 
     public static function setUpBeforeClass()
     {
-        static::$entities = new EntityCollection([
+        static::$entities = new EntitySet([
             new Entity(new EntityId('mock'), EntityType::SP()),
             new Entity(new EntityId('mock'), EntityType::IdP()),
         ]);

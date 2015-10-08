@@ -23,7 +23,7 @@ use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
-final class EntityCollection implements Countable, IteratorAggregate
+final class EntitySet implements Countable, IteratorAggregate
 {
     /**
      * @var Entity[]
@@ -36,7 +36,7 @@ final class EntityCollection implements Countable, IteratorAggregate
     public function __construct(array $entities)
     {
         foreach ($entities as $entity) {
-            $this->initializeWith($entity);
+            $this->add($entity);
         }
     }
 
@@ -50,15 +50,33 @@ final class EntityCollection implements Countable, IteratorAggregate
         return count($this->entities);
     }
 
-    private function initializeWith(Entity $entity)
+    /**
+     * @param Entity $entity
+     * @return boolean
+     */
+    private function add(Entity $entity)
     {
-        if (in_array($entity, $this->entities)) {
-            throw new LogicException(sprintf(
-                'Entity "%s" has already been added, cannot add it again',
-                $entity
-            ));
+        if ($this->contains($entity)) {
+            return false;
         }
 
         $this->entities[] = $entity;
+        return true;
+    }
+
+    /**
+     * @param Entity $entity The entity to search for.
+     *
+     * @return boolean TRUE if the collection contains the element, FALSE otherwise.
+     */
+    private function contains(Entity $entity)
+    {
+        foreach ($this->entities as $existingEntity) {
+            if ($entity->equals($existingEntity)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
