@@ -11,3 +11,10 @@ services:
 
     surfnet_conext_operations_support.repository.published_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyPublishedMetadataRepository
+
+    surfnet_conext_operations_support.command.run_suites:
+        class: Surfnet\Conext\OperationsSupportBundle\Console\Command\RunSuitesCommand
+        arguments:
+            - @service_container
+        tags:
+            -  { name: console.command }
