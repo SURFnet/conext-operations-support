@@ -38,7 +38,7 @@ class EntitySetTest extends TestCase
     {
         $this->assertFalse(
             (new EntitySet($set0))->equals(new EntitySet($set1)),
-            "Entity sets should not be equal, but they're not"
+            "Entity sets are not equal, but are reported to be"
         );
     }
 
