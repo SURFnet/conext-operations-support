@@ -62,7 +62,7 @@ final class ConfigurationTest extends TestCase
      * @group EntityVerificationFramework
      * @group Configuration
      */
-    public function parses_configuration_as_multi_array()
+    public function can_contain_multiple_suites()
     {
         $config = [
             'suites' => [
