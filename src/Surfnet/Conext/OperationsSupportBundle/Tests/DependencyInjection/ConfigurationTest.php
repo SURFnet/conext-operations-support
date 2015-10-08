@@ -87,8 +87,6 @@ final class ConfigurationTest extends TestCase
                 ]
             ]
         ] );
-
-        $this->assertConfigurationIsValid([$config]);
     }
 
     /**
