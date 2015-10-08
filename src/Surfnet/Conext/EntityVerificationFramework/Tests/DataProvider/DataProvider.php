@@ -43,4 +43,30 @@ trait DataProvider
             'object'       => [new \StdClass()],
         ];
     }
+
+    public function nonStringProvider()
+    {
+        return [
+            'int'      => [1],
+            'int 0'    => [0],
+            'float'    => [1.23],
+            'float 0'  => [0.0],
+            'null'     => [null],
+            'bool'     => [false],
+            'array'    => [[]],
+            'object'   => [new \stdClass],
+            'resource' => [fopen('php://memory', 'w')],
+        ];
+    }
+
+    public function intFloatBoolProvider()
+    {
+        return [
+            'int 0'   => [0],
+            'int'     => [1],
+            'float 0' => [0.0],
+            'float'   => [1.23],
+            'bool'    => [false],
+        ];
+    }
 }

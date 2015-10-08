@@ -18,34 +18,49 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
-final class Entity
+use Surfnet\Conext\EntityVerificationFramework\Assert;
+
+final class EmailAddress
 {
     /**
-     * @var EntityId
+     * @var string
      */
-    private $entityId;
-    /**
-     * @var EntityType
-     */
-    private $entityType;
+    private $emailAddress;
 
-    public function __construct(EntityId $entityId, EntityType $entityType)
+    /**
+     * @param string $data
+     * @param string $propertyPath
+     * @return EmailAddress
+     */
+    public static function deserialise($data, $propertyPath)
     {
-        $this->entityId = $entityId;
-        $this->entityType = $entityType;
+        Assert::string($data, null, $propertyPath);
+
+        $email = new EmailAddress();
+        $email->emailAddress = $data;
+
+        return $email;
     }
 
     /**
-     * @param Entity $other
      * @return bool
      */
-    public function equals(Entity $other)
+    public function isValid()
     {
-        return $this->entityId->equals($other->entityId) && $this->entityType->equals($other->entityType);
+        return filter_var($this->emailAddress, FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    /**
+     * @param EmailAddress $other
+     * @return bool
+     */
+    public function equals(EmailAddress $other)
+    {
+        return $this == $other;
     }
 
     public function __toString()
     {
-        return $this->entityId . '[' . $this->entityType . ']';
+        return $this->emailAddress;
     }
 }

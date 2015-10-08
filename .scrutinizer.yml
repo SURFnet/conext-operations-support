@@ -29,7 +29,7 @@ checks:
         avoid_closing_tag: true
         avoid_conflicting_incrementers: true
         avoid_corrupting_byteorder_marks: true
-        avoid_duplicate_types: true
+        avoid_duplicate_types: false
         avoid_entity_manager_injection: true
         avoid_fixme_comments: true
         avoid_length_functions_in_loops: true
@@ -49,7 +49,7 @@ checks:
         code_rating: true
         deadlock_detection_in_loops: true
         deprecated_code_usage: true
-        duplication: true
+        duplication: false
         encourage_postdec_operator: true
         encourage_shallow_comparison: false
         encourage_single_quotes: true

@@ -62,11 +62,13 @@ class RunnerTest extends UnitTest
 
     public function setUp()
     {
+        $configuredMetadata = m::mock(ConfiguredMetadata::class);
+
         $this->configuredMetadataRepository = m::mock(
             'Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository'
         );
         $this->configuredMetadataRepository->shouldReceive('getConfiguredEntities')->andReturn(static::$entities);
-        $this->configuredMetadataRepository->shouldReceive('getMetadataFor')->andReturn(new ConfiguredMetadata());
+        $this->configuredMetadataRepository->shouldReceive('getMetadataFor')->andReturn($configuredMetadata);
 
         $this->publishedMetadataRepository = m::mock(
             'Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository'
