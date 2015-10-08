@@ -63,4 +63,8 @@ surfnet_janus_api_client:
 
 surfnet_conext_operations_support:
     suites:
-        %operations_support_suites%
+         example:
+             - example_test
+         some_suite:
+             - my_custom_verification
+
