@@ -90,7 +90,6 @@ final class EntitySet implements Countable, IteratorAggregate
 
     /**
      * @param Entity $entity The entity to search for.
-     *
      * @return boolean TRUE if the collection contains the element, FALSE otherwise.
      */
     private function contains(Entity $entity)
