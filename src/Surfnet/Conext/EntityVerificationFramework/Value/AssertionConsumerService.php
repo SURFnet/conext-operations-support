@@ -41,7 +41,7 @@ final class AssertionConsumerService
         }
 
         if (isset($data['Location'])) {
-            $acs->location = Url::deserialise($data['Location']);
+            $acs->location = Url::deserialise($data['Location'], 'Location');
         }
 
         return $acs;
@@ -121,7 +121,17 @@ final class AssertionConsumerService
      */
     public function equals(AssertionConsumerService $other)
     {
-        return $this == $other;
+        if ($this->binding === null || $other->binding === null) {
+            $valid = $this->binding === $other->binding;
+        } else {
+            $valid = $this->binding->equals($other->binding);
+        }
+
+        if ($this->location === null || $other->location === null) {
+            return $valid && $this->location === $other->location;
+        } else {
+            return $valid && $this->location->equals($other->location);
+        }
     }
 
     public function __toString()

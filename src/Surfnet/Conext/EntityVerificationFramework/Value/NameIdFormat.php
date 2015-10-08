@@ -22,6 +22,16 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 
 final class NameIdFormat
 {
+    const FORMAT_SAML_11_UNSPECIFIED = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified';
+    const FORMAT_SAML_20_TRANSIENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient';
+    const FORMAT_SAML_20_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
+
+    const VALID_FORMATS = [
+        self::FORMAT_SAML_11_UNSPECIFIED,
+        self::FORMAT_SAML_20_TRANSIENT,
+        self::FORMAT_SAML_20_PERSISTENT,
+    ];
+
     /** @var string */
     private $format;
 
@@ -38,6 +48,14 @@ final class NameIdFormat
         $format->format = $data;
 
         return $format;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidFormat()
+    {
+        return in_array($this->format, self::VALID_FORMATS, true);
     }
 
     /**

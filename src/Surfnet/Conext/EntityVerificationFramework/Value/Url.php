@@ -39,10 +39,13 @@ final class Url
 
     /**
      * @param string $data
+     * @param string $propertyPath
      * @return Url
      */
-    public static function deserialise($data)
+    public static function deserialise($data, $propertyPath)
     {
+        Assert::string($data, $propertyPath);
+
         $url = new self();
 
         if (filter_var($data, FILTER_VALIDATE_URL) === false) {
@@ -70,14 +73,14 @@ final class Url
     }
 
     /**
-     * @param string[] $schemes
+     * @param string $scheme
      * @return bool
      */
-    public function isSchemeOneOf($schemes)
+    public function isScheme($scheme)
     {
-        Assert::allString($schemes);
+        Assert::string($scheme);
 
-        return in_array(strtolower($this->parts['scheme']), array_map('strtolower', $schemes), true);
+        return strtolower($this->parts['scheme']) === strtolower($scheme);
     }
 
     /**

@@ -28,7 +28,7 @@ final class ContactSet implements IteratorAggregate, Countable
     /**
      * @var Contact[]
      */
-    private $contacts;
+    private $contacts = [];
 
     /**
      * @param array[]  $data

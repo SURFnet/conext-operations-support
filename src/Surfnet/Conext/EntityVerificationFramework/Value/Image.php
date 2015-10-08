@@ -38,16 +38,16 @@ final class Image
     {
         $image = new Image();
 
-        if (isset($data['url'])) {
-            $image->url = Url::deserialise($data['url']);
+        if (array_key_exists('url', $data)) {
+            $image->url = Url::deserialise($data['url'], 'url');
         }
 
-        if (isset($data['width'])) {
+        if (array_key_exists('width', $data)) {
             Assert::string($data['width'], 'Image width must be string', sprintf('%s.width', $propertyPath));
             $image->width = $data['width'];
         }
 
-        if (isset($data['height'])) {
+        if (array_key_exists('height', $data)) {
             Assert::string($data['height'], 'Image height must be string', sprintf('%s.height', $propertyPath));
             $image->height = $data['height'];
         }

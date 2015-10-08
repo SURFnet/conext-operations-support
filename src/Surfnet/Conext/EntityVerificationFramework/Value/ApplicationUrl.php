@@ -29,15 +29,22 @@ final class ApplicationUrl
 
     public static function deserialise($data, $propertyPath)
     {
+        $locales = array_keys($data);
+
         Assert::allString($data, 'Application URLs must be strings', $propertyPath . '[]');
         Assert::allString(
-            array_keys($data),
+            $locales,
             'Application URLs must be indexed by locale',
             $propertyPath . '[]'
         );
 
         $applicationUrl = new ApplicationUrl();
-        $applicationUrl->urls = array_map('Surfnet\Conext\EntityVerificationFramework\Value\Url::deserialise', $data);
+        $applicationUrl->urls = array_map(
+            function ($locale) use ($data) {
+                return Url::deserialise($data[$locale], $locale);
+            },
+            array_combine($locales, $locales)
+        );
 
         return $applicationUrl;
     }

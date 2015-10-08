@@ -65,7 +65,7 @@ class ConfiguredMetadata
      */
     public static function deserialise($data)
     {
-        Assert::isArray($data, 'Configure metadata data must be an array structure');
+        Assert::isArray($data, 'Configured metadata data must be an array structure');
 
         $metadata = new self();
         $metadata->entityType = self::getEntityType($data);
