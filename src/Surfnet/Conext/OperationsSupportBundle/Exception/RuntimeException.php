@@ -20,6 +20,6 @@ namespace Surfnet\Conext\OperationsSupportBundle\Exception;
 
 use RuntimeException as CoreRuntimeException;
 
-class RuntimeException extends CoreRuntimeException
+class RuntimeException extends CoreRuntimeException implements Exception
 {
 }

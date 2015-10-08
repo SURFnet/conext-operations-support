@@ -21,11 +21,12 @@ namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
-use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
+use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
 use Surfnet\JanusApiClientBundle\Service\ApiService;
 
 final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepository
@@ -42,6 +43,11 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
      */
     private $logger;
 
+    /**
+     * @var array|null
+     */
+    private $entityConnectionIdMap;
+
     public function __construct(ApiService $apiService, LoggerInterface $logger)
     {
         $this->apiService = $apiService;
@@ -50,7 +56,18 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
 
     public function getMetadataFor(Entity $entity)
     {
-        throw new LogicException('This dummy implementation cannot get metadata for an entity just yet');
+        $this->logger->debug(sprintf('Fetching connection detail for entity "%s" from Janus', $entity));
+
+        $id = $this->getConnectionIdForEntity($entity);
+        $this->logger->debug(sprintf('Entity\'s connection id is "%d', $id));
+
+        $data = $this->apiService->read('connections/%d.json', [$id]);
+        $this->logger->debug('Fetched connection detail');
+
+        $metadata = ConfiguredMetadata::deserialise($data);
+        $this->logger->debug('Deserialised into configured metadata');
+
+        return $metadata;
     }
 
     public function getConfiguredEntities()
@@ -58,6 +75,8 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
         $this->logger->debug('Fetching connections from Janus');
 
         $data = $this->apiService->read('connections.json');
+
+        $this->initialiseEntityConnectionIdMap($data);
 
         Assert::keyExists($data, 'connections');
         Assert::allIsArray($data['connections'], null, 'connections');
@@ -70,7 +89,8 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
             if ($connection['state'] !== self::CONNECTION_STATE_PRODUCTION) {
                 $this->logger->debug(
                     sprintf(
-                        'Skipping connection "%s", state is "%s" rather than "%s"',
+                        'Skipping "%s" connection "%s", state is "%s" rather than "%s"',
+                        $connection['type'],
                         $connection['name'],
                         $connection['state'],
                         self::CONNECTION_STATE_PRODUCTION
@@ -85,5 +105,63 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
         $this->logger->debug(sprintf('Fetched "%d" configured entities from Janus', count($entities)));
 
         return new EntitySet($entities);
+    }
+
+    /**
+     * @param Entity $entity
+     * @return int
+     */
+    private function getConnectionIdForEntity(Entity $entity)
+    {
+        if ($this->entityConnectionIdMap === null) {
+            $this->logger->debug('Entity connection ID map is not initialised, writing map...');
+            $this->initialiseEntityConnectionIdMap($this->apiService->read('connections.json'));
+        }
+
+        $entityKey = sprintf('%s:%s', $entity->getEntityId(), $entity->getEntityType());
+        if (!isset($this->entityConnectionIdMap[$entityKey])) {
+            throw new RuntimeException(sprintf('No connection ID is known for entity "%s"', $entity));
+        }
+
+        return $this->entityConnectionIdMap[$entityKey];
+    }
+
+    /**
+     * Writes an entity/connection ID map based on Janus' connection list blob to `$this->entityConnectionIdMap`.
+     *
+     * @param array $connectionsData Connection list blob
+     */
+    private function initialiseEntityConnectionIdMap($connectionsData)
+    {
+        Assert::keyExists($connectionsData, 'connections');
+        Assert::allIsArray($connectionsData['connections'], null, 'connections');
+        Assert::allKeyExists($connectionsData['connections'], 'id', null, 'connections[]');
+        Assert::allKeyExists($connectionsData['connections'], 'name', null, 'connections[]');
+        Assert::allKeyExists($connectionsData['connections'], 'state', null, 'connections[]');
+        Assert::allKeyExists($connectionsData['connections'], 'type', null, 'connections[]');
+
+        $entityConnectionIdMap = [];
+        foreach ($connectionsData['connections'] as $connection) {
+            if ($connection['state'] !== self::CONNECTION_STATE_PRODUCTION) {
+                $this->logger->debug(
+                    sprintf(
+                        'Skipping "%s" connection "%s", state is "%s" rather than "%s"',
+                        $connection['type'],
+                        $connection['name'],
+                        $connection['state'],
+                        self::CONNECTION_STATE_PRODUCTION
+                    )
+                );
+
+                continue;
+            }
+
+            $entityKey = sprintf('%s:%s', new EntityId($connection['name']), new EntityType($connection['type']));
+            $entityConnectionIdMap[$entityKey] = $connection['id'];
+        }
+
+        $this->entityConnectionIdMap = $entityConnectionIdMap;
+
+        $this->logger->debug('Initialise entity connection ID map');
     }
 }

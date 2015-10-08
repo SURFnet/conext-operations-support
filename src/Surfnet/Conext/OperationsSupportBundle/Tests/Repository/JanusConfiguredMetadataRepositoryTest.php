@@ -22,6 +22,7 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\NullLogger;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
@@ -69,6 +70,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
             '0 (0 prod, 1 test)' => [
                 [
                     [
+                        'id'    => 1,
                         'name'  => $rugSso,
                         'state' => 'testaccepted',
                         'type'  => 'saml20-idp',
@@ -83,6 +85,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
             '1 (1 prod, 0 test)' => [
                 [
                     [
+                        'id'    => 1,
                         'name'  => $rugSso,
                         'state' => 'prodaccepted',
                         'type'  => 'saml20-idp',
@@ -95,11 +98,13 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
             '2 (2 prod, 0 test)' => [
                 [
                     [
+                        'id'    => 1,
                         'name'  => $rugSso,
                         'state' => 'prodaccepted',
                         'type'  => 'saml20-idp',
                     ],
                     [
+                        'id'    => 1,
                         'name'  => $docsAcs,
                         'state' => 'prodaccepted',
                         'type'  => 'saml20-sp',
@@ -138,15 +143,71 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
     public function connectionsWithMissingNameStateOrType()
     {
         return [
+            'id missing' => [
+                [['name' => 'https://uva.invalid/sso', 'state' => 'prodaccepted', 'type' => 'saml20-idp']],
+            ],
             'name missing' => [
-                [['state' => 'prodaccepted', 'type' => 'saml20-idp']],
+                [['id' => 1, 'state' => 'prodaccepted', 'type' => 'saml20-idp']],
             ],
             'state missing' => [
-                [['name' => 'https://uva.invalid/sso', 'type' => 'saml20-idp']],
+                [['id' => 1, 'name' => 'https://uva.invalid/sso', 'type' => 'saml20-idp']],
             ],
             'type missing' => [
-                [['name' => 'https://uva.invalid/sso', 'state' => 'prodaccepted']],
+                [['id' => 1, 'name' => 'https://uva.invalid/sso', 'state' => 'prodaccepted']],
             ],
         ];
+    }
+
+    /**
+     * @test
+     * @group metadata
+     * @runInSeparateProcess
+     */
+    public function metadata_for_an_entity_can_be_fetched()
+    {
+        $rugSso  = 'https://rug.invalid/sso';
+        $docsAcs = 'https://docs.invalid/acs';
+
+        $connectionsData = [
+            [
+                'id'    => 1,
+                'name'  => $rugSso,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-idp',
+            ],
+            [
+                'id'    => 2,
+                'name'  => $docsAcs,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-sp',
+            ],
+        ];
+
+        $connectionData = [];
+
+        /** @var ApiService|MockInterface $apiService */
+        $apiService = m::mock(ApiService::class);
+        $apiService
+            ->shouldReceive('read')
+            ->with('connections.json')
+            ->once()
+            ->andReturn(['connections' => $connectionsData]);
+        $apiService
+            ->shouldReceive('read')
+            ->with('connections/%d.json', [1])
+            ->once()
+            ->andReturn($connectionData);
+
+        // We cannot create a normal mock as well as a Mockery alias, so we create a stdClass to return.
+        $fakeMetadata = new \stdClass;
+        m::mock('alias:' . ConfiguredMetadata::class)
+            ->shouldReceive('deserialise')
+            ->with($connectionData)
+            ->andReturn($fakeMetadata);
+
+        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
+        $actualMetadata = $repository->getMetadataFor(new Entity(new EntityId($rugSso), EntityType::IdP()));
+
+        $this->assertSame($actualMetadata, $fakeMetadata);
     }
 }

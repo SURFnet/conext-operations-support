@@ -36,6 +36,22 @@ final class Entity
     }
 
     /**
+     * @return EntityId
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
+    }
+
+    /**
+     * @return EntityType
+     */
+    public function getEntityType()
+    {
+        return $this->entityType;
+    }
+
+    /**
      * @param Entity $other
      * @return bool
      */
