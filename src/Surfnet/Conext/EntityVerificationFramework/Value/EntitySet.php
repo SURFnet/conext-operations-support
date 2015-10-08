@@ -40,6 +40,33 @@ final class EntitySet implements Countable, IteratorAggregate
         }
     }
 
+    /**
+     * Tests sets for equality. Note this is a O(N^2) operation.
+     *
+     * @param EntitySet $other
+     * @return bool
+     */
+    public function equals(EntitySet $other)
+    {
+        if (count($this->entities) !== count($other->entities)) {
+            return false;
+        }
+
+        $unequalOtherEntities = $other->entities;
+        foreach ($this->entities as $myEntity) {
+            foreach ($unequalOtherEntities as $key => $otherEntity) {
+                if ($myEntity->equals($otherEntity)) {
+                    unset($unequalOtherEntities[$key]);
+                    continue 2;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     public function getIterator()
     {
         return new ArrayIterator($this->entities);
