@@ -82,11 +82,10 @@ final class EntitySet implements Countable, IteratorAggregate
     private function add(Entity $entity)
     {
         if ($this->contains($entity)) {
-            return false;
+            return;
         }
 
         $this->entities[] = $entity;
-        return true;
     }
 
     /**
