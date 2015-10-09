@@ -111,22 +111,16 @@ final class RunSuitesCommand extends Command
 
     /**
      * @param string $suites
-     * @param OutputInterface $output
      * @return SuiteWhitelist|void
      */
-    private function determineWhitelist($suites, OutputInterface $output)
+    private function determineWhitelist($suites)
     {
         if ($suites === null) {
             return;
         }
 
         $suiteNames = explode(',', $suites);
-
-        $output->writeln([
-            '',
-            sprintf('Whitelisted: <info>%s</info>', implode(', ', $suiteNames)),
-            ''
-        ], OutputInterface::VERBOSITY_DEBUG);
+        $this->container->get('logger')->debug(sprintf('Whitelisted: %s', implode(', ', $suiteNames)));
 
         return new SuiteWhitelist($suiteNames);
     }
