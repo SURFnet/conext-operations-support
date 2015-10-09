@@ -95,11 +95,8 @@ class Runner implements VerificationRunner
             foreach ($this->verificationSuites as $verificationSuite) {
                 $suiteName = NameResolver::resolveToString($verificationSuite);
 
-                if ($whitelist !== null && !$whitelist->contains($suiteName)) {
-                    $this->logger->info(sprintf(
-                        'Skipping suite "%s" as it is not in the whitelist',
-                        $suiteName
-                    ));
+                if ($whitelist && !$whitelist->contains($suiteName)) {
+                    $this->logger->info(sprintf('Skipping suite "%s" as it is not in the whitelist', $suiteName));
 
                     continue;
                 }
