@@ -73,7 +73,7 @@ final class RunSuitesCommand extends Command
         $reporter = $this->determineReporter($reporterName, $output);
 
         $suites = $input->getOption('suites');
-        $whitelist = $this->determineWhitelist($suites, $output);
+        $whitelist = $this->determineWhitelist($suites);
 
         /** @var VerificationRunner $runner */
         $runner = $this->container->get('surfnet_conext_operations_support.verification_runner');
