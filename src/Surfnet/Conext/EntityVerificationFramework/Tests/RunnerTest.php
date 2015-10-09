@@ -96,7 +96,7 @@ class RunnerTest extends UnitTest
 
         $this->runner->addVerificationSuite($suiteToSkip);
 
-        $this->runner->run($this->getMockReporter(), $this->getMockWhitelist());
+        $this->runner->run($this->getMockReporter());
     }
 
     /**
@@ -139,7 +139,7 @@ class RunnerTest extends UnitTest
         $suite->shouldReceive('verify')->andReturn(false);
 
         $this->runner->addVerificationSuite($suite);
-        $this->runner->run($this->getMockReporter(), $this->getMockWhitelist());
+        $this->runner->run($this->getMockReporter());
     }
 
     /**
@@ -172,7 +172,7 @@ class RunnerTest extends UnitTest
         $this->runner->addVerificationSuite($failingSuite);
         $this->runner->addVerificationSuite($lastSuite);
 
-        $this->runner->run($reporter, $this->getMockWhitelist());
+        $this->runner->run($reporter);
     }
 
     /**
@@ -196,19 +196,11 @@ class RunnerTest extends UnitTest
         $reporter->shouldReceive('reportFailedVerificationFor')->times($count);
 
         $this->runner->addVerificationSuite($failingSuite);
-        $this->runner->run($reporter, $this->getMockWhitelist());
+        $this->runner->run($reporter);
     }
 
     private function getMockReporter()
     {
         return m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter');
-    }
-
-    private function getMockWhitelist()
-    {
-        $whitelist = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist');
-        $whitelist->shouldReceive('contains')->andReturn(true);
-
-        return $whitelist;
     }
 }
