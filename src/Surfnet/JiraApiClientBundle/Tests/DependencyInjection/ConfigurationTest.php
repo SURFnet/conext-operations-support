@@ -81,9 +81,9 @@ final class ConfigurationTest extends TestCase
     public function username_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config["username"] = $value;
+        $config['username'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The JIRA API username should be a string");
+        $this->assertConfigurationIsInvalid([$config], 'The JIRA API username should be a string');
     }
 
     /**
@@ -94,9 +94,9 @@ final class ConfigurationTest extends TestCase
     public function password_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config["password"] = $value;
+        $config['password'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The JIRA API password should be a string");
+        $this->assertConfigurationIsInvalid([$config], 'The JIRA API password should be a string');
     }
 
     /**
@@ -107,9 +107,9 @@ final class ConfigurationTest extends TestCase
     public function project_id_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config["project_id"] = $value;
+        $config['project_id'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The project id should be a string");
+        $this->assertConfigurationIsInvalid([$config], 'The project id should be a string');
     }
 
     /**
@@ -120,9 +120,9 @@ final class ConfigurationTest extends TestCase
     public function default_assignee_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config["default_assignee"] = $value;
+        $config['default_assignee'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], "The default assignee should be a string");
+        $this->assertConfigurationIsInvalid([$config], 'The default assignee should be a string');
     }
 
     protected function getConfiguration()
