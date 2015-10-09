@@ -106,11 +106,11 @@ class RunnerTest extends UnitTest
      */
     public function a_suite_does_not_run_when_it_is_not_whitelisted()
     {
-        $ignoredSuite = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
+        $ignoredSuite = m::namedMock('MockedIgnoredSuite', 'Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $ignoredSuite->shouldNotReceive('shouldBeSkipped');
         $ignoredSuite->shouldNotReceive('verify');
 
-        $runSuite = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
+        $runSuite = m::namedMock('MockedRunSuite','Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $runSuite->shouldReceive('shouldBeSkipped')->andReturn(false);
         $runSuite->shouldReceive('verify')->andReturn(SuiteResult::success());
 
@@ -118,8 +118,8 @@ class RunnerTest extends UnitTest
         $this->runner->addVerificationSuite($runSuite);
 
         $whitelist = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist');
-        $whitelist->shouldReceive('contains')->with($ignoredSuite)->atLeast()->once()->andReturn(false);
-        $whitelist->shouldReceive('contains')->with($runSuite)->atLeast()->once()->andReturn(true);
+        $whitelist->shouldReceive('contains')->with('mocked_ignored_suite')->atLeast()->once()->andReturn(false);
+        $whitelist->shouldReceive('contains')->with('mocked_run_suite')->atLeast()->once()->andReturn(true);
 
         $this->runner->run($this->getMockReporter(), $whitelist);
     }

@@ -20,7 +20,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\SuiteWhitelist;
 
 use Mockery as m;
 use PHPUnit_Framework_TestCase as UnitTest;
-use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\Whitelist;
+use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\SuiteWhitelist;
 
 class WhitelistTest extends UnitTest
 {
@@ -30,31 +30,16 @@ class WhitelistTest extends UnitTest
      */
     public function contains_only_given_suites()
     {
-        $firstMockedSuite = m::namedMock(
-            'firstMockedVerificationSuite',
-            'Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite'
-        );
-
-        $secondMockedSuite = m::namedMock(
-            'firstMockedVerificationSuite',
-            'Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite'
-        );
-
-        $thirdMockedSuite = m::namedMock(
-            'thirdMockedVerificationSuite',
-            'Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite'
-        );
-
-        $whitelist = new Whitelist(['first_mocked_verification_suite', 'second_mocked_verification_suite']);
+        $whitelist = new SuiteWhitelist(['first_verification_suite', 'second_verification_suite']);
 
         $this->assertTrue(
-            $whitelist->contains($firstMockedSuite)
+            $whitelist->contains('first_verification_suite')
         );
         $this->assertTrue(
-            $whitelist->contains($secondMockedSuite)
+            $whitelist->contains('second_verification_suite')
         );
         $this->assertFalse(
-            $whitelist->contains($thirdMockedSuite)
+            $whitelist->contains('third_verification_suite')
         );
     }
 }

@@ -18,22 +18,29 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
 
-use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
-use Surfnet\Conext\EntityVerificationFramework\NameResolver;
-use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
 
-class Whitelist implements VerificationSuiteWhitelist
+class SuiteWhitelist implements VerificationSuiteWhitelist
 {
+    /**
+     * @var string[]
+     */
     private $suiteNames;
 
+    /**
+     * @param array $suiteNames
+     */
     public function __construct(array $suiteNames)
     {
         $this->suiteNames = $suiteNames;
     }
 
-    public function contains(VerificationSuite $suite)
+    /**
+     * @param string $suite
+     * @return bool
+     */
+    public function contains($suite)
     {
-        return in_array(NameResolver::resolveToString($suite), $this->suiteNames);
+        return in_array($suite, $this->suiteNames);
     }
 }

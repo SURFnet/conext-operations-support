@@ -66,7 +66,7 @@ class Runner implements VerificationRunner
         $this->verificationSuites[] = $verificationSuite;
     }
 
-    public function run(VerificationReporter $reporter, VerificationSuiteWhitelist $whitelist)
+    public function run(VerificationReporter $reporter, VerificationSuiteWhitelist $whitelist = null)
     {
         $this->logger->debug(
             sprintf(
@@ -93,11 +93,16 @@ class Runner implements VerificationRunner
             );
 
             foreach ($this->verificationSuites as $verificationSuite) {
-                if (!$whitelist->contains($verificationSuite)) {
+                $suiteName = NameResolver::resolveToString($verificationSuite);
+
+                if ($whitelist !== null && !$whitelist->contains($suiteName)) {
+                    $this->logger->info(sprintf(
+                        'Skipping suite "%s" as it is not in the whitelist',
+                        $suiteName
+                    ));
+
                     continue;
                 }
-
-                $suiteName = NameResolver::resolveToString($verificationSuite);
 
                 if ($verificationSuite->shouldBeSkipped($context)) {
                     $this->logger->info(sprintf(

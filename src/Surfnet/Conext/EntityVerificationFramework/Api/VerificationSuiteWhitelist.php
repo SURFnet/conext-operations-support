@@ -22,7 +22,7 @@ interface VerificationSuiteWhitelist
 {
     /**
      * @param VerificationSuite $suite
-     * @return mixed
+     * @return bool
      */
-    public function contains(VerificationSuite $suite);
+    public function contains($suite);
 }
