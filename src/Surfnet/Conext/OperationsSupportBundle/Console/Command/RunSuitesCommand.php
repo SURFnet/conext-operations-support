@@ -126,7 +126,7 @@ final class RunSuitesCommand extends Command
             '',
             sprintf('Whitelisted: <info>%s</info>', implode(', ', $suiteNames)),
             ''
-        ]);
+        ], OutputInterface::VERBOSITY_DEBUG);
 
         return new SuiteWhitelist($suiteNames);
     }
