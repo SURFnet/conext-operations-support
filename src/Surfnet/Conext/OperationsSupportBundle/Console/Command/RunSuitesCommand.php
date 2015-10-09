@@ -21,7 +21,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\Console\Command;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\SuiteWhitelist;
-use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\WhitelistAll;
+use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\CliReporter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,11 +31,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class RunSuitesCommand extends Command
 {
-    /**
-     * @see http://www-numi.fnal.gov/offline_software/srt_public_context/WebDocs/Errors/unix_system_errors.html
-     */
-    const EXIT_CODE_INVALID_ARGUMENT = 22;
-
     /**
      * @var ContainerInterface
      */
@@ -81,9 +76,9 @@ final class RunSuitesCommand extends Command
     }
 
     /**
-     * @param $reporterName
+     * @param string|null $reporterName
      * @param OutputInterface $output
-     * @return int|object|CliReporter
+     * @return VerificationReporter
      */
     private function determineReporter($reporterName, OutputInterface $output)
     {
@@ -102,7 +97,7 @@ final class RunSuitesCommand extends Command
                 '',
             ]);
 
-            return self::EXIT_CODE_INVALID_ARGUMENT;
+            throw new RuntimeException;
         }
 
         /** @var VerificationReporter $reporter */
@@ -110,7 +105,7 @@ final class RunSuitesCommand extends Command
     }
 
     /**
-     * @param string $suites
+     * @param string|null $suites
      * @return SuiteWhitelist|void
      */
     private function determineWhitelist($suites)
