@@ -32,6 +32,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 final class RunSuitesCommand extends Command
 {
     /**
+     * @see http://www-numi.fnal.gov/offline_software/srt_public_context/WebDocs/Errors/unix_system_errors.html
+     */
+    const EXIT_CODE_INVALID_ARGUMENT = 22;
+
+    /**
      * @var ContainerInterface
      */
     private $container;
@@ -65,7 +70,12 @@ final class RunSuitesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $reporterName = $input->getOption('reporter');
-        $reporter = $this->determineReporter($reporterName, $output);
+
+        try {
+            $reporter = $this->determineReporter($reporterName, $output);
+        } catch (RuntimeException $e) {
+            return self::EXIT_CODE_INVALID_ARGUMENT;
+        }
 
         $suites = $input->getOption('suites');
         $whitelist = $this->determineWhitelist($suites);
