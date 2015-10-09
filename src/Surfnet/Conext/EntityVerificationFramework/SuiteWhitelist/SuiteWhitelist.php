@@ -37,10 +37,6 @@ class SuiteWhitelist implements VerificationSuiteWhitelist
         $this->suiteNames = $suiteNames;
     }
 
-    /**
-     * @param string $suite
-     * @return bool
-     */
     public function contains($suite)
     {
         return in_array($suite, $this->suiteNames);

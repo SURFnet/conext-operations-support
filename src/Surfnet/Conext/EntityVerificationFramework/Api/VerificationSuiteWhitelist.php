@@ -21,7 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Api;
 interface VerificationSuiteWhitelist
 {
     /**
-     * @param VerificationSuite $suite
+     * @param string $suite
      * @return bool
      */
     public function contains($suite);
