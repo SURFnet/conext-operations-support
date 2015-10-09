@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
+use Surfnet\Conext\EntityVerificationFramework\Assert;
 
 class SuiteWhitelist implements VerificationSuiteWhitelist
 {
@@ -32,6 +33,7 @@ class SuiteWhitelist implements VerificationSuiteWhitelist
      */
     public function __construct(array $suiteNames)
     {
+        Assert::allString($suiteNames);
         $this->suiteNames = $suiteNames;
     }
 
