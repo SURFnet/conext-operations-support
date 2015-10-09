@@ -32,7 +32,7 @@ class SurfnetConextOperationsSupportExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
         $runner = $container->getDefinition('surfnet_conext_operations_support.verification_runner');
@@ -50,7 +50,5 @@ class SurfnetConextOperationsSupportExtension extends Extension
 
             $runner->addMethodCall('addVerificationSuite', [$suiteDefinition]);
         }
-
-        $container->setDefinition('surfnet_conext_operations_support.verification_runner', $runner);
     }
 }

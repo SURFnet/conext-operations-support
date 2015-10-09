@@ -17,6 +17,3 @@ monolog:
 
 swiftmailer:
     disable_delivery: true
-
-surfnet_conext_operations_support:
-    suites: []
