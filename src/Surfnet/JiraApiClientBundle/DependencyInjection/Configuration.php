@@ -46,6 +46,12 @@ final class Configuration implements ConfigurationInterface
                         })
                         ->thenInvalid('The JIRA API base URL should be a valid URL')
                     ->end()
+                    ->validate()
+                        ->ifTrue(function ($baseUrl) {
+                            return parse_url($baseUrl, PHP_URL_PATH) !== null;
+                        })
+                        ->thenInvalid('The JIRA API base URL should not contain a path')
+                    ->end()
                 ->end()
                 ->scalarNode('username')
                     ->info('The username of the user that will act as a reporter in JIRA')
