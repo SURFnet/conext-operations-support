@@ -20,7 +20,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\Console\Command;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
-use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\Whitelist;
+use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\SuiteWhitelist;
 use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\WhitelistAll;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\CliReporter;
 use Symfony\Component\Console\Command\Command;
@@ -52,6 +52,7 @@ final class RunSuitesCommand extends Command
     {
         $this->setName('operations-support:suites:run');
         $this->setDescription('Run all configured suites and their tests, and report any issues');
+
         $this->addOption(
             'reporter',
             null,
@@ -59,7 +60,7 @@ final class RunSuitesCommand extends Command
             'The reporter to report issues with (eg. jira)'
         );
         $this->addOption(
-            'whitelist',
+            'suites',
             null,
             InputOption::VALUE_OPTIONAL,
             'A comma-separated list of suites that should run exclusively (default: all suites are run)'
@@ -69,43 +70,64 @@ final class RunSuitesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $reporterName = $input->getOption('reporter');
-        if ($reporterName === null) {
-            $reporter = new CliReporter($output);
-        } else {
-            $reporterServiceId = 'surfnet_conext_operations_support.reporter.' . $reporterName;
+        $reporter = $this->determineReporter($reporterName, $output);
 
-            if (!$this->container->has($reporterServiceId)) {
-                $output->writeln([
-                    '',
-                    sprintf('<error> No reporter called "%s" is registered </error>', $reporterName),
-                    '',
-                    sprintf('    I looked for a service named <info>%s</info>', $reporterServiceId),
-                    '',
-                ]);
-
-                return self::EXIT_CODE_INVALID_ARGUMENT;
-            }
-
-            /** @var VerificationReporter $reporter */
-            $reporter = $this->container->get($reporterServiceId);
-        }
-
-        $whitelisted = $input->getOption('whitelist');
-        if ($whitelisted === null) {
-            $whitelist = new WhitelistAll();
-        } else {
-            $whitelistedSuiteNames = explode(',', $whitelisted);
-
-            $output->writeln([
-                '',
-                sprintf('Whitelisted: <info>%s</info>', implode(', ', $whitelistedSuiteNames))
-            ]);
-
-            $whitelist = new Whitelist($whitelistedSuiteNames);
-        }
+        $suites = $input->getOption('suites');
+        $whitelist = $this->determineWhitelist($suites, $output);
 
         /** @var VerificationRunner $runner */
         $runner = $this->container->get('surfnet_conext_operations_support.verification_runner');
         $runner->run($reporter, $whitelist);
+    }
+
+    /**
+     * @param $reporterName
+     * @param OutputInterface $output
+     * @return int|object|CliReporter
+     */
+    private function determineReporter($reporterName, OutputInterface $output)
+    {
+        if ($reporterName === null) {
+            return new CliReporter($output);
+        }
+
+        $reporterServiceId = 'surfnet_conext_operations_support.reporter.' . $reporterName;
+
+        if (!$this->container->has($reporterServiceId)) {
+            $output->writeln([
+                '',
+                sprintf('<error> No reporter called "%s" is registered </error>', $reporterName),
+                '',
+                sprintf('    I looked for a service named <info>%s</info>', $reporterServiceId),
+                '',
+            ]);
+
+            return self::EXIT_CODE_INVALID_ARGUMENT;
+        }
+
+        /** @var VerificationReporter $reporter */
+        return $this->container->get($reporterServiceId);
+    }
+
+    /**
+     * @param string $suites
+     * @param OutputInterface $output
+     * @return SuiteWhitelist|void
+     */
+    private function determineWhitelist($suites, OutputInterface $output)
+    {
+        if ($suites === null) {
+            return;
+        }
+
+        $suiteNames = explode(',', $suites);
+
+        $output->writeln([
+            '',
+            sprintf('Whitelisted: <info>%s</info>', implode(', ', $suiteNames)),
+            ''
+        ]);
+
+        return new SuiteWhitelist($suiteNames);
     }
 }
