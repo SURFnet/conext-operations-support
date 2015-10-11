@@ -32,9 +32,9 @@ class ConfiguredMetadata
     private $entityType;
     /** @var string|null */
     private $publishedMetadataUrl;
-    /** @var AssertionConsumerService[] */
+    /** @var AssertionConsumerServiceList */
     private $assertionConsumerServices = [];
-    /** @var SingleSignOnService[] */
+    /** @var SingleSignOnServiceList */
     private $singleSignOnServices = [];
     /** @var ContactSet */
     private $contacts;
