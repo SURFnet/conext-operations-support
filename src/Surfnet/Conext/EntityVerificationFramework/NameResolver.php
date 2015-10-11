@@ -34,7 +34,6 @@ final class NameResolver
      */
     private static $resolvedClasses = [];
 
-
     /**
      * @param object $object
      * @return string
