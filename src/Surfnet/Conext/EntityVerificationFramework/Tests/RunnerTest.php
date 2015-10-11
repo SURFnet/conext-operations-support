@@ -23,12 +23,14 @@ use PHPUnit_Framework_TestCase as UnitTest;
 use Psr\Log\NullLogger;
 use Surfnet\Conext\EntityVerificationFramework\Runner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteResult;
+use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityCollection;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\VerificationSuite\NameResolverTestSuite\NameResolverTestSuite;
 
 class RunnerTest extends UnitTest
 {
@@ -106,9 +108,7 @@ class RunnerTest extends UnitTest
      */
     public function a_suite_does_not_run_when_it_is_not_whitelisted()
     {
-        $ignoredSuite = m::namedMock('MockedIgnoredSuite', 'Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
-        $ignoredSuite->shouldNotReceive('shouldBeSkipped');
-        $ignoredSuite->shouldNotReceive('verify');
+        $ignoredSuite = new NameResolverTestSuite();
 
         $runSuite = m::namedMock('MockedRunSuite','Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $runSuite->shouldReceive('shouldBeSkipped')->andReturn(false);
@@ -118,7 +118,7 @@ class RunnerTest extends UnitTest
         $this->runner->addVerificationSuite($runSuite);
 
         $whitelist = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist');
-        $whitelist->shouldReceive('contains')->with('mocked_ignored_suite')->atLeast()->once()->andReturn(false);
+        $whitelist->shouldReceive('contains')->with('name_resolver_test_suite')->atLeast()->once()->andReturn(false);
         $whitelist->shouldReceive('contains')->with('mocked_run_suite')->atLeast()->once()->andReturn(true);
 
         $this->runner->run($this->getMockReporter(), $whitelist);
