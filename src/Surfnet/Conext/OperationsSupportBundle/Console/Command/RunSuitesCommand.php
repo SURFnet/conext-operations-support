@@ -18,70 +18,57 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\Console\Command;
 
+use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\SuiteWhitelist;
 use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\CliReporter;
-use Symfony\Component\Console\Command\Command;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
-final class RunSuitesCommand extends Command
+final class RunSuitesCommand extends ContainerAwareCommand
 {
     /**
      * @see http://www-numi.fnal.gov/offline_software/srt_public_context/WebDocs/Errors/unix_system_errors.html
      */
     const EXIT_CODE_INVALID_ARGUMENT = 22;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct();
-
-        $this->container = $container;
-    }
-
     protected function configure()
     {
-        $this->setName('operations-support:suites:run');
-        $this->setDescription('Run all configured suites and their tests, and report any issues');
-
-        $this->addOption(
-            'reporter',
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'The reporter to report issues with (eg. jira)'
-        );
-        $this->addOption(
-            'suites',
-            null,
-            InputOption::VALUE_OPTIONAL,
-            'A comma-separated list of suites that should run exclusively (default: all suites are run)'
-        );
+        $this
+            ->setName('operations-support:suites:run')
+            ->setDescription('Run all configured suites and their tests, and report any issues')
+            ->addOption(
+                'reporter',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'The reporter to report issues with (eg. jira)'
+            )
+            ->addOption(
+                'suites',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'A comma-separated list of suites that should run exclusively (by default all suites run)'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $reporterName = $input->getOption('reporter');
+        $suites       = $input->getOption('suites');
 
         try {
-            $reporter = $this->determineReporter($reporterName, $output);
+            $reporter  = $this->determineReporter($reporterName, $output);
+            $whitelist = $this->determineWhitelist($suites);
         } catch (RuntimeException $e) {
             return self::EXIT_CODE_INVALID_ARGUMENT;
         }
 
-        $suites = $input->getOption('suites');
-        $whitelist = $this->determineWhitelist($suites);
-
         /** @var VerificationRunner $runner */
-        $runner = $this->container->get('surfnet_conext_operations_support.verification_runner');
+        $runner = $this->getContainer()->get('surfnet_conext_operations_support.verification_runner');
         $runner->run($reporter, $whitelist);
     }
 
@@ -98,7 +85,7 @@ final class RunSuitesCommand extends Command
 
         $reporterServiceId = 'surfnet_conext_operations_support.reporter.' . $reporterName;
 
-        if (!$this->container->has($reporterServiceId)) {
+        if (!$this->getContainer()->has($reporterServiceId)) {
             $output->writeln([
                 '',
                 sprintf('<error> No reporter called "%s" is registered </error>', $reporterName),
@@ -110,23 +97,32 @@ final class RunSuitesCommand extends Command
             throw new RuntimeException;
         }
 
-        /** @var VerificationReporter $reporter */
-        return $this->container->get($reporterServiceId);
+        $this->getLogger()->debug(sprintf('Running with reporter: "%s"', $reporterServiceId));
+
+        return $this->getContainer()->get($reporterServiceId);
     }
 
     /**
      * @param string|null $suites
-     * @return SuiteWhitelist|void
+     * @return SuiteWhitelist|null
      */
     private function determineWhitelist($suites)
     {
         if ($suites === null) {
-            return;
+            return null;
         }
 
         $suiteNames = explode(',', $suites);
-        $this->container->get('logger')->debug(sprintf('Whitelisted: %s', implode(', ', $suiteNames)));
+        $this->getLogger()->debug(sprintf('Running with whitelisted suites: "%s"', $suites));
 
         return new SuiteWhitelist($suiteNames);
+    }
+
+    /**
+     * @return LoggerInterface
+     */
+    private function getLogger()
+    {
+        return $this->getContainer()->get('logger');
     }
 }
