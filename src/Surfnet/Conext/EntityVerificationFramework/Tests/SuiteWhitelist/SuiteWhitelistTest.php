@@ -20,7 +20,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\SuiteWhitelist;
 
 use Mockery as m;
 use PHPUnit_Framework_TestCase as UnitTest;
-use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\SuiteWhitelist;
+use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
 
 class WhitelistTest extends UnitTest
 {

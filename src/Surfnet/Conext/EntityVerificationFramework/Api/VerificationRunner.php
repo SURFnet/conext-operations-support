@@ -28,8 +28,8 @@ interface VerificationRunner
 
     /**
      * @param VerificationReporter $report
-     * @param VerificationSuiteWhitelist|null $verificationSuiteWhitelist
+     * @param VerificationSuiteWhitelist|null $verificationSuiteSuiteWhitelist
      * @return void
      */
-    public function run(VerificationReporter $report, VerificationSuiteWhitelist $verificationSuiteWhitelist = null);
+    public function run(VerificationReporter $report, VerificationSuiteWhitelist $verificationSuiteSuiteWhitelist = null);
 }

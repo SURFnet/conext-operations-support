@@ -66,7 +66,7 @@ class Runner implements VerificationRunner
         $this->verificationSuites[] = $verificationSuite;
     }
 
-    public function run(VerificationReporter $reporter, VerificationSuiteWhitelist $whitelist = null)
+    public function run(VerificationReporter $reporter, VerificationSuiteWhitelist $suiteWhitelist = null)
     {
         $this->logger->debug(
             sprintf(
@@ -76,7 +76,7 @@ class Runner implements VerificationRunner
         );
 
         $entities = $this->configuredMetadataRepository->getConfiguredEntities();
-        $this->logger->debug(sprintf('Retrieved %d configured entities from configured', count($entities)));
+        $this->logger->debug(sprintf('Retrieved "%d" entities from Configured Metadata Repository', count($entities)));
 
         $getRemoteMetadata = function (Entity $entity) {
             return $this->publishedMetadataRepository->getMetadataFor($entity);
@@ -95,8 +95,8 @@ class Runner implements VerificationRunner
             foreach ($this->verificationSuites as $verificationSuite) {
                 $suiteName = NameResolver::resolveToString($verificationSuite);
 
-                if ($whitelist && !$whitelist->contains($suiteName)) {
-                    $this->logger->info(sprintf('Skipping suite "%s" as it is not in the whitelist', $suiteName));
+                if ($suiteWhitelist && !$suiteWhitelist->contains($suiteName)) {
+                    $this->logger->info(sprintf('Skipping suite "%s" as it is not whitelisted', $suiteName));
 
                     continue;
                 }

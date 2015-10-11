@@ -16,10 +16,9 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
+namespace Surfnet\Conext\EntityVerificationFramework;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
-use Surfnet\Conext\EntityVerificationFramework\Assert;
 
 class SuiteWhitelist implements VerificationSuiteWhitelist
 {

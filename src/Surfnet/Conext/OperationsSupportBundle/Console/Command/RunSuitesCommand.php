@@ -21,7 +21,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\Console\Command;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
-use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist\SuiteWhitelist;
+use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
 use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\CliReporter;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
