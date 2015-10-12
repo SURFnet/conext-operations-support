@@ -2,7 +2,7 @@ services:
     surfnet_conext_operations_support.verification_runner:
         class: Surfnet\Conext\EntityVerificationFramework\Runner
         arguments:
-            - @surfnet_conext_operations_support.repository.configured_metadata.dummy
+            - @surfnet_conext_operations_support.repository.configured_metadata.janus
             - @surfnet_conext_operations_support.repository.published_metadata.dummy
             - @logger
 

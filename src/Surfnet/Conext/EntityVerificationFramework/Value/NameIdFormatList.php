@@ -16,10 +16,24 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\OperationsSupportBundle\Exception;
+namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
-use RuntimeException as CoreRuntimeException;
+use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-class RuntimeException extends CoreRuntimeException implements Exception
+final class NameIdFormatList
 {
+    /**
+     * @var NameIdFormat[]
+     */
+    private $formats;
+
+    /**
+     * @param NameIdFormat[] $formats
+     */
+    public function __construct(array $formats = [])
+    {
+        Assert::allIsInstanceOf($formats, NameIdFormat::class);
+
+        $this->formats = $formats;
+    }
 }

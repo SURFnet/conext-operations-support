@@ -54,8 +54,9 @@ final class SingleSignOnServiceList implements IteratorAggregate, Countable
         return $list;
     }
 
-    private function __construct()
+    public function __construct()
     {
+        $this->ssos = [];
     }
 
     public function getIterator()
