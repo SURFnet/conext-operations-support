@@ -98,7 +98,7 @@ class Runner implements VerificationRunner
                 $this->logger
             );
 
-            foreach ($this->verificationSuites as $verificationSuite) {
+            foreach ($suitesToRun as $verificationSuite) {
                 $suiteName = NameResolver::resolveToString($verificationSuite);
 
                 if ($verificationSuite->shouldBeSkipped($context)) {
