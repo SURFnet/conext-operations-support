@@ -33,7 +33,7 @@ final class EntitySet implements Countable, IteratorAggregate
     /**
      * @param Entity[] $entities
      */
-    public function __construct(array $entities)
+    public function __construct(array $entities = [])
     {
         foreach ($entities as $entity) {
             $this->initializeWith($entity);
