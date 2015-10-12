@@ -35,7 +35,6 @@ final class HttpClient implements JiraApiClientInterface
      */
     private $logger;
 
-
     /**
      * @param HttpClientInterface $client
      * @param LoggerInterface $logger
@@ -51,7 +50,7 @@ final class HttpClient implements JiraApiClientInterface
     {
         // @codingStandardsIgnoreEnd
         $response = $this->client->request($method, $endpoint.$url, [
-            "auth" => [
+            'auth' => [
                 $credential->getId(),
                 $credential->getPassword()
             ]

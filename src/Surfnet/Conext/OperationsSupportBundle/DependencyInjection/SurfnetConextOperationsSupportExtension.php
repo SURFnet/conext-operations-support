@@ -42,7 +42,7 @@ class SurfnetConextOperationsSupportExtension extends Extension
             $suiteDefinition = new Definition($suiteClass);
 
             foreach ($testNames as $testName) {
-                $testClass = NameResolver::resolveToClass("$suiteName.$testName");
+                $testClass = NameResolver::resolveToClass($suiteName . '.' . $testName);
                 $testDefinition = new Definition($testClass);
 
                 $suiteDefinition->addMethodCall('addVerificationTest', [$testDefinition]);
