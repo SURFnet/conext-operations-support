@@ -210,4 +210,102 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
 
         $this->assertSame($actualMetadata, $fakeMetadata);
     }
+
+    /**
+     * @test
+     * @group metadata
+     * @runInSeparateProcess
+     */
+    public function doesnt_need_to_fetch_list_of_connections_more_than_once_to_determine_entitys_connection_id()
+    {
+        $rugSso  = 'https://rug.invalid/sso';
+        $docsAcs = 'https://docs.invalid/acs';
+
+        $connectionsData = [
+            [
+                'id'    => 1,
+                'name'  => $rugSso,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-idp',
+            ],
+            [
+                'id'    => 2,
+                'name'  => $docsAcs,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-sp',
+            ],
+        ];
+
+        $connectionData = [];
+
+        /** @var ApiService|MockInterface $apiService */
+        $apiService = m::mock(ApiService::class);
+        $apiService
+            ->shouldReceive('read')
+            ->with('connections.json')
+            ->once()
+            ->andReturn(['connections' => $connectionsData]);
+        $apiService->shouldReceive('read')->with('connections/%d.json', [1])->once()->andReturn($connectionData);
+        $apiService->shouldReceive('read')->with('connections/%d.json', [2])->once()->andReturn($connectionData);
+
+        // We cannot create a normal mock as well as a Mockery alias, so we create a stdClass to return.
+        $fakeMetadata = new \stdClass;
+        m::mock('alias:' . ConfiguredMetadata::class)
+            ->shouldReceive('deserialise')
+            ->with($connectionData)
+            ->andReturn($fakeMetadata);
+
+        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
+        $repository->getMetadataFor(new Entity(new EntityId($rugSso), EntityType::IdP()));
+        $repository->getMetadataFor(new Entity(new EntityId($docsAcs), EntityType::SP()));
+    }
+
+    /**
+     * @test
+     * @group metadata
+     * @runInSeparateProcess
+     */
+    public function doesnt_need_to_fetch_list_of_connections_to_determine_entitys_connection_id_when_connections_have_already_been_fetched()
+    {
+        $rugSso  = 'https://rug.invalid/sso';
+        $docsAcs = 'https://docs.invalid/acs';
+
+        $connectionsData = [
+            [
+                'id'    => 1,
+                'name'  => $rugSso,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-idp',
+            ],
+            [
+                'id'    => 2,
+                'name'  => $docsAcs,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-sp',
+            ],
+        ];
+
+        $connectionData = [];
+
+        /** @var ApiService|MockInterface $apiService */
+        $apiService = m::mock(ApiService::class);
+        $apiService
+            ->shouldReceive('read')
+            ->with('connections.json')
+            ->once()
+            ->andReturn(['connections' => $connectionsData]);
+        $apiService->shouldReceive('read')->with('connections/%d.json', [1])->once()->andReturn($connectionData);
+        $apiService->shouldReceive('read')->with('connections/%d.json', [2])->once()->andReturn($connectionData);
+
+        $metadata = m::mock(ConfiguredMetadata::class);
+        m::mock('alias:' . ConfiguredMetadataFactory::class)
+            ->shouldReceive('deserialise')
+            ->with($connectionData)
+            ->once()
+            ->andReturn($metadata);
+
+        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
+        $repository->getConfiguredEntities();
+        $repository->getMetadataFor(new Entity(new EntityId($docsAcs), EntityType::SP()));
+    }
 }
