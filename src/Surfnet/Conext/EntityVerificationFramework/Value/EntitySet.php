@@ -36,7 +36,7 @@ final class EntitySet implements Countable, IteratorAggregate
     public function __construct(array $entities)
     {
         foreach ($entities as $entity) {
-            $this->add($entity);
+            $this->initializeWith($entity);
         }
     }
 
@@ -77,9 +77,8 @@ final class EntitySet implements Countable, IteratorAggregate
 
     /**
      * @param Entity $entity
-     * @return boolean
      */
-    private function add(Entity $entity)
+    private function initializeWith(Entity $entity)
     {
         if ($this->contains($entity)) {
             return;
