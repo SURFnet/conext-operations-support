@@ -41,8 +41,6 @@ final class EntitySet implements Countable, IteratorAggregate
     }
 
     /**
-     * Tests sets for equality. Note this is a O(N^2) operation.
-     *
      * @param EntitySet $other
      * @return bool
      */
@@ -52,14 +50,10 @@ final class EntitySet implements Countable, IteratorAggregate
             return false;
         }
 
-        foreach ($this->entities as $myEntity) {
-            foreach ($other->entities as $otherEntity) {
-                if ($myEntity->equals($otherEntity)) {
-                    continue 2;
-                }
+        foreach ($this->entities as $entity) {
+            if (!$other->contains($entity)) {
+                return false;
             }
-
-            return false;
         }
 
         return true;
