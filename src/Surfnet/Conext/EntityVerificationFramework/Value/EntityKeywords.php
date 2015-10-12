@@ -47,8 +47,9 @@ final class EntityKeywords
         return $keywords;
     }
 
-    private function __construct()
+    public function __construct()
     {
+        $this->translations = [];
     }
 
     /**

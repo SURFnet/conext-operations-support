@@ -21,7 +21,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
@@ -64,7 +64,7 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
         $data = $this->apiService->read('connections/%d.json', [$id]);
         $this->logger->debug('Fetched connection detail');
 
-        $metadata = ConfiguredMetadata::deserialise($data);
+        $metadata = ConfiguredMetadataFactory::deserialise($data);
         $this->logger->debug('Deserialised into configured metadata');
 
         return $metadata;

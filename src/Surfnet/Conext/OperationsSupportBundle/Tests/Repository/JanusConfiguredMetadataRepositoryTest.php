@@ -23,6 +23,7 @@ use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\NullLogger;
 use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
@@ -198,17 +199,17 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
             ->once()
             ->andReturn($connectionData);
 
-        // We cannot create a normal mock as well as a Mockery alias, so we create a stdClass to return.
-        $fakeMetadata = new \stdClass;
-        m::mock('alias:' . ConfiguredMetadata::class)
+        $metadata = m::mock(ConfiguredMetadata::class);
+        m::mock('alias:' . ConfiguredMetadataFactory::class)
             ->shouldReceive('deserialise')
             ->with($connectionData)
-            ->andReturn($fakeMetadata);
+            ->once()
+            ->andReturn($metadata);
 
         $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
         $actualMetadata = $repository->getMetadataFor(new Entity(new EntityId($rugSso), EntityType::IdP()));
 
-        $this->assertSame($actualMetadata, $fakeMetadata);
+        $this->assertSame($actualMetadata, $metadata);
     }
 
     /**
@@ -248,12 +249,12 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
         $apiService->shouldReceive('read')->with('connections/%d.json', [1])->once()->andReturn($connectionData);
         $apiService->shouldReceive('read')->with('connections/%d.json', [2])->once()->andReturn($connectionData);
 
-        // We cannot create a normal mock as well as a Mockery alias, so we create a stdClass to return.
-        $fakeMetadata = new \stdClass;
-        m::mock('alias:' . ConfiguredMetadata::class)
+        $metadata = m::mock(ConfiguredMetadata::class);
+        m::mock('alias:' . ConfiguredMetadataFactory::class)
             ->shouldReceive('deserialise')
             ->with($connectionData)
-            ->andReturn($fakeMetadata);
+            ->once()
+            ->andReturn($metadata);
 
         $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
         $repository->getMetadataFor(new Entity(new EntityId($rugSso), EntityType::IdP()));

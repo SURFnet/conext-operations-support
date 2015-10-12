@@ -18,35 +18,26 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
-use ArrayIterator;
-use Countable;
-use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class AssertionConsumerServiceList implements IteratorAggregate, Countable
+final class ImageList
 {
     /**
-     * @var AssertionConsumerService[]
+     * @var Image[]
      */
-    private $acss;
+    private $images;
 
     /**
-     * @param array  $data
+     * @param mixed  $data
      * @param string $propertyPath
-     * @return AssertionConsumerServiceList
+     * @return ImageList
      */
     public static function deserialise($data, $propertyPath)
     {
-        Assert::isArray(
-            $data,
-            'SP metadata\'s "AssertionConsumerService" key must contain an array',
-            $propertyPath
-        );
-
         $list = new self();
-        $list->acss = array_map(
-            function ($data) {
-                return AssertionConsumerService::deserialise($data);
+        $list->images = array_map(
+            function ($data) use ($propertyPath) {
+                return Image::deserialise($data, $propertyPath . '[]');
             },
             $data
         );
@@ -54,23 +45,13 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
         return $list;
     }
 
-    public function __construct()
+    /**
+     * @param Image[] $images
+     */
+    public function __construct(array $images = [])
     {
-        $this->acss = [];
-    }
+        Assert::allIsInstanceOf($images, Image::class);
 
-    public function getIterator()
-    {
-        return new ArrayIterator($this->acss);
-    }
-
-    public function count()
-    {
-        return count($this->acss);
-    }
-
-    public function __toString()
-    {
-        return sprintf('AssertionConsumerServiceList(%s)', join(', ', array_map('strval', $this->acss)));
+        $this->images = $images;
     }
 }
