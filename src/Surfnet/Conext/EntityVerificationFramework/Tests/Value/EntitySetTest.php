@@ -109,4 +109,90 @@ class EntitySetTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @test
+     * @group value
+     * @dataProvider setsThatContainAnEntity
+     */
+    public function sets_can_contain_entities(EntitySet $set, Entity $entity)
+    {
+        $this->assertTrue(
+            $set->contains($entity),
+            sprintf('Set of %d should contain entity "%s", but EntitySet reports otherwise', count($set), $entity)
+        );
+    }
+
+    public function setsThatContainAnEntity()
+    {
+        return [
+            '1-set' => [
+                new EntitySet([$this->entitySpRug()]),
+                $this->entitySpRug(),
+            ],
+            '2-set, first' => [
+                new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()]),
+                $this->entitySpRug(),
+            ],
+            '2-set, second' => [
+                new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()]),
+                $this->entityIdPHvA(),
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @group value
+     * @dataProvider setsThatDontContainAnEntity
+     */
+    public function sets_can_not_contain_entities(EntitySet $set, Entity $entity)
+    {
+        $this->assertFalse(
+            $set->contains($entity),
+            sprintf('Set of %d should not contain entity "%s", but EntitySet reports otherwise', count($set), $entity)
+        );
+    }
+
+    public function setsThatDontContainAnEntity()
+    {
+        return [
+            '2-set' => [
+                new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()]),
+                $this->entitySpHU(),
+            ],
+            '0-set' => [
+                new EntitySet([]),
+                $this->entitySpRug(),
+            ],
+            '1-set' => [
+                new EntitySet([$this->entitySpRug()]),
+                $this->entityIdPHvA(),
+            ],
+        ];
+    }
+
+    /**
+     * @return Entity
+     */
+    private function entitySpRug()
+    {
+        return new Entity(new EntityId('RUG'), EntityType::SP());
+    }
+
+    /**
+     * @return Entity
+     */
+    private function entityIdPHvA()
+    {
+        return new Entity(new EntityId('HvA'), EntityType::IdP());
+    }
+
+    /**
+     * @return Entity
+     */
+    private function entitySpHU()
+    {
+        return new Entity(new EntityId('HU'), EntityType::SP());
+    }
 }
