@@ -46,7 +46,7 @@ final class ConfiguredMetadataFactory
         Assert::isArray($data['metadata'], '"metadata" key must contain an array structure');
         $metadataData = $data['metadata'];
 
-        if (isset($metadata['contacts'])) {
+        if (isset($metadataData['contacts'])) {
             $contacts = ContactSet::deserialise($metadataData['contacts'], 'metadata.contacts');
         } else {
             $contacts = new ContactSet();
