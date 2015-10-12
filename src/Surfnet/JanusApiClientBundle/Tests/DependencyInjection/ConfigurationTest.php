@@ -29,7 +29,7 @@ final class ConfigurationTest extends TestCase
     use DataProvider;
 
     private $validConfig = [
-        "base_url" => "http://api.invalid",
+        "base_url" => "http://api.invalid/",
         "username" => "test user",
         "password" => "test password",
     ];
@@ -57,6 +57,18 @@ final class ConfigurationTest extends TestCase
         $config["base_url"] = "not a valid URL";
 
         $this->assertConfigurationIsInvalid([$config], "The Janus API base URL should be a valid URL");
+    }
+
+    /**
+     * @test
+     * @group JanusApiClientBundle
+     */
+    public function base_url_must_end_in_forward_slash()
+    {
+        $config = $this->validConfig;
+        $config["base_url"] = "https://sr.invalid/janus/api";
+
+        $this->assertConfigurationIsInvalid([$config], "The Janus API base URL must end in a forward slash");
     }
 
     /**
