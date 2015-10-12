@@ -309,4 +309,45 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
         $repository->getConfiguredEntities();
         $repository->getMetadataFor(new Entity(new EntityId($docsAcs), EntityType::SP()));
     }
+
+    /**
+     * @test
+     * @group metadata
+     * @expectedException \Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException
+     * @expectedExceptionMessage No connection ID is known for entity "https://hu.invalid[saml20-sp]"
+     * @runInSeparateProcess
+     */
+    public function throws_an_exception_when_fetching_metadata_for_an_entity_that_cannot_be_mapped_to_a_connection_id()
+    {
+        $rugSso  = 'https://rug.invalid/sso';
+        $docsAcs = 'https://docs.invalid/acs';
+
+        $connectionsData = [
+            [
+                'id'    => 1,
+                'name'  => $rugSso,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-idp',
+            ],
+            [
+                'id'    => 2,
+                'name'  => $docsAcs,
+                'state' => 'prodaccepted',
+                'type'  => 'saml20-sp',
+            ],
+        ];
+
+        $connectionData = [];
+
+        /** @var ApiService|MockInterface $apiService */
+        $apiService = m::mock(ApiService::class);
+        $apiService
+            ->shouldReceive('read')
+            ->with('connections.json')
+            ->once()
+            ->andReturn(['connections' => $connectionsData]);
+
+        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
+        $repository->getMetadataFor(new Entity(new EntityId('https://hu.invalid'), EntityType::SP()));
+    }
 }
