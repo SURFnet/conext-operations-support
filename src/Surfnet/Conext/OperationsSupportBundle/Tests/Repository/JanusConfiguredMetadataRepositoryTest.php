@@ -337,8 +337,6 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
             ],
         ];
 
-        $connectionData = [];
-
         /** @var ApiService|MockInterface $apiService */
         $apiService = m::mock(ApiService::class);
         $apiService
