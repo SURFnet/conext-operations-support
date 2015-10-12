@@ -9,6 +9,12 @@ services:
     surfnet_conext_operations_support.repository.configured_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyConfiguredMetadataRepository
 
+    surfnet_conext_operations_support.repository.configured_metadata.janus:
+        class: Surfnet\Conext\OperationsSupportBundle\Repository\JanusConfiguredMetadataRepository
+        arguments:
+            - @surfnet_janus_api_client.service.api
+            - @logger
+
     surfnet_conext_operations_support.repository.published_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyPublishedMetadataRepository
 

@@ -18,7 +18,7 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Repository;
 
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityCollection;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
 
@@ -31,7 +31,7 @@ interface ConfiguredMetadataRepository
     public function getMetadataFor(Entity $entity);
 
     /**
-     * @return EntityCollection
+     * @return EntitySet
      */
     public function getConfiguredEntities();
 }
