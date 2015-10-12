@@ -21,6 +21,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\Tests\Repository;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Log\NullLogger;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
@@ -41,7 +42,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
     public function configured_entities_can_be_listed(array $connectionsData, array $expectedEntities)
     {
         $apiService = $this->createConnectionsApiService($connectionsData);
-        $repository = new JanusConfiguredMetadataRepository($apiService);
+        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
 
         $actualEntitySet   = $repository->getConfiguredEntities();
         $expectedEntitySet = new EntitySet($expectedEntities);
@@ -116,7 +117,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
     public function name_state_type_must_be_present(array $connectionsData)
     {
         $apiService = $this->createConnectionsApiService($connectionsData);
-        $repository = new JanusConfiguredMetadataRepository($apiService);
+        $repository = new JanusConfiguredMetadataRepository($apiService, new NullLogger());
 
         $repository->getConfiguredEntities();
     }
