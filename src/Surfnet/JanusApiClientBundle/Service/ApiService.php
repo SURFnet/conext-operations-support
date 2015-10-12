@@ -43,7 +43,7 @@ class ApiService
     /**
      * @param string $path A URL path, optionally containing printf parameters. The parameters
      *               will be URL encoded and formatted into the path string.
-     *               Example: "/connections/%d.json"
+     *               Example: "connections/%d.json"
      * @param array $parameters
      * @return array $data
      * @throws InvalidResponseException

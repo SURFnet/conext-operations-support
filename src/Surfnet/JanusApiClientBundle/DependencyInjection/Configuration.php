@@ -46,6 +46,14 @@ class Configuration implements ConfigurationInterface
                         })
                         ->thenInvalid('The Janus API base URL should be a valid URL')
                     ->end()
+                    ->validate()
+                        ->ifTrue(function ($baseUrl) {
+                            $path = parse_url($baseUrl, PHP_URL_PATH);
+
+                            return $path[strlen($path)-1] !== '/';
+                        })
+                        ->thenInvalid('The Janus API base URL must end in a forward slash')
+                    ->end()
                 ->end()
                 ->scalarNode('username')
                     ->info('The username of the user that will act as a reporter in Janus')
