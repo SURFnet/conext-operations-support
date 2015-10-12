@@ -23,6 +23,7 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
@@ -65,17 +66,23 @@ class Runner implements VerificationRunner
         $this->verificationSuites[] = $verificationSuite;
     }
 
-    public function run(VerificationReporter $reporter)
+    public function run(VerificationReporter $reporter, VerificationSuiteWhitelist $suiteWhitelist = null)
     {
-        $this->logger->debug(
-            sprintf(
-                'Running Entity Verification Framework with "%d" suites',
-                count($this->verificationSuites)
-            )
-        );
+        $suitesToRun = $this->determineSuitesToRun($suiteWhitelist);
+        if (count($suitesToRun) === 0) {
+            $this->logger->warning('No suites available to run, aborting run...');
+
+            return;
+        }
+        $this->logger->info(sprintf('Running Entity Verification Framework with "%d" suites', count($suitesToRun)));
 
         $entities = $this->configuredMetadataRepository->getConfiguredEntities();
-        $this->logger->debug(sprintf('Retrieved %d configured entities from configured', count($entities)));
+        if (count($entities) === 0) {
+            $this->logger->warning('No Entities available to verify, aborting run...');
+
+            return;
+        }
+        $this->logger->info(sprintf('Retrieved "%d" entities from Configured Metadata Repository', count($entities)));
 
         $getRemoteMetadata = function (Entity $entity) {
             return $this->publishedMetadataRepository->getMetadataFor($entity);
@@ -91,7 +98,7 @@ class Runner implements VerificationRunner
                 $this->logger
             );
 
-            foreach ($this->verificationSuites as $verificationSuite) {
+            foreach ($suitesToRun as $verificationSuite) {
                 $suiteName = NameResolver::resolveToString($verificationSuite);
 
                 if ($verificationSuite->shouldBeSkipped($context)) {
@@ -128,10 +135,39 @@ class Runner implements VerificationRunner
             $this->logger->debug(sprintf('Verification of Entity "%s" has been completed', $entity));
         }
 
-        $this->logger->debug(sprintf(
+        $this->logger->info(sprintf(
             'Completed Run of Entity Verification Framework, "%d" Entities Verified with "%d" suites.',
             count($entities),
             count($this->verificationSuites)
         ));
+    }
+
+    private function determineSuitesToRun(VerificationSuiteWhitelist $suiteWhitelist = null)
+    {
+        $this->logger->debug(sprintf('There are "%d" configured suites', count($this->verificationSuites)));
+
+        if (count($this->verificationSuites) === 0) {
+            return $this->verificationSuites;
+        }
+
+        if (!$suiteWhitelist) {
+            $this->logger->debug('No suite whitelist given, running all suites');
+
+            return $this->verificationSuites;
+        }
+
+        $suitesIndexedByName = array_combine(
+            array_map(
+                ['Surfnet\Conext\EntityVerificationFramework\NameResolver', 'resolveToString'],
+                $this->verificationSuites
+            ),
+            $this->verificationSuites
+        );
+
+        $suitesToRun = array_filter($suitesIndexedByName, [$suiteWhitelist, 'contains'], ARRAY_FILTER_USE_KEY);
+
+        $this->logger->debug(sprintf('"%d" of the configured suites are whitelisted', count($suitesToRun)));
+
+        return $suitesToRun;
     }
 }

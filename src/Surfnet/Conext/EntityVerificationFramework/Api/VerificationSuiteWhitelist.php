@@ -18,18 +18,11 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Api;
 
-interface VerificationRunner
+interface VerificationSuiteWhitelist
 {
     /**
-     * @param VerificationSuite $verificationSuite
-     * @return void
+     * @param string $suite
+     * @return bool
      */
-    public function addVerificationSuite(VerificationSuite $verificationSuite);
-
-    /**
-     * @param VerificationReporter $report
-     * @param VerificationSuiteWhitelist|null $verificationSuiteWhitelist
-     * @return void
-     */
-    public function run(VerificationReporter $report, VerificationSuiteWhitelist $verificationSuiteWhitelist = null);
+    public function contains($suite);
 }

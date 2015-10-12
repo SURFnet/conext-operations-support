@@ -16,20 +16,10 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Api;
+namespace Surfnet\Conext\OperationsSupportBundle\Exception;
 
-interface VerificationRunner
+use RuntimeException as CoreRuntimeException;
+
+class RuntimeException extends CoreRuntimeException
 {
-    /**
-     * @param VerificationSuite $verificationSuite
-     * @return void
-     */
-    public function addVerificationSuite(VerificationSuite $verificationSuite);
-
-    /**
-     * @param VerificationReporter $report
-     * @param VerificationSuiteWhitelist|null $verificationSuiteWhitelist
-     * @return void
-     */
-    public function run(VerificationReporter $report, VerificationSuiteWhitelist $verificationSuiteWhitelist = null);
 }

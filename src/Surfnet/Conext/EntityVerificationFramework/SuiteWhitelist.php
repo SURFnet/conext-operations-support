@@ -16,20 +16,28 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Api;
+namespace Surfnet\Conext\EntityVerificationFramework;
 
-interface VerificationRunner
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
+
+class SuiteWhitelist implements VerificationSuiteWhitelist
 {
     /**
-     * @param VerificationSuite $verificationSuite
-     * @return void
+     * @var string[]
      */
-    public function addVerificationSuite(VerificationSuite $verificationSuite);
+    private $suiteNames;
 
     /**
-     * @param VerificationReporter $report
-     * @param VerificationSuiteWhitelist|null $verificationSuiteWhitelist
-     * @return void
+     * @param array $suiteNames
      */
-    public function run(VerificationReporter $report, VerificationSuiteWhitelist $verificationSuiteWhitelist = null);
+    public function __construct(array $suiteNames)
+    {
+        Assert::allString($suiteNames);
+        $this->suiteNames = $suiteNames;
+    }
+
+    public function contains($suite)
+    {
+        return in_array($suite, $this->suiteNames);
+    }
 }
