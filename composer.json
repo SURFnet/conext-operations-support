@@ -11,7 +11,10 @@
   "autoload-dev": {
     "psr-4": {
       "Surfnet\\VerificationSuite\\NameResolverTestSuite\\": "src/Surfnet/Conext/EntityVerificationFramework/Tests/NameResolverTestSuite"
-    }
+    },
+    "classmap": [
+      "src/Surfnet/Conext/EntityVerificationFramework/Tests/BlacklistTest/"
+    ]
   },
   "require": {
     "php": ">=5.6",
