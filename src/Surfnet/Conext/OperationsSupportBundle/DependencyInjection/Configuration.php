@@ -18,6 +18,9 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
+use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\NameResolver;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -43,6 +46,37 @@ class Configuration implements ConfigurationInterface
                                     return !is_string($test);
                                 })
                                 ->thenInvalid('Test name should be a string')
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('blacklist')
+                    ->info('Blacklist tests or entire suites for specific entities (suite, suite.test, *)')
+                    ->performNoDeepMerging()
+                    ->validate()
+                        ->always(function ($suitesOrTests) {
+                            foreach (array_keys($suitesOrTests) as $suiteOrTestName) {
+                                if ($suiteOrTestName === '*') {
+                                    continue;
+                                }
+
+                                NameResolver::resolveToClass($suiteOrTestName);
+                            }
+
+                            return $suitesOrTests;
+                        })
+                    ->end()
+                    ->prototype('array')
+                        ->info('The entities to blacklist for this test, suite, or wildcard')
+                        ->prototype('variable')
+                            ->info('The entity to blacklist for this test, suite, or wildcard')
+                            ->validate()
+                                ->always(function ($entity) {
+                                    Assert::count($entity, 2);
+                                    new EntityId($entity[0]);
+                                    Assert::inArray($entity[1], ['sp', 'idp']);
+                                    return $entity;
+                                })
                             ->end()
                         ->end()
                     ->end()
