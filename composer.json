@@ -5,12 +5,12 @@
   "description": "The SURFnet operations support tool for verifying Conext metadata",
   "autoload": {
     "psr-4": {
-      "Surfnet\\": "src\\Surfnet"
+      "Surfnet\\": "src/Surfnet"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Surfnet\\VerificationSuite\\NameResolverTestSuite\\": "src\\Surfnet\\Conext\\EntityVerificationFramework\\Tests\\NameResolverTestSuite"
+      "Surfnet\\VerificationSuite\\NameResolverTestSuite\\": "src/Surfnet/Conext/EntityVerificationFramework/Tests/NameResolverTestSuite"
     }
   },
   "require": {
