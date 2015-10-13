@@ -23,10 +23,11 @@ interface VerificationSuite
     /**
      * Run the suite
      *
-     * @param VerificationContext $verificationContext
+     * @param VerificationContext   $verificationContext
+     * @param VerificationBlacklist $blacklist
      * @return VerificationSuiteResult
      */
-    public function verify(VerificationContext $verificationContext);
+    public function verify(VerificationContext $verificationContext, VerificationBlacklist $blacklist);
 
     /**
      * @param VerificationContext $verificationContext

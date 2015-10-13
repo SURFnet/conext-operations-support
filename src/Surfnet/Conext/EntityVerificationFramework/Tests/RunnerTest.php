@@ -19,17 +19,21 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests;
 
 use Mockery as m;
+use Mockery\Matcher\Closure as ClosureMatcher;
+use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as UnitTest;
 use Psr\Log\NullLogger;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Runner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteResult;
-use Surfnet\Conext\EntityVerificationFramework\SuiteWhitelist;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
-use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\VerificationSuite\NameResolverTestSuite\NameResolverTestSuite;
 
 class RunnerTest extends UnitTest
@@ -54,6 +58,11 @@ class RunnerTest extends UnitTest
      */
     private $runner;
 
+    /**
+     * @var VerificationBlacklist|MockInterface
+     */
+    private $blacklist;
+
     public static function setUpBeforeClass()
     {
         static::$entities = new EntitySet([
@@ -77,9 +86,12 @@ class RunnerTest extends UnitTest
         );
         $this->publishedMetadataRepository->shouldReceive('getMetadataFor')->andReturnNull();
 
+        $this->blacklist = m::mock(VerificationBlacklist::class);
+
         $this->runner = new Runner(
             $this->configuredMetadataRepository,
             $this->publishedMetadataRepository,
+            $this->blacklist,
             new NullLogger()
         );
     }
@@ -91,6 +103,8 @@ class RunnerTest extends UnitTest
      */
     public function a_suite_does_not_run_when_it_is_skipped()
     {
+        $this->blacklistNothing();
+
         $suiteToSkip = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $suiteToSkip->shouldReceive('shouldBeSkipped')->andReturn(true);
         $suiteToSkip->shouldReceive('getReasonToSkip')->andReturn('Because I mocked it so');
@@ -108,6 +122,8 @@ class RunnerTest extends UnitTest
      */
     public function a_suite_does_not_run_when_it_is_not_whitelisted()
     {
+        $this->blacklistNothing();
+
         $ignoredSuite = new NameResolverTestSuite();
 
         $runSuite = m::namedMock('MockedRunSuite','Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
@@ -134,6 +150,8 @@ class RunnerTest extends UnitTest
      */
     public function suites_must_return_a_verification_suite_result()
     {
+        $this->blacklistNothing();
+
         $suite = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $suite->shouldReceive('shouldBeSkipped')->andReturn(false);
         $suite->shouldReceive('verify')->andReturn(false);
@@ -149,6 +167,8 @@ class RunnerTest extends UnitTest
      */
     public function when_a_suite_fails_the_following_suites_are_still_verified()
     {
+        $this->blacklistNothing();
+
         $firstSuite = m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite');
         $firstSuite->shouldReceive('shouldBeSkipped')->andReturn(false);
         $firstSuite->shouldReceive('verify')->andReturn(SuiteResult::success());
@@ -182,6 +202,8 @@ class RunnerTest extends UnitTest
      */
     public function every_entity_is_verified()
     {
+        $this->blacklistNothing();
+
         $count = count(static::$entities);
 
         $failedResult = SuiteResult::failedTest(
@@ -199,8 +221,76 @@ class RunnerTest extends UnitTest
         $this->runner->run($reporter);
     }
 
+    /**
+     * @test
+     * @group EntityVerificationFramework
+     * @group Runner
+     */
+    public function entities_can_be_excluded_from_suites_using_the_blacklist()
+    {
+        $verificationContext = m::type(VerificationContext::class);
+
+        $suiteOne = m::namedMock('RunnerTestBlacklistedSuite', VerificationSuite::class);
+        $suiteOne->shouldNotReceive('verify');
+        $suiteOne->shouldNotReceive('shouldBeSkipped');
+        $suiteOne->shouldNotReceive('getReasonToSkip');
+
+        $suiteTwo = m::namedMock('RunnerTestNotBlacklistedSuite', VerificationSuite::class);
+        $suiteTwo->shouldReceive('shouldBeSkipped')->twice()->with($verificationContext)->andReturn(false);
+        $suiteTwo
+            ->shouldReceive('verify')
+            ->twice()
+            ->with($verificationContext, $this->blacklist)
+            ->andReturn(SuiteResult::success());
+
+        $this->runner->addVerificationSuite($suiteOne);
+        $this->runner->addVerificationSuite($suiteTwo);
+
+        $mockSp = new Entity(new EntityId('mock'), EntityType::SP());
+        $mockIdp = new Entity(new EntityId('mock'), EntityType::IdP());
+
+        $this->blacklist
+            ->shouldReceive('isBlacklisted')
+            ->once()
+            ->with(self::eq($mockSp), 'runner_test_blacklisted_suite')
+            ->andReturn(true);
+        $this->blacklist
+            ->shouldReceive('isBlacklisted')
+            ->once()
+            ->with(self::eq($mockIdp), 'runner_test_blacklisted_suite')
+            ->andReturn(true);
+        $this->blacklist
+            ->shouldReceive('isBlacklisted')
+            ->once()
+            ->with(self::eq($mockSp), 'runner_test_not_blacklisted_suite')
+            ->andReturn(false);
+        $this->blacklist
+            ->shouldReceive('isBlacklisted')
+            ->once()
+            ->with(self::eq($mockIdp), 'runner_test_not_blacklisted_suite')
+            ->andReturn(false);
+
+        $this->runner->run($this->getMockReporter());
+    }
+
     private function getMockReporter()
     {
         return m::mock('Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter');
+    }
+
+    private function blacklistNothing()
+    {
+        $this->blacklist->shouldReceive('isBlacklisted')->andReturn(false);
+    }
+
+    /**
+     * @param mixed $expectedValueObject Value object with equals() method
+     * @return ClosureMatcher
+     */
+    private static function eq($expectedValueObject)
+    {
+        return m::on(function ($actualValueObject) use ($expectedValueObject) {
+            return $actualValueObject->equals($expectedValueObject);
+        });
     }
 }
