@@ -35,6 +35,12 @@ class SurfnetConextOperationsSupportExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
+        $this->configureSuitesToRun($config, $container);
+        $this->configureBlacklist($config, $container);
+    }
+
+    private function configureSuitesToRun(array $config, ContainerBuilder $container)
+    {
         $runner = $container->getDefinition('surfnet_conext_operations_support.verification_runner');
 
         foreach ($config['suites'] as $suiteName => $testNames) {
@@ -50,5 +56,18 @@ class SurfnetConextOperationsSupportExtension extends Extension
 
             $runner->addMethodCall('addVerificationSuite', [$suiteDefinition]);
         }
+    }
+
+    private function configureBlacklist(array $config, ContainerBuilder $container)
+    {
+        $blacklistConfig = $config['blacklist'] + ['*' => []];
+
+        $wildcardEntities = $blacklistConfig['*'];
+        unset($blacklistConfig['*']);
+        $suiteOrTestEntities = $blacklistConfig;
+
+        $blacklist = $container->getDefinition('surfnet_conext_operations_support.verification_blacklist');
+        $blacklist->replaceArgument(0, $suiteOrTestEntities);
+        $blacklist->replaceArgument(1, $wildcardEntities);
     }
 }
