@@ -65,7 +65,7 @@ class RunnerTest extends UnitTest
 
     public static function setUpBeforeClass()
     {
-        static::$entities = new EntitySet([
+        self::$entities = new EntitySet([
             new Entity(new EntityId('mock'), EntityType::SP()),
             new Entity(new EntityId('mock'), EntityType::IdP()),
         ]);
