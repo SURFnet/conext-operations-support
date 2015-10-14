@@ -18,17 +18,12 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework;
 
-use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
-use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 final class BlacklistFactory
 {
     /**
      * @param array[][] $entitiesBySuiteOrTestName
-     * @param array[]   $wildcardEntities
      * @return Blacklist
      */
     public static function fromDescriptors(array $entitiesBySuiteOrTestName)
@@ -54,22 +49,11 @@ final class BlacklistFactory
     {
         Assert::allIsArray($entityDescriptors, 'Entity descriptors must consist of arrays');
 
-        return new EntitySet(
-            array_map(
-                function (array $entityDescriptor) {
-                    Assert::count($entityDescriptor, 2);
-
-                    switch ($entityDescriptor[1]) {
-                        case 'sp':
-                            return new Entity(new EntityId($entityDescriptor[0]), EntityType::SP());
-                        case 'idp':
-                            return new Entity(new EntityId($entityDescriptor[0]), EntityType::IdP());
-                        default:
-                            throw new LogicException('Entity descriptor type neither "sp" nor "idp"');
-                    }
-                },
-                $entityDescriptors
-            )
+        $entities = array_map(
+            'Surfnet\Conext\EntityVerificationFramework\Value\Entity::fromDescriptor',
+            $entityDescriptors
         );
+
+        return new EntitySet($entities);
     }
 }
