@@ -136,6 +136,18 @@ final class BlacklistTest extends TestCase
     }
 
     /**
+     * @test
+     * @group blacklist
+     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException
+     * @expectedExceptionMessage not a valid suite or test name
+     */
+    public function it_doesnt_accept_wildcard_as_suite_or_test_name()
+    {
+        $blacklist = new Blacklist([]);
+        $blacklist->isBlacklisted($this->entitySpHU(), Blacklist::WILDCARD);
+    }
+
+    /**
      * @return Entity
      */
     private function entitySpRug()

@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
+use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
 
@@ -50,6 +51,12 @@ final class Blacklist implements VerificationBlacklist
 
     public function isBlacklisted(Entity $entity, $suiteOrTestName)
     {
+        if ($suiteOrTestName === self::WILDCARD) {
+            throw new InvalidArgumentException(
+                sprintf('The wildcard symbol ("%s") is not a valid suite or test name', self::WILDCARD)
+            );
+        }
+
         if ($this->entitiesBySuiteOrTestName[self::WILDCARD]->contains($entity)) {
             return true;
         }
