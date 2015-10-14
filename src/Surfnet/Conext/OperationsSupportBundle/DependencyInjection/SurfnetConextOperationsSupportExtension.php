@@ -18,6 +18,7 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
+use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -60,10 +61,10 @@ class SurfnetConextOperationsSupportExtension extends Extension
 
     private function configureBlacklist(array $config, ContainerBuilder $container)
     {
-        $blacklistConfig = $config['blacklist'] + ['*' => []];
+        $blacklistConfig = $config['blacklist'] + [Blacklist::WILDCARD => []];
 
-        $wildcardEntities = $blacklistConfig['*'];
-        unset($blacklistConfig['*']);
+        $wildcardEntities = $blacklistConfig[Blacklist::WILDCARD];
+        unset($blacklistConfig[Blacklist::WILDCARD]);
         $suiteOrTestEntities = $blacklistConfig;
 
         $blacklist = $container->getDefinition('surfnet_conext_operations_support.verification_blacklist');

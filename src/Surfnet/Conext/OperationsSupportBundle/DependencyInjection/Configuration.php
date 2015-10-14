@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -56,7 +57,7 @@ class Configuration implements ConfigurationInterface
                     ->validate()
                         ->always(function ($suitesOrTests) {
                             foreach (array_keys($suitesOrTests) as $suiteOrTestName) {
-                                if ($suiteOrTestName === '*') {
+                                if ($suiteOrTestName === Blacklist::WILDCARD) {
                                     continue;
                                 }
 
