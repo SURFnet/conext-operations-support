@@ -18,19 +18,18 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework;
 
-use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
-final class VerificationBlacklistFactory
+final class BlacklistFactory
 {
     /**
      * @param array[][] $entitiesBySuiteOrTestName
      * @param array[]   $wildcardEntities
-     * @return VerificationBlacklist
+     * @return Blacklist
      */
     public static function fromDescriptors(array $entitiesBySuiteOrTestName, array $wildcardEntities)
     {

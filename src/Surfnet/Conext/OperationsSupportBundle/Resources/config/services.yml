@@ -26,7 +26,7 @@ services:
 
     surfnet_conext_operations_support.verification_blacklist:
         class: Surfnet\Conext\EntityVerificationFramework\Blacklist
-        factory: [Surfnet\Conext\EntityVerificationFramework\VerificationBlacklistFactory, 'fromDescriptors']
+        factory: [Surfnet\Conext\EntityVerificationFramework\BlacklistFactory, 'fromDescriptors']
         arguments:
             - [] # Set of entities per suite or test name, see extension
             - {} # Set of entities to blacklist for all suites or test names, see extension
