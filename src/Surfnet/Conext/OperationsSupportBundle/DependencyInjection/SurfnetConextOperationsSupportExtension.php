@@ -61,14 +61,7 @@ class SurfnetConextOperationsSupportExtension extends Extension
 
     private function configureBlacklist(array $config, ContainerBuilder $container)
     {
-        $blacklistConfig = $config['blacklist'] + [Blacklist::WILDCARD => []];
-
-        $wildcardEntities = $blacklistConfig[Blacklist::WILDCARD];
-        unset($blacklistConfig[Blacklist::WILDCARD]);
-        $suiteOrTestEntities = $blacklistConfig;
-
         $blacklist = $container->getDefinition('surfnet_conext_operations_support.verification_blacklist');
-        $blacklist->replaceArgument(0, $suiteOrTestEntities);
-        $blacklist->replaceArgument(1, $wildcardEntities);
+        $blacklist->replaceArgument(0, $config['blacklist']);
     }
 }

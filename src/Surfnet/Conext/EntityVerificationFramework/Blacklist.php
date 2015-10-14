@@ -27,33 +27,30 @@ final class Blacklist implements VerificationBlacklist
     const WILDCARD = '*';
 
     /**
-     * @var EntitySet[]
+     * @var EntitySet[] Array of EntitySets, indexed by a suite name, test name or wildcard symbol.
      */
     private $entitiesBySuiteOrTestName;
 
     /**
-     * @var EntitySet
-     */
-    private $wildcardEntities;
-
-    /**
      * @param EntitySet[] $entitiesBySuiteOrTestName
-     * @param EntitySet   $wildcardEntities
      */
-    public function __construct(array $entitiesBySuiteOrTestName, EntitySet $wildcardEntities)
+    public function __construct(array $entitiesBySuiteOrTestName)
     {
         Assert::allIsInstanceOf($entitiesBySuiteOrTestName, EntitySet::class);
 
         $suiteOrTestNames = array_keys($entitiesBySuiteOrTestName);
         Assert::allString($suiteOrTestNames);
 
+        if (!array_key_exists(self::WILDCARD, $entitiesBySuiteOrTestName)) {
+            $entitiesBySuiteOrTestName[self::WILDCARD] = new EntitySet();
+        }
+
         $this->entitiesBySuiteOrTestName = $entitiesBySuiteOrTestName;
-        $this->wildcardEntities = $wildcardEntities;
     }
 
     public function isBlacklisted(Entity $entity, $suiteOrTestName)
     {
-        if ($this->wildcardEntities->contains($entity)) {
+        if ($this->entitiesBySuiteOrTestName[self::WILDCARD]->contains($entity)) {
             return true;
         }
 

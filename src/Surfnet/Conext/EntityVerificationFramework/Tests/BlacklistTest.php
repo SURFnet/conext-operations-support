@@ -56,32 +56,32 @@ final class BlacklistTest extends PHPUnit_Framework_TestCase
     {
         return [
             '*(RUG), RUG in one?' => [
-                new Blacklist([], new EntitySet([$this->entitySpRug()])),
+                new Blacklist([Blacklist::WILDCARD => new EntitySet([$this->entitySpRug()])]),
                 $this->entitySpRug(),
                 self::SUITE_ONE,
             ],
             '*(RUG, HvA), RUG in one?' => [
-                new Blacklist([], new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])),
+                new Blacklist([Blacklist::WILDCARD => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])]),
                 $this->entitySpRug(),
                 self::SUITE_ONE,
             ],
             'one(HU), *(RUG, HvA), HU in one?' => [
-                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()])], new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])),
+                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()]), Blacklist::WILDCARD => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])]),
                 $this->entitySpHU(),
                 self::SUITE_ONE,
             ],
             'one(HU), *(RUG, HvA), RUG in one?' => [
-                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()])], new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])),
+                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()]), Blacklist::WILDCARD => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])]),
                 $this->entitySpRug(),
                 self::SUITE_ONE,
             ],
             'one(HU), two(RUG, HvA), HvA in two?' => [
-                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()]), self::SUITE_TWO => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])], new EntitySet()),
+                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()]), self::SUITE_TWO => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])]),
                 $this->entitySpRug(),
                 self::SUITE_TWO,
             ],
             'one.one(HU), two(RUG, HvA), HU in one.one?' => [
-                new Blacklist([self::SUITE_ONE_TEST_ONE => new EntitySet([$this->entitySpHU()]), self::SUITE_TWO => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])], new EntitySet()),
+                new Blacklist([self::SUITE_ONE_TEST_ONE => new EntitySet([$this->entitySpHU()]), self::SUITE_TWO => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])]),
                 $this->entitySpHU(),
                 self::SUITE_ONE_TEST_ONE,
             ],
@@ -113,7 +113,7 @@ final class BlacklistTest extends PHPUnit_Framework_TestCase
     {
         return [
             '*(RUG), HU in one?' => [
-                new Blacklist([], new EntitySet([$this->entitySpRug()])),
+                new Blacklist([Blacklist::WILDCARD => new EntitySet([$this->entitySpRug()])]),
                 $this->entitySpHU(),
                 self::SUITE_ONE,
             ],
@@ -123,12 +123,12 @@ final class BlacklistTest extends PHPUnit_Framework_TestCase
                 self::SUITE_ONE,
             ],
             'one(HU), *(RUG, HvA), HU in two?' => [
-                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()])], new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])),
+                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()]), Blacklist::WILDCARD => new EntitySet([$this->entitySpRug(), $this->entityIdPHvA()])]),
                 $this->entitySpHU(),
                 self::SUITE_TWO,
             ],
             'one(HU), RUG in one?' => [
-                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()])], new EntitySet()),
+                new Blacklist([self::SUITE_ONE => new EntitySet([$this->entitySpHU()])]),
                 $this->entitySpRug(),
                 self::SUITE_ONE,
             ],

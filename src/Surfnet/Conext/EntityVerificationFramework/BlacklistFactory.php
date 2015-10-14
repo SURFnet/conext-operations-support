@@ -31,7 +31,7 @@ final class BlacklistFactory
      * @param array[]   $wildcardEntities
      * @return Blacklist
      */
-    public static function fromDescriptors(array $entitiesBySuiteOrTestName, array $wildcardEntities)
+    public static function fromDescriptors(array $entitiesBySuiteOrTestName)
     {
         $suiteOrTestNames = array_keys($entitiesBySuiteOrTestName);
         Assert::allString($suiteOrTestNames, 'Suite and test names must be strings');
@@ -42,8 +42,7 @@ final class BlacklistFactory
                     return self::createEntitySetFromEntityDescriptors($entityDescriptors);
                 },
                 $entitiesBySuiteOrTestName
-            ),
-            self::createEntitySetFromEntityDescriptors($wildcardEntities)
+            )
         );
     }
 
