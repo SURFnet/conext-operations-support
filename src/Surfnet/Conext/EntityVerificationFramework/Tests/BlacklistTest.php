@@ -18,14 +18,14 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
-final class BlacklistTest extends PHPUnit_Framework_TestCase
+final class BlacklistTest extends TestCase
 {
     const SUITE_ONE = 'one_suite';
     const SUITE_TWO = 'two_suite';
