@@ -18,25 +18,19 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Api;
 
-interface VerificationSuite
+use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
+
+/**
+ * Describes a blacklist that blacklists entities for specific suites or suite tests by their name.
+ *
+ * @see \Surfnet\Conext\EntityVerificationFramework\NameResolver
+ */
+interface VerificationBlacklist
 {
     /**
-     * Run the suite
-     *
-     * @param VerificationContext   $verificationContext
-     * @param VerificationBlacklist $blacklist
-     * @return VerificationSuiteResult
+     * @param Entity $entity
+     * @param string $suiteOrTestName
+     * @return boolean
      */
-    public function verify(VerificationContext $verificationContext, VerificationBlacklist $blacklist);
-
-    /**
-     * @param VerificationContext $verificationContext
-     * @return bool
-     */
-    public function shouldBeSkipped(VerificationContext $verificationContext);
-
-    /**
-     * @return string
-     */
-    public function getReasonToSkip();
+    public function isBlacklisted(Entity $entity, $suiteOrTestName);
 }

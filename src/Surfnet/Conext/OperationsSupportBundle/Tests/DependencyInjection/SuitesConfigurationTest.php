@@ -23,7 +23,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\OperationsSupportBundle\Tests\DataProvider\DataProvider;
 use Surfnet\Conext\OperationsSupportBundle\DependencyInjection\Configuration;
 
-final class ConfigurationTest extends TestCase
+final class SuitesConfigurationTest extends TestCase
 {
     use ConfigurationTestCaseTrait;
     use DataProvider;
@@ -37,7 +37,7 @@ final class ConfigurationTest extends TestCase
     public function suites_cannot_be_other_than_array($value)
     {
         $config = ['suites' => $value];
-        $this->assertConfigurationIsInvalid([$config], 'Expected array');
+        $this->assertPartialConfigurationIsInvalid([$config], 'suites', 'Expected array');
     }
 
     /**
@@ -54,7 +54,7 @@ final class ConfigurationTest extends TestCase
             ]
         ];
 
-        $this->assertConfigurationIsInvalid([$config], 'Expected array');
+        $this->assertPartialConfigurationIsInvalid([$config], 'suites', 'Expected array');
     }
 
     /**
@@ -76,17 +76,19 @@ final class ConfigurationTest extends TestCase
             ]
         ];
 
-        $this->assertProcessedConfigurationEquals([$config], [
+        $expectedProcessedConfiguration = [
             'suites' => [
-                'suite_name' => [
+                'suite_name'   => [
                     'test1',
-                    'test2'
+                    'test2',
                 ],
                 'suite_name_2' => [
-                    'test1'
-                ]
-            ]
-        ] );
+                    'test1',
+                ],
+            ],
+        ];
+
+        $this->assertProcessedConfigurationEquals([$config], $expectedProcessedConfiguration, 'suites');
     }
 
     /**
@@ -116,7 +118,7 @@ final class ConfigurationTest extends TestCase
             ]
         ];
 
-        $this->assertProcessedConfigurationEquals([$configA, $configB], $configB);
+        $this->assertProcessedConfigurationEquals([$configA, $configB], $configB, 'suites');
     }
 
     protected function getConfiguration()

@@ -19,8 +19,12 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests;
 
 use Mockery as m;
+use Mockery\Matcher\Closure as ClosureMatcher;
+use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as UnitTest;
 use Psr\Log\NullLogger;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
@@ -44,7 +48,7 @@ class SuiteTest extends UnitTest
 
         $suite->addVerificationTest($testToSkip);
 
-        $suite->verify($this->getMockContext());
+        $suite->verify($this->getMockContext(), $this->getMockBlacklist());
     }
 
     /**
@@ -65,7 +69,7 @@ class SuiteTest extends UnitTest
 
         $suite->addVerificationTest($test);
 
-        $suite->verify($this->getMockContext());
+        $suite->verify($this->getMockContext(), $this->getMockBlacklist());
     }
 
     /**
@@ -93,7 +97,7 @@ class SuiteTest extends UnitTest
         $suite->addVerificationTest($failedTest);
         $suite->addVerificationTest($shouldNotBeCalled);
 
-        $suiteResult = $suite->verify($this->getMockContext());
+        $suiteResult = $suite->verify($this->getMockContext(), $this->getMockBlacklist());
         $this->assertTrue($suiteResult->hasTestFailed());
     }
 
@@ -117,7 +121,35 @@ class SuiteTest extends UnitTest
         $suite->addVerificationTest($firstTest);
         $suite->addVerificationTest($secondTest);
 
-        $result = $suite->verify($this->getMockContext());
+        $result = $suite->verify($this->getMockContext(), $this->getMockBlacklist());
+        $this->assertFalse($result->hasTestFailed());
+    }
+
+    /**
+     * @test
+     * @group EntityVerificationFramework
+     * @group Suite
+     */
+    public function entities_can_be_excluded_from_tests_using_the_blacklist()
+    {
+        $firstTest = m::namedMock('SuiteTestBlacklistedTest', VerificationTest::class);
+        $firstTest->shouldNotReceive('shouldBeSkipped');
+        $firstTest->shouldNotReceive('verify');
+
+        $secondTest = m::namedMock('SuiteTestNotBlacklistedTest', VerificationTest::class);
+        $secondTest->shouldReceive('shouldBeSkipped')->andReturn(false);
+        $secondTest->shouldReceive('verify')->andReturn(TestResult::success());
+
+        $suite = $this->getSuite();
+        $suite->addVerificationTest($firstTest);
+        $suite->addVerificationTest($secondTest);
+
+        $mockSp    = new Entity(new EntityId('mock'), EntityType::SP());
+        $blacklist = m::mock(VerificationBlacklist::class);
+        $blacklist->shouldReceive('isBlacklisted')->once()->with(self::eq($mockSp), 'suite_test_blacklisted_test')->andReturn(true);
+        $blacklist->shouldReceive('isBlacklisted')->once()->with(self::eq($mockSp), 'suite_test_not_blacklisted_test')->andReturn(false);
+
+        $result = $suite->verify($this->getMockContext(), $blacklist);
         $this->assertFalse($result->hasTestFailed());
     }
 
@@ -143,6 +175,28 @@ class SuiteTest extends UnitTest
         $context->shouldReceive('getEntity')->andReturn(new Entity(new EntityId('mock'), EntityType::SP()));
 
         return $context;
+    }
+
+    /**
+     * @return MockInterface|VerificationBlacklist
+     */
+    private function getMockBlacklist()
+    {
+        $blacklist = m::mock(VerificationBlacklist::class);
+        $blacklist->shouldReceive('isBlacklisted')->andReturn(false);
+
+        return $blacklist;
+    }
+
+    /**
+     * @param mixed $expectedValueObject Value object with equals() method
+     * @return ClosureMatcher
+     */
+    private static function eq($expectedValueObject)
+    {
+        return m::on(function ($actualValueObject) use ($expectedValueObject) {
+            return $actualValueObject->equals($expectedValueObject);
+        });
     }
 }
 

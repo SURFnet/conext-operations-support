@@ -18,6 +18,7 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework;
 
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest;
@@ -36,13 +37,23 @@ abstract class Suite implements VerificationSuite
         $this->verificationTests[] = $verificationTest;
     }
 
-    public function verify(VerificationContext $verificationContext)
+    public function verify(VerificationContext $verificationContext, VerificationBlacklist $blacklist)
     {
         $logger = $verificationContext->getLogger();
         $entity = $verificationContext->getEntity();
 
         foreach ($this->verificationTests as $test) {
             $testName = NameResolver::resolveToString($test);
+
+            if ($blacklist->isBlacklisted($entity, $testName)) {
+                $logger->info(sprintf(
+                    'Test "%s" blacklisted for entity "%s"',
+                    $testName,
+                    $entity
+                ));
+
+                continue;
+            }
 
             if ($test->shouldBeSkipped($verificationContext)) {
                 $logger->info(sprintf(

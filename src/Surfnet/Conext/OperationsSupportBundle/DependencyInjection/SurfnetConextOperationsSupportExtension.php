@@ -18,6 +18,7 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
+use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -35,6 +36,12 @@ class SurfnetConextOperationsSupportExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
+        $this->configureSuitesToRun($config, $container);
+        $this->configureBlacklist($config, $container);
+    }
+
+    private function configureSuitesToRun(array $config, ContainerBuilder $container)
+    {
         $runner = $container->getDefinition('surfnet_conext_operations_support.verification_runner');
 
         foreach ($config['suites'] as $suiteName => $testNames) {
@@ -50,5 +57,11 @@ class SurfnetConextOperationsSupportExtension extends Extension
 
             $runner->addMethodCall('addVerificationSuite', [$suiteDefinition]);
         }
+    }
+
+    private function configureBlacklist(array $config, ContainerBuilder $container)
+    {
+        $blacklist = $container->getDefinition('surfnet_conext_operations_support.verification_blacklist');
+        $blacklist->replaceArgument(0, $config['blacklist']);
     }
 }

@@ -18,6 +18,9 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
+use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+
 final class Entity
 {
     /**
@@ -28,6 +31,24 @@ final class Entity
      * @var EntityType
      */
     private $entityType;
+
+    /**
+     * @param array $descriptor
+     * @return Entity
+     */
+    public static function fromDescriptor(array $descriptor)
+    {
+        Assert::count($descriptor, 2);
+
+        switch ($descriptor[1]) {
+            case 'sp':
+                return new Entity(new EntityId($descriptor[0]), EntityType::SP());
+            case 'idp':
+                return new Entity(new EntityId($descriptor[0]), EntityType::IdP());
+            default:
+                throw new LogicException('Entity descriptor type neither "sp" nor "idp"');
+        }
+    }
 
     public function __construct(EntityId $entityId, EntityType $entityType)
     {

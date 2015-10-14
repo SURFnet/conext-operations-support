@@ -20,6 +20,7 @@ namespace Surfnet\Conext\EntityVerificationFramework;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest;
+use Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException;
 use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
 
 final class NameResolver
@@ -76,6 +77,8 @@ final class NameResolver
     /**
      * @param string $suiteOrTestName
      * @return string
+     * @throws AssertionFailedException
+     * @throws InvalidArgumentException
      */
     public static function resolveToClass($suiteOrTestName)
     {

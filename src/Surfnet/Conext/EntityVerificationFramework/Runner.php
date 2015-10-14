@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework;
 
 use Psr\Log\LoggerInterface;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationRunner;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
@@ -47,6 +48,11 @@ class Runner implements VerificationRunner
     private $publishedMetadataRepository;
 
     /**
+     * @var VerificationBlacklist
+     */
+    private $blacklist;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -54,10 +60,12 @@ class Runner implements VerificationRunner
     public function __construct(
         ConfiguredMetadataRepository $configuredMetadataRepository,
         PublishedMetadataRepository $publishedMetadataRepository,
+        VerificationBlacklist $blacklist,
         LoggerInterface $logger
     ) {
         $this->configuredMetadataRepository = $configuredMetadataRepository;
         $this->publishedMetadataRepository  = $publishedMetadataRepository;
+        $this->blacklist                    = $blacklist;
         $this->logger                       = $logger;
     }
 
@@ -101,6 +109,16 @@ class Runner implements VerificationRunner
             foreach ($suitesToRun as $verificationSuite) {
                 $suiteName = NameResolver::resolveToString($verificationSuite);
 
+                if ($this->blacklist->isBlacklisted($entity, $suiteName)) {
+                    $this->logger->info(sprintf(
+                        'Suite "%s" blacklisted for entity "%s"',
+                        $suiteName,
+                        $entity
+                    ));
+
+                    continue;
+                }
+
                 if ($verificationSuite->shouldBeSkipped($context)) {
                     $this->logger->info(sprintf(
                         'Skipping suite "%s" for entity "%s", reason: "%s"',
@@ -114,7 +132,7 @@ class Runner implements VerificationRunner
 
                 $this->logger->debug(sprintf('Running suite "%s" for Entity "%s"', $suiteName, $entity));
 
-                $suiteResult = $verificationSuite->verify($context);
+                $suiteResult = $verificationSuite->verify($context, $this->blacklist);
                 if (!$suiteResult instanceof VerificationSuiteResult) {
                     throw new LogicException(sprintf(
                         'VerificationSuite "%s" did not return a VerificationSuiteResult',
