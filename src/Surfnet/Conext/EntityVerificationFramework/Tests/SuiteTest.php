@@ -48,7 +48,7 @@ class SuiteTest extends UnitTest
 
         $suite->addVerificationTest($testToSkip);
 
-        $suite->verify($this->getMockContext(), $this->createBlacklistDummy());
+        $suite->verify($this->getMockContext(), $this->getMockBlacklist());
     }
 
     /**
@@ -69,7 +69,7 @@ class SuiteTest extends UnitTest
 
         $suite->addVerificationTest($test);
 
-        $suite->verify($this->getMockContext(), $this->createBlacklistDummy());
+        $suite->verify($this->getMockContext(), $this->getMockBlacklist());
     }
 
     /**
@@ -97,7 +97,7 @@ class SuiteTest extends UnitTest
         $suite->addVerificationTest($failedTest);
         $suite->addVerificationTest($shouldNotBeCalled);
 
-        $suiteResult = $suite->verify($this->getMockContext(), $this->createBlacklistDummy());
+        $suiteResult = $suite->verify($this->getMockContext(), $this->getMockBlacklist());
         $this->assertTrue($suiteResult->hasTestFailed());
     }
 
@@ -121,7 +121,7 @@ class SuiteTest extends UnitTest
         $suite->addVerificationTest($firstTest);
         $suite->addVerificationTest($secondTest);
 
-        $result = $suite->verify($this->getMockContext(), $this->createBlacklistDummy());
+        $result = $suite->verify($this->getMockContext(), $this->getMockBlacklist());
         $this->assertFalse($result->hasTestFailed());
     }
 
@@ -180,7 +180,7 @@ class SuiteTest extends UnitTest
     /**
      * @return MockInterface|VerificationBlacklist
      */
-    private function createBlacklistDummy()
+    private function getMockBlacklist()
     {
         $blacklist = m::mock(VerificationBlacklist::class);
         $blacklist->shouldReceive('isBlacklisted')->andReturn(false);
