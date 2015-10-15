@@ -28,18 +28,13 @@ final class PemEncodedX509Certificate
     private $certificate;
 
     /**
-     * @param string $data
-     * @param string $propertyPath
-     * @return PemEncodedX509Certificate
+     * @param string $certificate
      */
-    public static function deserialise($data, $propertyPath)
+    public function __construct($certificate)
     {
-        Assert::string($data, 'Certificate data must be a string', $propertyPath);
+        Assert::string($certificate, 'Certificate data must be a string');
 
-        $certificate = new PemEncodedX509Certificate();
-        $certificate->certificate = $data;
-
-        return $certificate;
+        $this->certificate = $certificate;
     }
 
     /**

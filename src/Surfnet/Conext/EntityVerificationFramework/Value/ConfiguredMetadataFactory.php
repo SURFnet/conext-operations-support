@@ -123,10 +123,7 @@ final class ConfiguredMetadataFactory
 
         $certData = null;
         if (isset($metadataData['certData'])) {
-            $certData = PemEncodedX509Certificate::deserialise(
-                $metadataData['certData'],
-                'metadata.certData'
-            );
+            $certData = new PemEncodedX509Certificate($metadataData['certData']);
         }
 
         $coinData = isset($metadataData['coin']) ? $metadataData['coin'] : [];
