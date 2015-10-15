@@ -55,23 +55,25 @@ final class ContactSet implements IteratorAggregate, Countable
     public function __construct(array $contacts = [])
     {
         foreach ($contacts as $contact) {
-            $this->add($contact);
+            $this->initializeWith($contact);
         }
     }
 
     /**
      * @param Contact $contact
-     * @return bool FALSE when Contact is already present (by value) in the set.
+     * @return ContactSet
      */
     public function add(Contact $contact)
     {
         if ($this->contains($contact)) {
-            return false;
+            return $this;
         }
 
-        $this->contacts[] = $contact;
+        $contacts = new ContactSet();
+        $contacts->contacts = $this->contacts;
+        $contacts->contacts[] = $contact;
 
-        return true;
+        return $contacts;
     }
 
     /**
@@ -103,5 +105,17 @@ final class ContactSet implements IteratorAggregate, Countable
     public function __toString()
     {
         return sprintf('ContactSet(%s)', join(', ', array_map('strval', $this->contacts)));
+    }
+
+    /**
+     * @param Contact $contact
+     */
+    private function initializeWith(Contact $contact)
+    {
+        if ($this->contains($contact)) {
+            return;
+        }
+
+        $this->contacts[] = $contact;
     }
 }
