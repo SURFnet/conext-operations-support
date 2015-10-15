@@ -43,7 +43,7 @@ final class Contact
         $contact = new Contact();
 
         if (isset($data['contactType'])) {
-            $contact->type = ContactType::deserialise($data['contactType'], sprintf('%s.contactType', $propertyPath));
+            $contact->type = new ContactType($data['contactType']);
         }
 
         if (isset($data['emailAddress'])) {

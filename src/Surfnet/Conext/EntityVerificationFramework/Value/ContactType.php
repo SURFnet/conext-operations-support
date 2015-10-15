@@ -32,22 +32,13 @@ final class ContactType
     private $type;
 
     /**
-     * @param string $data
-     * @param string $propertyPath
-     * @return ContactType
+     * @param string $type
      */
-    public static function deserialise($data, $propertyPath)
+    public function __construct($type)
     {
-        Assert::string($data, null, $propertyPath);
+        Assert::string($type, 'Contact type must be string');
 
-        $type = new self();
-        $type->type = $data;
-
-        return $type;
-    }
-
-    private function __construct()
-    {
+        $this->type = $type;
     }
 
     /**
