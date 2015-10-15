@@ -20,37 +20,52 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class ApplicationUrl
+final class MultiLocaleUrl
 {
     /**
      * @var Url[]
      */
     private $urls;
 
+    /**
+     * @param string[] $data URLs indexed by locale string
+     * @param string   $propertyPath
+     * @return MultiLocaleUrl
+     */
     public static function deserialise($data, $propertyPath)
     {
-        $locales = array_keys($data);
+        Assert::allString($data, 'All URLs must be strings', $propertyPath);
 
-        Assert::allString($data, 'Application URLs must be strings', $propertyPath . '[]');
-        Assert::allString(
-            $locales,
-            'Application URLs must be indexed by locale',
-            $propertyPath . '[]'
+        return new MultiLocaleUrl(
+            array_map('Surfnet\Conext\EntityVerificationFramework\Value\Url::fromString', $data)
         );
-
-        $applicationUrl = new ApplicationUrl();
-        $applicationUrl->urls = array_map(
-            function ($locale) use ($data) {
-                return Url::deserialise($data[$locale], $locale);
-            },
-            array_combine($locales, $locales)
-        );
-
-        return $applicationUrl;
     }
 
-    private function __construct()
+    /**
+     * @param Url[] $urls URLs indexed by locale string
+     */
+    public function __construct(array $urls = [])
     {
+        Assert::allIsInstanceOf($urls, Url::class, 'URLs must be strings');
+        Assert::allString(array_keys($urls), 'URLs must be indexed by locale');
+
+        $this->urls = $urls;
+    }
+
+    /**
+     * @param string $locale
+     * @param Url $url
+     * @return MultiLocaleUrl
+     */
+    public function add($locale, Url $url)
+    {
+        Assert::string($locale, 'Locale must be string');
+        Assert::notBlank($locale, 'Locale may not be blank');
+
+        $applicationUrl = clone $this;
+        $applicationUrl->urls[$locale] = $url;
+
+        return $applicationUrl;
     }
 
     /**
@@ -78,7 +93,7 @@ final class ApplicationUrl
         return true;
     }
 
-    public function equals(ApplicationUrl $other)
+    public function equals(MultiLocaleUrl $other)
     {
         $thisUrls = $this->urls;
         $otherUrls = $other->urls;
@@ -101,7 +116,7 @@ final class ApplicationUrl
     public function __toString()
     {
         return sprintf(
-            'ApplicationUrl(%s)',
+            'MultiLocaleUrl(%s)',
             join(
                 ', ',
                 array_map(

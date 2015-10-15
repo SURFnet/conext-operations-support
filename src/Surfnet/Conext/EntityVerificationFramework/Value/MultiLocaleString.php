@@ -20,36 +20,48 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class EntityKeywords
+final class MultiLocaleString
 {
     /**
      * @var string[]
      */
     private $translations;
 
-    /**
-     * @param string[] $data
-     * @param string $propertyPath
-     * @return EntityKeywords
-     */
-    public static function deserialise($data, $propertyPath)
+    public function __construct(array $translations = [])
     {
-        Assert::allString($data, 'Entity keywords must contain array of translations', $propertyPath . '[]');
-        Assert::allString(
-            array_keys($data),
-            'Entity keywords translations must be indexed by locale',
-            $propertyPath . '[]'
-        );
+        Assert::allString(array_keys($translations), 'Translations must be indexed by locale');
+        Assert::allNotBlank(array_keys($translations), 'Locales may not be blank');
+        Assert::allString($translations, 'Translations must be strings');
 
-        $keywords = new EntityKeywords();
-        $keywords->translations = $data;
-
-        return $keywords;
+        $this->translations = $translations;
     }
 
-    public function __construct()
+    /**
+     * @param string $locale
+     * @param string $translation
+     * @return MultiLocaleString
+     */
+    public function add($locale, $translation)
     {
-        $this->translations = [];
+        Assert::string($locale, 'Locale must be string');
+        Assert::notBlank($locale, 'Locale may not be blank');
+        Assert::string($translation, 'Translation must be string');
+
+        $displayName = clone $this;
+        $displayName->translations[$locale] = $translation;
+
+        return $displayName;
+    }
+
+    /**
+     * @param string $locale
+     * @return bool
+     */
+    public function hasFilledTranslationForLocale($locale)
+    {
+        Assert::string($locale, 'Locale must be string', 'locale');
+
+        return array_key_exists($locale, $this->translations) && trim($this->translations[$locale]) !== '';
     }
 
     /**
@@ -61,10 +73,10 @@ final class EntityKeywords
     }
 
     /**
-     * @param EntityKeywords $other
+     * @param MultiLocaleString $other
      * @return bool
      */
-    public function equals(EntityKeywords $other)
+    public function equals(MultiLocaleString $other)
     {
         return array_diff_assoc($this->translations, $other->translations) === [];
     }
@@ -72,7 +84,7 @@ final class EntityKeywords
     public function __toString()
     {
         return sprintf(
-            'EntityKeywords(%s)',
+            'MultiLocaleString(%s)',
             join(
                 ', ',
                 array_map(

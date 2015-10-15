@@ -20,7 +20,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Value;
 
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
-use Surfnet\Conext\EntityVerificationFramework\Value\ApplicationUrl;
+use Surfnet\Conext\EntityVerificationFramework\Value\MultiLocaleUrl;
 use Surfnet\Conext\EntityVerificationFramework\Value\Contact;
 
 final class ContactTest extends TestCase

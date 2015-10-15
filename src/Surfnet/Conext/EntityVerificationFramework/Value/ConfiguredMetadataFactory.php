@@ -54,7 +54,7 @@ final class ConfiguredMetadataFactory
 
         $name = null;
         if (isset($metadataData['name'])) {
-            $name = EntityName::deserialise($metadataData['name'], 'metadata.name');
+            $name = new MultiLocaleString($metadataData['name']);
         }
 
         if (isset($metadataData['logo'])) {
@@ -103,7 +103,7 @@ final class ConfiguredMetadataFactory
 
         $url = null;
         if (isset($metadataData['url'])) {
-            $url = ApplicationUrl::deserialise($metadataData['url'], 'metadata.url');
+            $url = MultiLocaleUrl::deserialise($metadataData['url'], 'metadata.url');
         }
 
         if (isset($metadataData['SingleSignOnService'])) {
@@ -116,9 +116,9 @@ final class ConfiguredMetadataFactory
         }
 
         if (isset($metadataData['keywords'])) {
-            $keywords = EntityKeywords::deserialise($metadataData['keywords'], 'metadata.keywords');
+            $keywords = new MultiLocaleString($metadataData['keywords']);
         } else {
-            $keywords = new EntityKeywords();
+            $keywords = new MultiLocaleString();
         }
 
         $certData = null;
