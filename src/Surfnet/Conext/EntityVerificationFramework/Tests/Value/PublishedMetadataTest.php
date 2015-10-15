@@ -32,7 +32,7 @@ class PublishedMetadataTest extends TestCase
         $metadataIdp = file_get_contents(__DIR__ . '/fixtures/metadata-idp-engineblock.xml');
         $metadataIdpXml = simplexml_load_string($metadataIdp);
 
-        $metadata = PublishedMetadata::fromEntityDescriptor($metadataIdpXml);
+        $metadata = PublishedMetadata::fromEntityDescriptorXml($metadataIdpXml);
 
         $this->assertInstanceOf(PublishedMetadata::class, $metadata);
     }
@@ -46,7 +46,7 @@ class PublishedMetadataTest extends TestCase
         $metadataSp = file_get_contents(__DIR__ . '/fixtures/metadata-sp-engineblock.xml');
         $metadataSpXml = simplexml_load_string($metadataSp);
 
-        $metadata = PublishedMetadata::fromEntityDescriptor($metadataSpXml);
+        $metadata = PublishedMetadata::fromEntityDescriptorXml($metadataSpXml);
 
         $this->assertInstanceOf(PublishedMetadata::class, $metadata);
     }
@@ -60,7 +60,7 @@ class PublishedMetadataTest extends TestCase
         $metadataIdp = file_get_contents(__DIR__ . '/fixtures/metadata-idp-onegini.xml');
         $metadataIdpXml = simplexml_load_string($metadataIdp);
 
-        $metadata = PublishedMetadata::fromEntityDescriptor($metadataIdpXml);
+        $metadata = PublishedMetadata::fromEntityDescriptorXml($metadataIdpXml);
 
         $this->assertInstanceOf(PublishedMetadata::class, $metadata);
     }

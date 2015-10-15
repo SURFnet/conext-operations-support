@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
 final class Url
 {
@@ -80,6 +81,18 @@ final class Url
         Assert::string($scheme);
 
         return strtolower($this->parts['scheme']) === strtolower($scheme);
+    }
+
+    /**
+     * @return string
+     */
+    public function getValidUrl()
+    {
+        if (!$this->isValid()) {
+            throw new LogicException('Cannot retrieve valid URL; it is not valid');
+        }
+
+        return $this->url;
     }
 
     /**

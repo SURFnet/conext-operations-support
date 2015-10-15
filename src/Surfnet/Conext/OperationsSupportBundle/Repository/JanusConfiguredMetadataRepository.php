@@ -29,7 +29,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
 use Surfnet\JanusApiClientBundle\Service\ApiService;
 
-final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepository
+final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepository, PublishedMetadataUrlRepository
 {
     const CONNECTION_STATE_PRODUCTION = 'prodaccepted';
 
@@ -68,6 +68,22 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
         $this->logger->debug('Deserialised into configured metadata');
 
         return $metadata;
+    }
+
+    public function getPublishedMetadataUrlFor(Entity $entity)
+    {
+        $this->logger->debug(sprintf('Fetching published metadata URL for entity "%s" from Janus', $entity));
+
+        $url = $this->getMetadataFor($entity)->getPublishedMetadataUrl();
+        if (!$url->isValid()) {
+            $this->logger->debug(sprintf('Published metadata URL "%s" is not valid, returning NULL', $url));
+
+            return null;
+        }
+
+        $this->logger->debug(sprintf('Published metadata URL is "%s"', $url));
+
+        return $url->getValidUrl();
     }
 
     public function getConfiguredEntities()

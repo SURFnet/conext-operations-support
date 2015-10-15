@@ -20,7 +20,8 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Exception\RuntimeException;
+use Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException;
+use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
 
 /**
  * @SuppressWarnings(PHPMD)
@@ -55,8 +56,10 @@ final class PublishedMetadata
     /**
      * @param SimpleXMLElement $entityDescriptorXml
      * @return PublishedMetadata
+     * @throws AssertionFailedException
+     * @throws InvalidArgumentException
      */
-    public static function fromEntityDescriptor(SimpleXMLElement $entityDescriptorXml)
+    public static function fromEntityDescriptorXml(SimpleXMLElement $entityDescriptorXml)
     {
         Assert::simpleXmlName($entityDescriptorXml, 'EntityDescriptor');
 
@@ -71,7 +74,7 @@ final class PublishedMetadata
         $idpSsoDescriptorCount = count($entityDescriptorXml->xpath('md:IDPSSODescriptor'));
 
         if ($spSsoDescriptorCount + $idpSsoDescriptorCount !== 1) {
-            throw new RuntimeException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Can only handle one of the %d SP and %s IDP SSO descriptors',
                     $spSsoDescriptorCount,
@@ -195,5 +198,13 @@ final class PublishedMetadata
         $this->organisationDisplayName   = new MultiLocaleString();
         $this->organisationUrl           = new MultiLocaleUrl();
         $this->contacts                  = new ContactSet();
+    }
+
+    /**
+     * @return Entity
+     */
+    public function getEntity()
+    {
+        return $this->entity;
     }
 }

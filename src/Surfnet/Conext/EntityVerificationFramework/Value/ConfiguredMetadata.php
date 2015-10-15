@@ -120,4 +120,12 @@ class ConfiguredMetadata
         $this->guestQualifier            = $guestQualifier;
         $this->freeformProperties        = $freeformProperties;
     }
+
+    /**
+     * @return null|Url
+     */
+    public function getPublishedMetadataUrl()
+    {
+        return $this->publishedMetadataUrl;
+    }
 }

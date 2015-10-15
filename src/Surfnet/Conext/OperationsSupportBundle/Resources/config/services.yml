@@ -3,7 +3,7 @@ services:
         class: Surfnet\Conext\EntityVerificationFramework\Runner
         arguments:
             - @surfnet_conext_operations_support.repository.configured_metadata.janus
-            - @surfnet_conext_operations_support.repository.published_metadata.dummy
+            - @surfnet_conext_operations_support.repository.published_metadata.guzzle
             - @surfnet_conext_operations_support.verification_blacklist
             - @logger
 
@@ -18,6 +18,16 @@ services:
 
     surfnet_conext_operations_support.repository.published_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyPublishedMetadataRepository
+
+    surfnet_conext_operations_support.repository.published_metadata.guzzle:
+        class: Surfnet\Conext\OperationsSupportBundle\Repository\GuzzlePublishedMetadataRepository
+        arguments:
+            - @surfnet_conext_operations_support.repository.configured_metadata.janus
+            - @surfnet_conext_operations_support.repository.guzzle.published_metadata
+            - @logger
+
+    surfnet_conext_operations_support.repository.guzzle.published_metadata:
+        class: GuzzleHttp\Client
 
     surfnet_conext_operations_support.command.run_suites:
         class: Surfnet\Conext\OperationsSupportBundle\Console\Command\RunSuitesCommand
