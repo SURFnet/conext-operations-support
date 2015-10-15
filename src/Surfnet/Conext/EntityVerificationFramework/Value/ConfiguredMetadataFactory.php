@@ -74,7 +74,7 @@ final class ConfiguredMetadataFactory
 
         $defaultNameIdFormat = null;
         if (isset($metadataData['NameIDFormat'])) {
-            $defaultNameIdFormat = NameIdFormat::deserialise($metadataData['NameIDFormat'], 'metadata.NameIDFormat');
+            $defaultNameIdFormat = new NameIdFormat($metadataData['NameIDFormat']);
         }
 
         $acceptableNameIdFormats = [];
@@ -86,7 +86,7 @@ final class ConfiguredMetadataFactory
             );
             $acceptableNameIdFormats = array_map(
                 function ($data) {
-                    return NameIdFormat::deserialise($data, 'metadata.NameIDFormats[]');
+                    return new NameIdFormat($data);
                 },
                 $metadataData['NameIDFormats']
             );
