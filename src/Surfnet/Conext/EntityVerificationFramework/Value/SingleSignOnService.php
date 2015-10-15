@@ -41,7 +41,7 @@ final class SingleSignOnService
         }
 
         if (isset($data['Location'])) {
-            $acs->location = Url::deserialise($data['Location'], 'Location');
+            $location = Url::fromString($data['Location']);
         }
 
         return $acs;

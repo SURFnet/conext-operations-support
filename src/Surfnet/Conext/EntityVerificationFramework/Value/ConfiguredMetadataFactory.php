@@ -39,7 +39,7 @@ final class ConfiguredMetadataFactory
         $publishedMetadataUrl = null;
         if (array_key_exists('metadataUrl', $data)) {
             Assert::string($data['metadataUrl'], 'Published metadata URL is not a string', 'metadataUrl');
-            $publishedMetadataUrl = Url::deserialise($data['metadataUrl'], 'metadataUrl');
+            $publishedMetadataUrl = Url::fromString($data['metadataUrl']);
         }
 
         Assert::keyExists($data, 'metadata', 'Doesn\'t contain "metadata" key');
