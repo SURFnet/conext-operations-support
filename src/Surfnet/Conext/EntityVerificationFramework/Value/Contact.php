@@ -68,6 +68,27 @@ final class Contact
     }
 
     /**
+     * @param ContactType|null  $type
+     * @param EmailAddress|null $email
+     * @param string|null       $givenName
+     * @param string|null       $surName
+     */
+    public function __construct(
+        ContactType $type = null,
+        EmailAddress $email = null,
+        $givenName = null,
+        $surName = null
+    ) {
+        Assert::nullOrString($givenName, 'Contact givenName must be a string or null');
+        Assert::nullOrString($surName, 'Contact surName must be a string or null');
+
+        $this->type      = $type;
+        $this->email     = $email;
+        $this->givenName = $givenName;
+        $this->surName   = $surName;
+    }
+
+    /**
      * @param Contact $other
      * @return bool
      *

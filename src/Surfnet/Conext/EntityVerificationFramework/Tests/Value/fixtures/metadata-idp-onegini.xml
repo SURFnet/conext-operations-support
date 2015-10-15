@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" ID="onegini.me" entityID="https://www.onegini.me"
+                     validUntil="2015-10-16T11:15:57.327Z">
+    <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+        <md:Extensions>
+            <mdui:UIInfo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+                <mdui:DisplayName xml:lang="nl">Onegini</mdui:DisplayName>
+                <mdui:DisplayName xml:lang="en">Onegini</mdui:DisplayName>
+                <mdui:Description xml:lang="nl">In Onegini kunt u uw digitale identiteit aanmaken en beheren. U kunt in
+                    Onegini inloggen met een account dat u vaker gebruikt en daarom eenvoudiger te onthouden is.
+                </mdui:Description>
+                <mdui:Description xml:lang="en">In Onegini you can create and maintain your digital identity. You can
+                    log in with Onegini using an account you use more often so it's easier to remember.
+                </mdui:Description>
+                <mdui:Keywords xml:lang="nl">onegini gini</mdui:Keywords>
+                <mdui:Keywords xml:lang="en">onegini gini</mdui:Keywords>
+                <mdui:Logo height="105" width="105">https://www.onegini.me/static/img/placeholders/onegini.png
+                </mdui:Logo>
+            </mdui:UIInfo>
+        </md:Extensions>
+        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>
+                        MIIDrjCCApYCCQCdC8PpdV+otjANBgkqhkiG9w0BAQUFADCBmDELMAkGA1UEBhMCTkwxEDAOBgNVBAgTB1V0cmVjaHQxEDAOBgNVBAcTB1dvZXJkZW4xITAfBgNVBAoTGElubm92YXRpb24gRGlzdHJpY3QgQi5WLjELMAkGA1UECxMCSVQxFTATBgNVBAMTDG9uZWdpbmktcHJvZDEeMBwGCSqGSIb3DQEJARYPaW5mb0BvbmVnaW5pLm1lMB4XDTEzMDIxMTEzMzkwOVoXDTIzMDIwOTEzMzkwOVowgZgxCzAJBgNVBAYTAk5MMRAwDgYDVQQIEwdVdHJlY2h0MRAwDgYDVQQHEwdXb2VyZGVuMSEwHwYDVQQKExhJbm5vdmF0aW9uIERpc3RyaWN0IEIuVi4xCzAJBgNVBAsTAklUMRUwEwYDVQQDEwxvbmVnaW5pLXByb2QxHjAcBgkqhkiG9w0BCQEWD2luZm9Ab25lZ2luaS5tZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMjWaganInDL6uLSfbMhC6xnxyzXVtD9n1AnK6GgSTgjKwwYyFMoCIQwTN2juacxgvMftmHdRTC9X0BLMiu3h0GIPO1y2QlH4m3t8SPxc1eZzr3i4/tzGum0NHE4a4o5+Ue2sPUXiYkESHM0PdErW21Ucy8CFRIkY7osu7WYKiYBA9BZgxJcqw+3Au7BEEKArYQwze+tuTFn/7qUNDaCkjJZwVDb4x0FGPElDbNUPCf72ctnUfOMGoprQapIZu6Z/DNgP0r/GxnefqVdyo/7OmqMfdo/dg3rLnTiETrkIfGycpsmBZfknyA+55E0GWRI/4ORSKRuPWE+7rWLE7c0O6MCAwEAATANBgkqhkiG9w0BAQUFAAOCAQEAK2gc4C74ts3zVqGHcrBUt9WSdJiZb8j9c84KBlCN5I/zVMLSsRtJuMizBgKY4hsJzqnS27ZX95/zC43nlWnkBz0eOsAQ2SrWjaNJ8/PL5cwwl5QW8r6+mZlxWFU3EpBWkJSRI+8p0HDKYmGNLrZGsYg9S7b4nBsI+EMCuQr7pp/O/CsbS8IQqisAYux4XBoT7ILXT5vP5QayMKN3Ezcs4yETYYItnRftY/MKSeeDBmYfL96i3G149Ck914RW/wA58KtWOqljsfJ0/EUgdh/DVqLzmDIrmwjij0PLoX76xjTksodjjMIhYLL/IjtV40QXggyKQCQ2+TZa3d6h7PpJcA==
+                    </ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                Location="https://www.onegini.me/saml/single-logout"/>
+        <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                Location="https://www.onegini.me/saml/single-logout"/>
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                Location="https://www.onegini.me/saml/single-sign-on"/>
+        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                Location="https://www.onegini.me/saml/single-sign-on"/>
+    </md:IDPSSODescriptor>
+    <md:Organization>
+        <md:OrganizationName xml:lang="nl">Onegini</md:OrganizationName>
+        <md:OrganizationName xml:lang="en">Onegini</md:OrganizationName>
+        <md:OrganizationDisplayName xml:lang="nl">Onegini</md:OrganizationDisplayName>
+        <md:OrganizationDisplayName xml:lang="en">Onegini</md:OrganizationDisplayName>
+        <md:OrganizationURL xml:lang="nl">https://www.onegini.me</md:OrganizationURL>
+        <md:OrganizationURL xml:lang="en">https://www.onegini.me</md:OrganizationURL>
+    </md:Organization>
+    <md:ContactPerson contactType="support">
+        <md:GivenName>onegini.me</md:GivenName>
+        <md:EmailAddress>support@onegini.me</md:EmailAddress>
+    </md:ContactPerson>
+    <md:ContactPerson contactType="technical">
+        <md:GivenName>onegini.me</md:GivenName>
+        <md:EmailAddress>support@onegini.me</md:EmailAddress>
+    </md:ContactPerson>
+</md:EntityDescriptor>

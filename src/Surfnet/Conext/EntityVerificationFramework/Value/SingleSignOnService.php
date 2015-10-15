@@ -18,6 +18,8 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
+use SimpleXMLElement;
+use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
 final class SingleSignOnService
@@ -34,21 +36,44 @@ final class SingleSignOnService
      */
     public static function deserialise($data)
     {
-        $acs = new self();
-
+        $binding = null;
         if (isset($data['Binding'])) {
-            $acs->binding = Binding::deserialise($data['Binding']);
+            $binding = Binding::deserialise($data['Binding']);
         }
 
+        $location = null;
         if (isset($data['Location'])) {
             $location = Url::fromString($data['Location']);
         }
 
-        return $acs;
+        return new SingleSignOnService($binding, $location);
     }
 
-    private function __construct()
+    public static function fromXml(SimpleXMLElement $ssoXml)
     {
+        Assert::simpleXmlName($ssoXml, 'SingleSignOnService');
+
+        $binding = null;
+        if ($ssoXml['Binding'] !== null) {
+            $binding = Binding::deserialise((string) $ssoXml['Binding']);
+        }
+
+        $location = null;
+        if ($ssoXml['Location'] !== null) {
+            $location = Url::fromString((string) $ssoXml['Location']);
+        }
+
+        return new SingleSignOnService($binding, $location);
+    }
+
+    /**
+     * @param Binding|null $binding
+     * @param Url|null     $location
+     */
+    private function __construct(Binding $binding = null, Url $location = null)
+    {
+        $this->binding = $binding;
+        $this->location = $location;
     }
 
     /**
@@ -121,7 +146,17 @@ final class SingleSignOnService
      */
     public function equals(SingleSignOnService $other)
     {
-        return $this == $other;
+        if ($this->binding === null || $other->binding === null) {
+            $valid = $this->binding === $other->binding;
+        } else {
+            $valid = $this->binding->equals($other->binding);
+        }
+
+        if ($this->location === null || $other->location === null) {
+            return $valid && $this->location === $other->location;
+        } else {
+            return $valid && $this->location->equals($other->location);
+        }
     }
 
     public function __toString()

@@ -19,8 +19,28 @@
 namespace Surfnet\Conext\EntityVerificationFramework;
 
 use Assert\Assertion as BaseAssertion;
+use SimpleXMLElement;
 
 class Assert extends BaseAssertion
 {
     protected static $exceptionClass = 'Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException';
+
+    public static function simpleXmlName(
+        SimpleXMLElement $element,
+        $expectedName,
+        $message = null,
+        $propertyPath = null
+    ) {
+        $actualName = $element->getName();
+
+        if (!$message) {
+            $message = sprintf(
+                'Failed to assert SimpleXMLElement\'s name "%s" equals "%s"',
+                self::stringify($actualName),
+                self::stringify($expectedName)
+            );
+        }
+
+        static::eq($actualName, $expectedName, $message, $propertyPath);
+    }
 }
