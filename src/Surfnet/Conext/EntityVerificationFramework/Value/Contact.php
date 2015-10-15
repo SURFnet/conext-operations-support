@@ -47,10 +47,7 @@ final class Contact
         }
 
         if (isset($data['emailAddress'])) {
-            $contact->email = EmailAddress::deserialise(
-                $data['emailAddress'],
-                sprintf('%s.emailAddress', $propertyPath)
-            );
+            $contact->email = new EmailAddress($data['emailAddress']);
         }
 
         if (isset($data['givenName'])) {
