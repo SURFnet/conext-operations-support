@@ -35,31 +35,22 @@ final class PublishedMetadataList implements IteratorAggregate, Countable
     private $metadatas;
 
     /**
-     * @param SimpleXMLElement $xml
-     * @return PublishedMetadataList
-     * @throws AssertionFailedException
-     * @throws InvalidArgumentException
-     */
-    public static function fromMetadataXml(SimpleXMLElement $xml)
-    {
-        $xml->registerXPathNamespace('md', 'urn:oasis:names:tc:SAML:2.0:metadata');
-
-        $publishedMetadatas = array_map(
-            'Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata::fromEntityDescriptorXml',
-            $xml->xpath('/md:EntityDescriptors/md:EntityDescriptor | /md:EntityDescriptor')
-        );
-
-        return new PublishedMetadataList($publishedMetadatas);
-    }
-
-    /**
      * @param PublishedMetadata[] $metadatas
      */
-    public function __construct(array $metadatas)
+    public function __construct(array $metadatas = [])
     {
         Assert::allIsInstanceOf($metadatas, PublishedMetadata::class);
 
         $this->metadatas = array_values($metadatas);
+    }
+
+    /**
+     * @param PublishedMetadata $metadata
+     * @return PublishedMetadataList
+     */
+    public function add(PublishedMetadata $metadata)
+    {
+        return new PublishedMetadataList(array_merge($this->metadatas, [$metadata]));
     }
 
     /**

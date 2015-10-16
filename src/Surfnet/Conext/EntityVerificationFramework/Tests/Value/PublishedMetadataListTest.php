@@ -22,9 +22,10 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
+use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataList;
 
-class PublishedMetadataListTest extends TestCase
+class PublishedMetadataFactoryTest extends TestCase
 {
     /**
      * @test
@@ -35,7 +36,7 @@ class PublishedMetadataListTest extends TestCase
         $metadataXmlString = file_get_contents(__DIR__ . '/fixtures/metadata-idp-engineblock.xml');
         $metadataXml = simplexml_load_string($metadataXmlString);
 
-        $list = PublishedMetadataList::fromMetadataXml($metadataXml);
+        $list = PublishedMetadataFactory::fromMetadataXml($metadataXml);
 
         $this->assertInstanceOf(PublishedMetadataList::class, $list);
         $this->assertCount(1, $list);
@@ -50,7 +51,7 @@ class PublishedMetadataListTest extends TestCase
         $metadataXmlString = file_get_contents(__DIR__ . '/fixtures/metadata-multi-engineblock-onegini.xml');
         $metadataXml = simplexml_load_string($metadataXmlString);
 
-        $list = PublishedMetadataList::fromMetadataXml($metadataXml);
+        $list = PublishedMetadataFactory::fromMetadataXml($metadataXml);
 
         $this->assertInstanceOf(PublishedMetadataList::class, $list);
         $this->assertCount(2, $list);
@@ -67,7 +68,7 @@ class PublishedMetadataListTest extends TestCase
 
         $onegini = new Entity(new EntityId('https://www.onegini.me'), EntityType::IdP());
 
-        $list = PublishedMetadataList::fromMetadataXml($metadataXml);
+        $list = PublishedMetadataFactory::fromMetadataXml($metadataXml);
         $this->assertCount(2, $list);
         $this->assertCount(1, $list->findByEntity($onegini));
     }

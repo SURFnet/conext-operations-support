@@ -25,7 +25,7 @@ use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentExceptio
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataList;
+use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataFactory;
 
 final class GuzzlePublishedMetadataRepository implements PublishedMetadataRepository
 {
@@ -99,7 +99,7 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
         $xmlString = $response->getBody()->getContents();
         $xml = $this->loadXml($xmlString, $entity);
 
-        $metadatas = PublishedMetadataList::fromMetadataXml($xml);
+        $metadatas = PublishedMetadataFactory::fromMetadataXml($xml);
         $this->logger->info(sprintf('Published metadata contains %d entities', count($metadatas)));
 
         $metadatas = $metadatas->findByEntity($entity);
