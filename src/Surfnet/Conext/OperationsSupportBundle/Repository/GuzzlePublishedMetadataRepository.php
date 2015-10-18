@@ -20,12 +20,12 @@ namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 
 use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
-use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataFactory;
+use Surfnet\Conext\OperationsSupportBundle\Xml\XmlHelper;
 
 final class GuzzlePublishedMetadataRepository implements PublishedMetadataRepository
 {
@@ -97,7 +97,11 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
         }
 
         $xmlString = $response->getBody()->getContents();
-        $xml = $this->loadXml($xmlString, $entity);
+        $xml = XmlHelper::loadXml($xmlString, $this->logger);
+
+        if ($xml === null) {
+            return null;
+        }
 
         $metadatas = PublishedMetadataFactory::fromMetadataXml($xml);
         $this->logger->info(sprintf('Published metadata contains %d entities', count($metadatas)));
@@ -117,56 +121,5 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
 
                 return null;
         }
-    }
-
-    /**
-     * @param string $xmlString
-     * @param Entity $entity
-     * @return null|SimpleXMLElement
-     */
-    private function loadXml($xmlString, Entity $entity)
-    {
-        $previousUseInternalErrors = libxml_use_internal_errors(true);
-        libxml_clear_errors();
-
-        try {
-            $xml = simplexml_load_string($xmlString);
-            $xmlErrors = libxml_get_errors();
-        } finally {
-            libxml_use_internal_errors($previousUseInternalErrors);
-            libxml_clear_errors();
-        }
-
-        if (count($xmlErrors) === 0) {
-            return $xml;
-
-        }
-
-        $this->logger->info(
-            sprintf(
-                'Published metadata for entity "%s" contains XML errors: %s',
-                $entity,
-                $this->formatLibXmlErrors($xmlErrors)
-            )
-        );
-
-        return null;
-    }
-
-    /**
-     * @param object[] $xmlErrors
-     * @return string
-     */
-    private function formatLibXmlErrors(array $xmlErrors)
-    {
-        return join(
-            ', ',
-            array_map(
-                function ($error) {
-                    return sprintf("(%d:%d) %s", $error->line, $error->column, $error->message);
-                },
-                $xmlErrors
-            )
-        );
     }
 }

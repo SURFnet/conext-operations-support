@@ -18,7 +18,7 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
-final class PublishedMetadata
+class PublishedMetadata
 {
     /** @var Entity */
     private $entity;
