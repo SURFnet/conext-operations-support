@@ -34,12 +34,8 @@ class PublishedMetadata
     private $assertionConsumerServices;
     /** @var SingleSignOnServiceList */
     private $singleSignOnServices;
-    /** @var MultiLocaleString */
-    private $organisationName;
-    /** @var MultiLocaleString */
-    private $organisationDisplayName;
-    /** @var MultiLocaleUrl */
-    private $organisationUrl;
+    /** @var Organisation */
+    private $organisation;
     /** @var ContactSet */
     private $contacts;
 
@@ -51,12 +47,8 @@ class PublishedMetadata
      * @param NameIdFormatList              $nameIdFormats
      * @param AssertionConsumerServiceList  $assertionConsumerServices
      * @param SingleSignOnServiceList       $singleSignOnServices
-     * @param MultiLocaleString             $organisationName
-     * @param MultiLocaleString             $organisationDisplayName
-     * @param MultiLocaleUrl                $organisationUrl
+     * @param Organisation                  $organisation
      * @param ContactSet                    $contacts
-     *
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Entity $entity,
@@ -66,9 +58,7 @@ class PublishedMetadata
         NameIdFormatList $nameIdFormats,
         AssertionConsumerServiceList $assertionConsumerServices,
         SingleSignOnServiceList $singleSignOnServices,
-        MultiLocaleString $organisationName,
-        MultiLocaleString $organisationDisplayName,
-        MultiLocaleUrl $organisationUrl,
+        Organisation $organisation,
         ContactSet $contacts
     ) {
         $this->entity                    = $entity;
@@ -78,9 +68,7 @@ class PublishedMetadata
         $this->nameIdFormats             = $nameIdFormats;
         $this->assertionConsumerServices = $assertionConsumerServices;
         $this->singleSignOnServices      = $singleSignOnServices;
-        $this->organisationName          = $organisationName;
-        $this->organisationDisplayName   = $organisationDisplayName;
-        $this->organisationUrl           = $organisationUrl;
+        $this->organisation              = $organisation;
         $this->contacts                  = $contacts;
     }
 

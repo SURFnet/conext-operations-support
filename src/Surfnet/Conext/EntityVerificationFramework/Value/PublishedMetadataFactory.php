@@ -192,9 +192,7 @@ final class PublishedMetadataFactory
             $nameIdFormats,
             $assertionConsumerServices,
             $singleSignOnServices,
-            $organisationName,
-            $organisationDisplayName,
-            $organisationUrl,
+            new Organisation($organisationName, $organisationDisplayName, $organisationUrl),
             $contacts
         );
     }
