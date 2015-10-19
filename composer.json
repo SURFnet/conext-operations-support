@@ -29,7 +29,9 @@
     "chobie/jira-api-restclient": "^1.0",
     "beberlei/assert": "^2.4",
     "mockery/mockery": "^0.9.4",
-    "doctrine/doctrine-migrations-bundle": "^1.1"
+    "doctrine/doctrine-migrations-bundle": "^1.1",
+    "ramsey/uuid": "^3.0",
+    "vasek-purchart/doctrine-date-time-immutable-types-bundle": "^0.1.0"
   },
   "require-dev": {
     "sensio/generator-bundle": "~2.3",

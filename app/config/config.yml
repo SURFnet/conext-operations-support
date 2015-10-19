@@ -37,6 +37,10 @@ doctrine:
         password: "%database_password%"
         charset:  UTF8
 
+        types:
+            evf_entity_id: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityIdType
+            evf_entity_type: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityTypeType
+
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
@@ -71,3 +75,5 @@ surfnet_conext_operations_support:
     suites:
         []
 
+doctrine_date_time_immutable_types:
+    register: add
