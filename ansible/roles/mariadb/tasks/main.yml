@@ -26,6 +26,12 @@
 - name: Set root password
   shell: mysqladmin -uroot password {{ database.root_password|quote }} && touch /home/vagrant/.mariadb_root_password_set creates=/home/vagrant/.mariadb_root_password_set
 
+- name: Add conext database
+  mysql_db: name=conext state=present login_user=root login_password={{ database.root_password }}
+
+- name: Add conext user
+  mysql_user: host=% name=conext password=conext priv=conext.*:ALL state=present login_user=root login_password={{ database.root_password }}
+
 - name: Add firewall rule for MariaDB
   firewalld: service=mysql permanent=true state=enabled
   notify: Reload firewall

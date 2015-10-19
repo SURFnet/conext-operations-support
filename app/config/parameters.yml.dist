@@ -1,9 +1,9 @@
 parameters:
-    database_host:     127.0.0.1
+    database_host:     192.168.67.10
     database_port:     ~
     database_name:     conext
-    database_user:     root
-    database_password: ~
+    database_user:     conext
+    database_password: conext
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
