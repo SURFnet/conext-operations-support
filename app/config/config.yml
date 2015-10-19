@@ -42,6 +42,12 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
 
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/DoctrineMigrations"
+    namespace: Surfnet\Conext\Migration
+    table_name: migration_versions
+    name: Conext Operations Support Migrations
+
 swiftmailer:
     transport: "%mailer_transport%"
     host:      "%mailer_host%"

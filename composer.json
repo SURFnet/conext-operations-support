@@ -28,7 +28,8 @@
     "incenteev/composer-parameter-handler": "~2.0",
     "chobie/jira-api-restclient": "^1.0",
     "beberlei/assert": "^2.4",
-    "mockery/mockery": "^0.9.4"
+    "mockery/mockery": "^0.9.4",
+    "doctrine/doctrine-migrations-bundle": "^1.1"
   },
   "require-dev": {
     "sensio/generator-bundle": "~2.3",
