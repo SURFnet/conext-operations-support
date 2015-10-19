@@ -16,10 +16,16 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Exception;
+namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 
-use RuntimeException as CoreRuntimeException;
+use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
+use Surfnet\Conext\EntityVerificationFramework\Value\Url;
 
-class RuntimeException extends CoreRuntimeException implements Exception
+interface PublishedMetadataUrlRepository
 {
+    /**
+     * @param Entity $entity
+     * @return string|null
+     */
+    public function getPublishedMetadataUrlFor(Entity $entity);
 }
