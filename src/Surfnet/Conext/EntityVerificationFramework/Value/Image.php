@@ -39,7 +39,7 @@ final class Image
         $image = new Image();
 
         if (array_key_exists('url', $data)) {
-            $image->url = Url::deserialise($data['url'], 'url');
+            $image->url = Url::fromString($data['url']);
         }
 
         if (array_key_exists('width', $data)) {

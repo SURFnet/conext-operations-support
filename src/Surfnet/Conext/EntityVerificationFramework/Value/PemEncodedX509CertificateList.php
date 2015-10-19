@@ -23,39 +23,41 @@ use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class NameIdFormatList implements IteratorAggregate, Countable
+final class PemEncodedX509CertificateList implements IteratorAggregate, Countable
 {
     /**
-     * @var NameIdFormat[]
+     * @var PemEncodedX509Certificate[]
      */
-    private $formats;
+    private $certs;
 
-    /**
-     * @param NameIdFormat[] $formats
-     */
-    public function __construct(array $formats = [])
+    public function __construct(array $certs = [])
     {
-        Assert::allIsInstanceOf($formats, NameIdFormat::class);
+        Assert::allIsInstanceOf($certs, PemEncodedX509Certificate::class);
 
-        $this->formats = $formats;
+        $this->certs = $certs;
     }
 
     /**
-     * @param NameIdFormat $format
-     * @return NameIdFormatList
+     * @param PemEncodedX509Certificate $cert
+     * @return PemEncodedX509CertificateList
      */
-    public function add(NameIdFormat $format)
+    public function add(PemEncodedX509Certificate $cert)
     {
-        return new NameIdFormatList(array_merge($this->formats, [$format]));
-    }
-
-    public function count()
-    {
-        return count($this->formats);
+        return new PemEncodedX509CertificateList(array_merge($this->certs, [$cert]));
     }
 
     public function getIterator()
     {
-        return new ArrayIterator($this->formats);
+        return new ArrayIterator($this->certs);
+    }
+
+    public function count()
+    {
+        return count($this->certs);
+    }
+
+    public function __toString()
+    {
+        return sprintf('PemEncodedX509CertificateList(%s)', join(', ', array_map('strval', $this->certs)));
     }
 }

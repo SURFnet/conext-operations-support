@@ -18,6 +18,8 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
+use SimpleXMLElement;
+use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
 final class AssertionConsumerService
@@ -29,26 +31,49 @@ final class AssertionConsumerService
     private $location;
 
     /**
-     * @param mixed $data
+     * @param array $data
      * @return AssertionConsumerService
      */
     public static function deserialise($data)
     {
-        $acs = new self();
-
+        $binding = null;
         if (isset($data['Binding'])) {
-            $acs->binding = Binding::deserialise($data['Binding']);
+            $binding = Binding::deserialise($data['Binding']);
         }
 
+        $location = null;
         if (isset($data['Location'])) {
-            $acs->location = Url::deserialise($data['Location'], 'Location');
+            $location = Url::fromString($data['Location']);
         }
 
-        return $acs;
+        return new AssertionConsumerService($binding, $location);
     }
 
-    private function __construct()
+    public static function fromXml(SimpleXMLElement $acsXml)
     {
+        Assert::simpleXmlName($acsXml, 'AssertionConsumerService');
+
+        $binding = null;
+        if ($acsXml['Binding'] !== null) {
+            $binding = Binding::deserialise((string) $acsXml['Binding']);
+        }
+
+        $location = null;
+        if ($acsXml['Location'] !== null) {
+            $location = Url::fromString((string) $acsXml['Location']);
+        }
+
+        return new AssertionConsumerService($binding, $location);
+    }
+
+    /**
+     * @param Binding|null $binding
+     * @param Url|null     $location
+     */
+    private function __construct(Binding $binding = null, Url $location = null)
+    {
+        $this->binding = $binding;
+        $this->location = $location;
     }
 
     /**

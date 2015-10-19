@@ -43,14 +43,11 @@ final class Contact
         $contact = new Contact();
 
         if (isset($data['contactType'])) {
-            $contact->type = ContactType::deserialise($data['contactType'], sprintf('%s.contactType', $propertyPath));
+            $contact->type = new ContactType($data['contactType']);
         }
 
         if (isset($data['emailAddress'])) {
-            $contact->email = EmailAddress::deserialise(
-                $data['emailAddress'],
-                sprintf('%s.emailAddress', $propertyPath)
-            );
+            $contact->email = new EmailAddress($data['emailAddress']);
         }
 
         if (isset($data['givenName'])) {
@@ -68,6 +65,27 @@ final class Contact
         }
 
         return $contact;
+    }
+
+    /**
+     * @param ContactType|null  $type
+     * @param EmailAddress|null $email
+     * @param string|null       $givenName
+     * @param string|null       $surName
+     */
+    public function __construct(
+        ContactType $type = null,
+        EmailAddress $email = null,
+        $givenName = null,
+        $surName = null
+    ) {
+        Assert::nullOrString($givenName, 'Contact givenName must be a string or null');
+        Assert::nullOrString($surName, 'Contact surName must be a string or null');
+
+        $this->type      = $type;
+        $this->email     = $email;
+        $this->givenName = $givenName;
+        $this->surName   = $surName;
     }
 
     /**

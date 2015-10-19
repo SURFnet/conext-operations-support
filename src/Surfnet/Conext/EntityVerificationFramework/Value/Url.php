@@ -38,25 +38,24 @@ final class Url
     private $parts;
 
     /**
-     * @param string $data
-     * @param string $propertyPath
+     * @param string $string
      * @return Url
      */
-    public static function deserialise($data, $propertyPath)
+    public static function fromString($string)
     {
-        Assert::string($data, $propertyPath);
+        Assert::string($string, 'URL must be string');
 
         $url = new self();
 
-        if (filter_var($data, FILTER_VALIDATE_URL) === false) {
+        if (filter_var($string, FILTER_VALIDATE_URL) === false) {
             $parts = false;
         } else {
-            $parts = parse_url($data);
+            $parts = parse_url($string);
         }
 
         $isValid = $parts !== false;
 
-        $url->url   = $data;
+        $url->url   = $string;
         $url->isValid = $isValid;
         $url->parts = ($parts ?: []) + [
             'scheme'   => null,

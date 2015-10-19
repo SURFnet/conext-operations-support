@@ -54,9 +54,20 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
         return $list;
     }
 
-    public function __construct()
+    public function __construct(array $acss = [])
     {
-        $this->acss = [];
+        Assert::allIsInstanceOf($acss, AssertionConsumerService::class);
+
+        $this->acss = $acss;
+    }
+
+    /**
+     * @param AssertionConsumerService $service
+     * @return AssertionConsumerServiceList
+     */
+    public function add(AssertionConsumerService $service)
+    {
+        return new AssertionConsumerServiceList(array_merge($this->acss, [$service]));
     }
 
     public function getIterator()

@@ -39,7 +39,7 @@ final class ConfiguredMetadataFactory
         $publishedMetadataUrl = null;
         if (array_key_exists('metadataUrl', $data)) {
             Assert::string($data['metadataUrl'], 'Published metadata URL is not a string', 'metadataUrl');
-            $publishedMetadataUrl = Url::deserialise($data['metadataUrl'], 'metadataUrl');
+            $publishedMetadataUrl = Url::fromString($data['metadataUrl']);
         }
 
         Assert::keyExists($data, 'metadata', 'Doesn\'t contain "metadata" key');
@@ -54,7 +54,7 @@ final class ConfiguredMetadataFactory
 
         $name = null;
         if (isset($metadataData['name'])) {
-            $name = EntityName::deserialise($metadataData['name'], 'metadata.name');
+            $name = new MultiLocaleString($metadataData['name']);
         }
 
         if (isset($metadataData['logo'])) {
@@ -74,7 +74,7 @@ final class ConfiguredMetadataFactory
 
         $defaultNameIdFormat = null;
         if (isset($metadataData['NameIDFormat'])) {
-            $defaultNameIdFormat = NameIdFormat::deserialise($metadataData['NameIDFormat'], 'metadata.NameIDFormat');
+            $defaultNameIdFormat = new NameIdFormat($metadataData['NameIDFormat']);
         }
 
         $acceptableNameIdFormats = [];
@@ -86,7 +86,7 @@ final class ConfiguredMetadataFactory
             );
             $acceptableNameIdFormats = array_map(
                 function ($data) {
-                    return NameIdFormat::deserialise($data, 'metadata.NameIDFormats[]');
+                    return new NameIdFormat($data);
                 },
                 $metadataData['NameIDFormats']
             );
@@ -103,7 +103,7 @@ final class ConfiguredMetadataFactory
 
         $url = null;
         if (isset($metadataData['url'])) {
-            $url = ApplicationUrl::deserialise($metadataData['url'], 'metadata.url');
+            $url = MultiLocaleUrl::deserialise($metadataData['url'], 'metadata.url');
         }
 
         if (isset($metadataData['SingleSignOnService'])) {
@@ -116,17 +116,14 @@ final class ConfiguredMetadataFactory
         }
 
         if (isset($metadataData['keywords'])) {
-            $keywords = EntityKeywords::deserialise($metadataData['keywords'], 'metadata.keywords');
+            $keywords = new MultiLocaleString($metadataData['keywords']);
         } else {
-            $keywords = new EntityKeywords();
+            $keywords = new MultiLocaleString();
         }
 
         $certData = null;
         if (isset($metadataData['certData'])) {
-            $certData = PemEncodedX509Certificate::deserialise(
-                $metadataData['certData'],
-                'metadata.certData'
-            );
+            $certData = new PemEncodedX509Certificate($metadataData['certData']);
         }
 
         $coinData = isset($metadataData['coin']) ? $metadataData['coin'] : [];

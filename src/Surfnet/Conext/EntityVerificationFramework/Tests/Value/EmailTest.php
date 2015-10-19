@@ -32,7 +32,7 @@ final class EmailAddressTest extends TestCase
      */
     public function it_deserialises_emails()
     {
-        EmailAddress::deserialise('juliette.dupree+spam@that.invalid', '');
+        new EmailAddress('juliette.dupree+spam@that.invalid');
     }
 
     /**
@@ -45,7 +45,7 @@ final class EmailAddressTest extends TestCase
      */
     public function it_doesnt_accept_non_strings_as_email($nonString)
     {
-        EmailAddress::deserialise($nonString, '');
+        new EmailAddress($nonString);
     }
 
     /**
@@ -54,8 +54,8 @@ final class EmailAddressTest extends TestCase
      */
     public function it_can_be_valid()
     {
-        $this->assertTrue(EmailAddress::deserialise('renee.pompier@datrijmt.invalid', '')->isValid());
-        $this->assertTrue(EmailAddress::deserialise('renee.pompier+spam@datrijmt.invalid', '')->isValid());
+        $this->assertTrue((new EmailAddress('renee.pompier@datrijmt.invalid'))->isValid());
+        $this->assertTrue((new EmailAddress('renee.pompier+spam@datrijmt.invalid'))->isValid());
     }
 
     /**
@@ -64,8 +64,8 @@ final class EmailAddressTest extends TestCase
      */
     public function it_can_be_invalid()
     {
-        $this->assertFalse(EmailAddress::deserialise('', '')->isValid());
-        $this->assertFalse(EmailAddress::deserialise('@la-france.invalid', '')->isValid());
+        $this->assertFalse((new EmailAddress(''))->isValid());
+        $this->assertFalse((new EmailAddress('@la-france.invalid'))->isValid());
     }
 
     /**
@@ -74,8 +74,8 @@ final class EmailAddressTest extends TestCase
      */
     public function two_emails_can_equal_each_other()
     {
-        $url0 = EmailAddress::deserialise('renee.dupree@datrijmtook.invalid', '');
-        $url1 = EmailAddress::deserialise('renee.dupree@datrijmtook.invalid', '');
+        $url0 = new EmailAddress('renee.dupree@datrijmtook.invalid');
+        $url1 = new EmailAddress('renee.dupree@datrijmtook.invalid');
 
         $this->assertTrue($url0->equals($url1));
     }
@@ -86,8 +86,8 @@ final class EmailAddressTest extends TestCase
      */
     public function two_emails_can_differ()
     {
-        $url0 = EmailAddress::deserialise('renee.boulanger@vara.invalid', '');
-        $url1 = EmailAddress::deserialise('francois.boulanger@vara.invalid', '');
+        $url0 = new EmailAddress('renee.boulanger@vara.invalid');
+        $url1 = new EmailAddress('francois.boulanger@vara.invalid');
 
         $this->assertFalse($url0->equals($url1));
     }

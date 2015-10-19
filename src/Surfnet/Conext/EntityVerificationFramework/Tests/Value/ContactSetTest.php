@@ -80,10 +80,10 @@ final class ContactSetTest extends TestCase
         ]);
         $this->assertCount(1, $set);
 
-        $set->add(Contact::deserialise(['givenName' => 'Renault', 'surName' => 'du Grande'], ''));
+        $set = $set->add(Contact::deserialise(['givenName' => 'Renault', 'surName' => 'du Grande'], ''));
         $this->assertCount(2, $set);
 
-        $set->add(Contact::deserialise(['contactType' => 'technical'], ''));
+        $set = $set->add(Contact::deserialise(['contactType' => 'technical'], ''));
         $this->assertCount(2, $set);
     }
 }

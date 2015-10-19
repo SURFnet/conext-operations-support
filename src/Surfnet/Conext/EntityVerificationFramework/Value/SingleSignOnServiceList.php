@@ -54,9 +54,20 @@ final class SingleSignOnServiceList implements IteratorAggregate, Countable
         return $list;
     }
 
-    public function __construct()
+    public function __construct(array $ssos = [])
     {
-        $this->ssos = [];
+        Assert::allIsInstanceOf($ssos, SingleSignOnService::class);
+
+        $this->ssos = $ssos;
+    }
+
+    /**
+     * @param SingleSignOnService $service
+     * @return SingleSignOnServiceList
+     */
+    public function add(SingleSignOnService $service)
+    {
+        return new SingleSignOnServiceList(array_merge($this->ssos, [$service]));
     }
 
     public function getIterator()

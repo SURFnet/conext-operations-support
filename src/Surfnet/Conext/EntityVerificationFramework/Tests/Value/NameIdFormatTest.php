@@ -30,9 +30,9 @@ class NameIdFormatTest extends TestCase
      * @test
      * @group value
      */
-    public function it_can_be_deserialised()
+    public function it_can_be_created()
     {
-        NameIdFormat::deserialise('urn:mad:bro', '');
+        new NameIdFormat('urn:mad:bro');
     }
 
     /**
@@ -45,7 +45,7 @@ class NameIdFormatTest extends TestCase
      */
     public function it_only_accepts_strings($nonString)
     {
-        NameIdFormat::deserialise($nonString, '');
+        new NameIdFormat($nonString);
     }
 
     /**
@@ -54,8 +54,8 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_equal_other_formats()
     {
-        $format0 = NameIdFormat::deserialise('urn:mad:bro', '');
-        $format1 = NameIdFormat::deserialise('urn:mad:bro', '');
+        $format0 = new NameIdFormat('urn:mad:bro');
+        $format1 = new NameIdFormat('urn:mad:bro');
 
         $this->assertTrue($format0->equals($format1));
     }
@@ -66,8 +66,8 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_not_equal_other_formats()
     {
-        $format0 = NameIdFormat::deserialise('urn:mad:bro', '');
-        $format1 = NameIdFormat::deserialise('urn:mad:bra', '');
+        $format0 = new NameIdFormat('urn:mad:bro');
+        $format1 = new NameIdFormat('urn:mad:bra');
 
         $this->assertFalse($format0->equals($format1));
     }
@@ -78,10 +78,10 @@ class NameIdFormatTest extends TestCase
      */
     public function its_format_can_be_validated()
     {
-        $this->assertFalse(NameIdFormat::deserialise('urn:mad:bro', '')->isValidFormat());
-        $this->assertFalse(NameIdFormat::deserialise('urn:oasis:names:tc:SAML:2.0:nameid-format:hoedje-van-hoedje-van', '')->isValidFormat());
+        $this->assertFalse((new NameIdFormat('urn:mad:bro'))->isValidFormat());
+        $this->assertFalse((new NameIdFormat('urn:oasis:names:tc:SAML:2.0:nameid-format:hoedje-van-hoedje-van'))->isValidFormat());
 
-        $this->assertTrue(NameIdFormat::deserialise(NameIdFormat::FORMAT_SAML_20_PERSISTENT, '')->isValidFormat());
-        $this->assertTrue(NameIdFormat::deserialise(NameIdFormat::FORMAT_SAML_20_TRANSIENT, '')->isValidFormat());
+        $this->assertTrue((new NameIdFormat(NameIdFormat::FORMAT_SAML_20_PERSISTENT))->isValidFormat());
+        $this->assertTrue((new NameIdFormat(NameIdFormat::FORMAT_SAML_20_TRANSIENT))->isValidFormat());
     }
 }

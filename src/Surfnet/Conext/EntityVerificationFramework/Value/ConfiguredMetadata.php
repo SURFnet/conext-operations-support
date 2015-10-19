@@ -35,15 +35,15 @@ class ConfiguredMetadata
     private $singleSignOnServices = [];
     /** @var ContactSet */
     private $contacts;
-    /** @var EntityName */
+    /** @var MultiLocaleString */
     private $name;
     /** @var ImageList */
     private $logos;
     /** @var boolean|null */
     private $signRedirects;
-    /** @var ApplicationUrl|null */
+    /** @var MultiLocaleUrl|null */
     private $url;
-    /** @var EntityKeywords|null */
+    /** @var MultiLocaleString|null */
     private $keywords;
     /** @var NameIdFormat|null */
     private $defaultNameIdFormat;
@@ -62,13 +62,13 @@ class ConfiguredMetadata
      * @param SingleSignOnServiceList        $singleSignOnServices
      * @param NameIdFormatList               $acceptableNameIdFormats
      * @param ContactSet                     $contacts
-     * @param EntityName                     $name
-     * @param EntityKeywords                 $keywords
+     * @param MultiLocaleString              $name
+     * @param MultiLocaleString              $keywords
      * @param ImageList                      $logos
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
      * @param null|NameIdFormat              $defaultNameIdFormat
-     * @param null|ApplicationUrl            $url
+     * @param null|MultiLocaleUrl            $url
      * @param bool|null                      $signRedirects
      * @param bool|null                      $guestQualifier
      * @param mixed[]                        $freeformProperties
@@ -81,13 +81,13 @@ class ConfiguredMetadata
         SingleSignOnServiceList $singleSignOnServices,
         NameIdFormatList $acceptableNameIdFormats,
         ContactSet $contacts,
-        EntityName $name,
-        EntityKeywords $keywords,
+        MultiLocaleString $name,
+        MultiLocaleString $keywords,
         ImageList $logos,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
         NameIdFormat $defaultNameIdFormat = null,
-        ApplicationUrl $url = null,
+        MultiLocaleUrl $url = null,
         $signRedirects = null,
         $guestQualifier = null,
         array $freeformProperties = []

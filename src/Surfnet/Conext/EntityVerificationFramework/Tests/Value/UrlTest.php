@@ -32,7 +32,7 @@ class UrlTest extends TestCase
      */
     public function it_can_be_deserialised()
     {
-        Url::deserialise('https://domain.invalid', '');
+        Url::fromString('https://domain.invalid');
     }
 
     /**
@@ -45,7 +45,7 @@ class UrlTest extends TestCase
      */
     public function it_doesnt_accept_anything_else_than_strings($nonString)
     {
-        Url::deserialise($nonString, '');
+        Url::fromString($nonString);
     }
 
     /**
@@ -54,8 +54,8 @@ class UrlTest extends TestCase
      */
     public function it_validates_urls()
     {
-        $this->assertTrue(Url::deserialise('http://domain.invalid', '')->isValid());
-        $this->assertFalse(Url::deserialise('3893', '')->isValid());
+        $this->assertTrue(Url::fromString('http://domain.invalid')->isValid());
+        $this->assertFalse(Url::fromString('3893')->isValid());
     }
 
     /**
@@ -64,6 +64,6 @@ class UrlTest extends TestCase
      */
     public function its_scheme_can_be_verified()
     {
-        $this->assertTrue(Url::deserialise('https://sp.invalid', '')->isScheme('https'));
+        $this->assertTrue(Url::fromString('https://sp.invalid')->isScheme('https'));
     }
 }

@@ -28,18 +28,13 @@ final class EmailAddress
     private $emailAddress;
 
     /**
-     * @param string $data
-     * @param string $propertyPath
-     * @return EmailAddress
+     * @param string $emailAddress
      */
-    public static function deserialise($data, $propertyPath)
+    public function __construct($emailAddress)
     {
-        Assert::string($data, null, $propertyPath);
+        Assert::string($emailAddress, 'E-mail address must at least be a string');
 
-        $email = new EmailAddress();
-        $email->emailAddress = $data;
-
-        return $email;
+        $this->emailAddress = $emailAddress;
     }
 
     /**

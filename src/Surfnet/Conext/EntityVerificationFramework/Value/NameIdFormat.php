@@ -32,22 +32,19 @@ final class NameIdFormat
         self::FORMAT_SAML_20_PERSISTENT,
     ];
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $format;
 
     /**
-     * @param mixed  $data
-     * @param string $propertyPath
-     * @return NameIdFormat
+     * @param string $format
      */
-    public static function deserialise($data, $propertyPath)
+    public function __construct($format)
     {
-        Assert::string($data, 'NameIDFormat must be string', $propertyPath);
+        Assert::string($format, 'NameIDFormat must be string');
 
-        $format = new NameIdFormat();
-        $format->format = $data;
-
-        return $format;
+        $this->format = $format;
     }
 
     /**
