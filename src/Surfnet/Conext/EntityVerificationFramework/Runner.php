@@ -26,8 +26,8 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
+use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 
 class Runner implements VerificationRunner

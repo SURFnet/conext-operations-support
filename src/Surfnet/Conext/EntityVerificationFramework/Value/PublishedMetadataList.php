@@ -21,10 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException;
-use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
 final class PublishedMetadataList implements IteratorAggregate, Countable

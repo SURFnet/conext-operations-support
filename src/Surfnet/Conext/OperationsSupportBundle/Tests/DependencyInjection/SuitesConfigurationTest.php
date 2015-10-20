@@ -20,8 +20,8 @@ namespace Surfnet\OperationsSupportBundle\Tests\DependencyInjection;
 
 use Matthias\SymfonyConfigTest\PhpUnit\ConfigurationTestCaseTrait;
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\OperationsSupportBundle\Tests\DataProvider\DataProvider;
 use Surfnet\Conext\OperationsSupportBundle\DependencyInjection\Configuration;
+use Surfnet\Conext\OperationsSupportBundle\Tests\DataProvider\DataProvider;
 
 final class SuitesConfigurationTest extends TestCase
 {

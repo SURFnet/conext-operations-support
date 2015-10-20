@@ -19,8 +19,8 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Value;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Value\SingleSignOnService;
 use Surfnet\Conext\EntityVerificationFramework\Value\Binding;
+use Surfnet\Conext\EntityVerificationFramework\Value\SingleSignOnService;
 use Surfnet\Conext\EntityVerificationFramework\Value\Url;
 
 final class SingleSignOnServiceTest extends TestCase

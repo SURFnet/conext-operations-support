@@ -19,10 +19,8 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Value;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Value\AssertionConsumerService;
 use Surfnet\Conext\EntityVerificationFramework\Value\AssertionConsumerServiceList;
 use Surfnet\Conext\EntityVerificationFramework\Value\Binding;
-use Surfnet\Conext\EntityVerificationFramework\Value\Url;
 
 final class AssertionConsumerServiceListTest extends TestCase
 {
