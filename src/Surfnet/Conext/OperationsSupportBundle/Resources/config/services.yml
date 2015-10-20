@@ -46,3 +46,8 @@ services:
         factory: [@doctrine.orm.entity_manager, getRepository]
         arguments:
             - 'Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport'
+
+    surfnet_conext_operations_support.value.muted_jira_status:
+        class: Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus
+        arguments:
+            - '' # See extension

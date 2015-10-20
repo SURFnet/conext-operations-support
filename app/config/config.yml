@@ -40,6 +40,7 @@ doctrine:
         types:
             evf_entity_id: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityIdType
             evf_entity_type: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityTypeType
+            ops_jira_issue_status: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\JiraIssueStatusIdType
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
@@ -74,6 +75,8 @@ surfnet_janus_api_client:
 surfnet_conext_operations_support:
     suites:
         []
+    jira:
+        muted_status_id: %jira_muted_status_id%
 
 doctrine_date_time_immutable_types:
     register: add

@@ -22,6 +22,7 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -77,6 +78,24 @@ class Configuration implements ConfigurationInterface
                                     new EntityId($entity[0]);
                                     Assert::inArray($entity[1], ['sp', 'idp']);
                                     return $entity;
+                                })
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('jira')
+                    ->isRequired()
+                    ->children()
+                        ->scalarNode('muted_status_id')
+                            ->isRequired()
+                            ->info(
+                                'Sets the JIRA status ID that represents a muted state. To determine, log into JIRA, ' .
+                                'visit (/jira)/rest/api/2/status and find the status ID of the muted status (eg. On Hold).'
+                            )
+                            ->validate()
+                                ->always(function ($statusId) {
+                                    new JiraIssueStatus($statusId);
+                                    return $statusId;
                                 })
                             ->end()
                         ->end()

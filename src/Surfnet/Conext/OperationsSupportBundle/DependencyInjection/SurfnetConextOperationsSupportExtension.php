@@ -37,6 +37,10 @@ class SurfnetConextOperationsSupportExtension extends Extension
 
         $this->configureSuitesToRun($config, $container);
         $this->configureBlacklist($config, $container);
+
+        $container
+            ->getDefinition('surfnet_conext_operations_support.value.muted_jira_status')
+            ->replaceArgument(0, $config['jira']['muted_status_id']);
     }
 
     private function configureSuitesToRun(array $config, ContainerBuilder $container)

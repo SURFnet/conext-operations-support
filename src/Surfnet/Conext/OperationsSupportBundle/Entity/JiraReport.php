@@ -18,7 +18,6 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\Entity;
 
-use DateInterval;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
@@ -27,7 +26,6 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\OperationsSupportBundle\DateTime\DateTime;
-use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 
 /**
  * @ORM\Entity(repositoryClass="Surfnet\Conext\OperationsSupportBundle\Repository\DoctrineOrmJiraReportRepository")
@@ -72,11 +70,11 @@ class JiraReport
     private $testName;
 
     /**
-     * @ORM\Column
+     * @ORM\Embedded(class="JiraIssue")
      *
-     * @var string
+     * @var JiraIssue
      */
-    private $issueId;
+    private $issue;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -86,33 +84,24 @@ class JiraReport
     private $reportedOn;
 
     /**
-     * @ORM\Column(type="datetime_immutable", nullable=true)
-     *
-     * @var DateTimeImmutable
-     */
-    private $mutedSince;
-
-    /**
      * @param UuidInterface $reportId
      * @param Entity        $entity
      * @param string        $testName
-     * @param string        $issueId
+     * @param JiraIssue     $issue
      * @return JiraReport
      */
-    public static function trackIssue(UuidInterface $reportId, Entity $entity, $testName, $issueId)
+    public static function trackIssue(UuidInterface $reportId, Entity $entity, $testName, JiraIssue $issue)
     {
         Assert::string($testName, 'Test name must be string');
         Assert::notBlank($testName, 'Test name may not be blank');
-        Assert::string($issueId, 'Issue ID must be string');
-        Assert::notBlank($issueId, 'Issue ID may not be blank');
 
         $report = new JiraReport();
         $report->id         = $reportId->toString();
         $report->entityId   = $entity->getEntityId();
         $report->entityType = $entity->getEntityType();
         $report->testName   = $testName;
-        $report->issueId    = $issueId;
-        $report->reportedOn = DateTime::now();
+        $report->issue      = $issue;
+        $report->reportedOn = new DateTimeImmutable();
 
         return $report;
     }
@@ -122,55 +111,18 @@ class JiraReport
     }
 
     /**
-     * When a JIRA issue has been resolved or muted for too long, and as such needs reopening, the report will track
-     * a new JIRA issue.
-     *
-     * @param UuidInterface $reportId
-     * @param string        $issueId
-     * @return JiraReport
+     * @param JiraIssue $issue
      */
-    public function trackUsingNewIssue(UuidInterface $reportId, $issueId)
+    public function updateIssue(JiraIssue $issue)
     {
-        Assert::string($issueId, 'Issue ID must be string');
-        Assert::notBlank($issueId, 'Issue ID may not be blank');
-
-        $report = new JiraReport();
-        $report->id         = $reportId->toString();
-        $report->entityId   = $this->entityId;
-        $report->entityType = $this->entityType;
-        $report->testName   = $this->testName;
-        $report->issueId    = $issueId;
-        $report->reportedOn = DateTime::now();
-
-        return $report;
-    }
-
-    /**
-     * Marks the report as muted. Muted reports may be tracked using a new issue in the future.
-     */
-    public function mute()
-    {
-        if ($this->mutedSince) {
-            throw new LogicException('JIRA report already muted');
-        }
-
-        $this->mutedSince = DateTime::now();
-    }
-
-    /**
-     * @param DateInterval $interval
-     * @return bool
-     */
-    public function hasBeenMutedForMoreThan(DateInterval $interval)
-    {
-        return $this->mutedSince && $this->mutedSince->add($interval) < DateTime::now();
+        $this->issue = $issue;
     }
 
     /**
      * @return bool
      */
-    public function isMuted()
+    public function isIssueMuted()
     {
-        return $this->mutedSince !== null;
+        return $this->issue->isMuted();
     }
 }

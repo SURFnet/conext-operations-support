@@ -21,3 +21,5 @@ parameters:
     janus_api_base_url: "https://service-registry.invalid/janus/api/"
     janus_api_username: janusUser
     janus_api_password: secretPassword
+
+    jira_muted_status_id: "0"
