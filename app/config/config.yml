@@ -41,6 +41,7 @@ doctrine:
             evf_entity_id: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityIdType
             evf_entity_type: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityTypeType
             ops_jira_issue_status: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\JiraIssueStatusType
+            ops_jira_issue_priority: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\JiraIssuePriorityType
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"

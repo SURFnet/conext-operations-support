@@ -20,6 +20,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
 /**
@@ -42,11 +43,11 @@ class JiraIssue
     private $status;
 
     /**
-     * @ORM\Column
+     * @ORM\Column(type="ops_jira_issue_priority")
      *
-     * @var string
+     * @var JiraIssuePriority
      */
-    private $priorityId;
+    private $priority;
 
     /**
      * @ORM\Column
@@ -63,18 +64,16 @@ class JiraIssue
     private $description;
 
     /**
-     * @param string          $id
-     * @param JiraIssueStatus $status
-     * @param string          $priorityId
-     * @param string          $summary
-     * @param string          $description
+     * @param string            $id
+     * @param JiraIssueStatus   $status
+     * @param JiraIssuePriority $priority
+     * @param string            $summary
+     * @param string            $description
      */
-    public function __construct($id, JiraIssueStatus $status, $priorityId, $summary, $description)
+    public function __construct($id, JiraIssueStatus $status, JiraIssuePriority $priority, $summary, $description)
     {
         Assert::string($id, 'Issue ID must be string');
         Assert::notBlank($id, 'Issue ID may not be blank');
-        Assert::string($priorityId, 'Priority ID must be string');
-        Assert::notBlank($priorityId, 'Priority ID may not be blank');
         Assert::string($summary, 'Summary must be string');
         Assert::notBlank($summary, 'Summary may not be blank');
         Assert::string($description, 'Description must be string');
@@ -82,7 +81,7 @@ class JiraIssue
 
         $this->id          = $id;
         $this->status      = $status;
-        $this->priorityId  = $priorityId;
+        $this->priority    = $priority;
         $this->summary     = $summary;
         $this->description = $description;
     }
@@ -103,7 +102,7 @@ class JiraIssue
     {
         return $this->id === $other->id
             && $this->status->equals($other->status)
-            && $this->priorityId === $other->priorityId
+            && $this->priority->equals($other->priority)
             && $this->summary === $other->summary
             && $this->description === $other->description;
     }
