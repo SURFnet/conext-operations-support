@@ -112,8 +112,17 @@ class JiraReport
 
     /**
      * @param JiraIssue $issue
+     * @return bool
      */
-    public function updateIssue(JiraIssue $issue)
+    public function issueNeedsUpdating(JiraIssue $issue)
+    {
+        return !$this->issue->equals($issue);
+    }
+
+    /**
+     * @param JiraIssue $issue
+     */
+    public function issueUpdated(JiraIssue $issue)
     {
         $this->issue = $issue;
     }
