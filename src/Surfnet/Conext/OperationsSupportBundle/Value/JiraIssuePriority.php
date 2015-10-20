@@ -31,7 +31,7 @@ final class JiraIssuePriority
     private static $prioritySeverityMap;
 
     /**
-     * @var JiraIssuePriority
+     * @var string
      */
     private static $defaultPriorityId;
 
@@ -59,14 +59,18 @@ final class JiraIssuePriority
         Assert::allInArray(
             $prioritySeverityMap,
             VerificationTestResult::VALID_SEVERITIES,
-            'Severities must be valid VerificationTestResult::SEVERITY_* constants'
+            'Severities must be valid VerificationTestResult::SEVERITY_* constants, got "%s"'
         );
-        Assert::allRegex($priorityIds, '~^\d+$~', 'Priority IDs must consist of one or more digits');
-        Assert::regex($defaultPriorityId, '~^\d+$~', 'Default priority ID must consist of one or more digits');
+        Assert::allRegex($priorityIds, '~^\d+$~', 'Priority IDs must consist of one or more digits, got "%s"');
+        Assert::regex(
+            $defaultPriorityId,
+            '~^\d+$~',
+            'Default priority ID must consist of one or more digits, got "%s"'
+        );
         Assert::inArray(
             $defaultPriorityId,
             $priorityIds,
-            "Given default priority ID doesn't map to a severity"
+            'Given default priority ID doesn\'t map to a severity, got "%s"'
         );
 
         self::$prioritySeverityMap = $prioritySeverityMap;
@@ -79,7 +83,7 @@ final class JiraIssuePriority
      */
     public static function forPriority($priorityId)
     {
-        Assert::regex($priorityId, '~^\d+$~', 'Priority ID must consist of one or more digits');
+        Assert::regex($priorityId, '~^\d+$~', 'Priority ID must consist of one or more digits, got "%s"');
         Assert::inArray(
             $priorityId,
             self::getValidPriorityIds(),
@@ -95,7 +99,7 @@ final class JiraIssuePriority
      */
     public static function hasMappingToSeverity($priorityId)
     {
-        Assert::regex($priorityId, '~^\d+$~', 'Priority ID must consist of one or more digits');
+        Assert::regex($priorityId, '~^\d+$~', 'Priority ID must consist of one or more digits, got "%s"');
 
         return array_key_exists($priorityId, self::getPrioritySeverityMap());
     }
@@ -109,12 +113,15 @@ final class JiraIssuePriority
         Assert::inArray(
             $severity,
             VerificationTestResult::VALID_SEVERITIES,
-            'Severity must be valid VerificationTestResult::SEVERITY_* constants'
+            'Severity must be valid VerificationTestResult::SEVERITY_* constants, got "%s"'
         );
 
-        return new JiraIssuePriority(array_search($severity, self::getPrioritySeverityMap(), true));
+        return new JiraIssuePriority((string) array_search($severity, self::getPrioritySeverityMap(), true));
     }
 
+    /**
+     * @return JiraIssuePriority
+     */
     public static function forDefaultPriority()
     {
         return new JiraIssuePriority(self::$defaultPriorityId);
@@ -123,9 +130,19 @@ final class JiraIssuePriority
     /**
      * @param string $priorityId
      */
-    private function __construct($priorityId)
+    public function __construct($priorityId)
     {
+        Assert::regex($priorityId, '~^\d+$~', 'Priority ID must consist of one or more digits, got "%s"');
+
         $this->priorityId = $priorityId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMappedToASeverity()
+    {
+        return array_key_exists($this->priorityId, self::$prioritySeverityMap);
     }
 
     /**

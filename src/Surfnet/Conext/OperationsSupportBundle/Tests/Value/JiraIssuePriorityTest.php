@@ -61,12 +61,61 @@ class JiraIssuePriorityTest extends TestCase
     /**
      * @test
      * @group value
+     * @dataProvider arrayKeysNotSuitableAsPriorityIds
+     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
+     * @expectedExceptionMessage Priority IDs must consist of one or more digits
+     *
+     * @param mixed $nonDigitString
+     */
+    public function priority_ids_must_be_valid($priorityId)
+    {
+        JiraIssuePriority::configure(
+            [
+                '10000' => VerificationTestResult::SEVERITY_TRIVIAL,
+                $priorityId => VerificationTestResult::SEVERITY_LOW,
+                '3931'     => VerificationTestResult::SEVERITY_MEDIUM,
+                '1002'  => VerificationTestResult::SEVERITY_HIGH,
+                '10001' => VerificationTestResult::SEVERITY_CRITICAL,
+            ],
+            '10000'
+        );
+    }
+
+    /**
+     * @test
+     * @group value
+     * @dataProvider nonSeverities
+     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException
+     * @expectedExceptionMessage All test failure severities must be mapped to a JIRA priority
+     *
+     * @param mixed $nonSeverity
+     */
+    public function severities_must_be_all_valid_severities($nonSeverity)
+    {
+        JiraIssuePriority::configure(
+            [
+                '10000' => VerificationTestResult::SEVERITY_TRIVIAL,
+                '1984'  => $nonSeverity,
+                '1'     => VerificationTestResult::SEVERITY_MEDIUM,
+                '1002'  => VerificationTestResult::SEVERITY_HIGH,
+                '10001' => VerificationTestResult::SEVERITY_CRITICAL,
+            ],
+            '10000'
+        );
+    }
+
+    /**
+     * @test
+     * @group value
+     * @dataProvider nonDigitStrings
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      * @expectedExceptionMessage Default priority ID must consist of one or more digits
+     *
+     * @param mixed $nonDigitString
      */
-    public function default_priority_id_must_be_valid()
+    public function default_priority_id_must_be_valid($nonDigitString)
     {
-        JiraIssuePriority::configure(self::PRIORITY_SEVERITY_MAP, 'abc');
+        JiraIssuePriority::configure(self::PRIORITY_SEVERITY_MAP, $nonDigitString);
     }
 
     /**
@@ -157,6 +206,66 @@ class JiraIssuePriorityTest extends TestCase
             $priorityTrivial->equals($priority10046),
             'Priority of severity trivial should not equal priority for ID "10046"'
         );
+    }
+
+    /**
+     * @test
+     * @group value
+     */
+    public function an_unmapped_priority_can_be_created()
+    {
+        new JiraIssuePriority('10038');
+    }
+
+    /**
+     * @test
+     * @group value
+     * @dataProvider nonDigitStrings
+     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
+     * @expectedExceptionMessage Priority ID must consist of one or more digits
+     *
+     * @param mixed $nonDigitString
+     */
+    public function an_unmapped_priority_doesnt_accept_an_invalid_priority_id($nonDigitString)
+    {
+        new JiraIssuePriority($nonDigitString);
+    }
+
+    public function nonDigitStrings()
+    {
+        return [
+            'empty'    => [''],
+            'alphanum' => ['192abc'],
+            'int'      => [1],
+            'int 0'    => [0],
+            'float'    => [1.23],
+            'float 0'  => [0.0],
+            'null'     => [null],
+            'bool'     => [false],
+            'array'    => [[]],
+            'object'   => [new \stdClass],
+            'resource' => [fopen('php://memory', 'w')],
+        ];
+    }
+
+    public function arrayKeysNotSuitableAsPriorityIds()
+    {
+        return [
+            'empty'    => [''],
+            'alphanum' => ['192abc'],
+        ];
+    }
+
+    public function nonSeverities()
+    {
+        return [
+            'empty'    => [''],
+            'alphanum' => ['192abc'],
+            'int'      => [18383],
+            'float'    => [38.23],
+            'null'     => [null],
+            'bool'     => [false],
+        ];
     }
 
     private function configurePriorities()
