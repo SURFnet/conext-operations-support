@@ -37,7 +37,7 @@ class JiraIssue
     /**
      * @ORM\Column(type="ops_jira_issue_status")
      *
-     * @var \Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus
+     * @var JiraIssueStatus
      */
     private $status;
 

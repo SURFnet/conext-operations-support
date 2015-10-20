@@ -24,7 +24,7 @@ use Doctrine\DBAL\Types\Type;
 use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
-final class JiraIssueStatusIdType extends Type
+final class JiraIssueStatusType extends Type
 {
     const NAME = 'ops_jira_issue_status';
 
