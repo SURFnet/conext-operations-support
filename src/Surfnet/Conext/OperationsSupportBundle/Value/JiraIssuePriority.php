@@ -33,18 +33,12 @@ final class JiraIssuePriority
     /**
      * @var string
      */
-    private static $defaultPriorityId;
-
-    /**
-     * @var string
-     */
     private $priorityId;
 
     /**
      * @param int[] $prioritySeverityMap
-     * @param string $defaultPriorityId
      */
-    public static function configure(array $prioritySeverityMap, $defaultPriorityId)
+    public static function configure(array $prioritySeverityMap)
     {
         if (self::$prioritySeverityMap !== null) {
             throw new LogicException('JIRA issue priority/severity map and default priority have already been configured');
@@ -62,19 +56,8 @@ final class JiraIssuePriority
             'Severities must be valid VerificationTestResult::SEVERITY_* constants, got "%s"'
         );
         Assert::allRegex($priorityIds, '~^\d+$~', 'Priority IDs must consist of one or more digits, got "%s"');
-        Assert::regex(
-            $defaultPriorityId,
-            '~^\d+$~',
-            'Default priority ID must consist of one or more digits, got "%s"'
-        );
-        Assert::inArray(
-            $defaultPriorityId,
-            $priorityIds,
-            'Given default priority ID doesn\'t map to a severity, got "%s"'
-        );
 
         self::$prioritySeverityMap = $prioritySeverityMap;
-        self::$defaultPriorityId = $defaultPriorityId;
     }
 
     /**
@@ -117,14 +100,6 @@ final class JiraIssuePriority
         );
 
         return new JiraIssuePriority((string) array_search($severity, self::getPrioritySeverityMap(), true));
-    }
-
-    /**
-     * @return JiraIssuePriority
-     */
-    public static function forDefaultPriority()
-    {
-        return new JiraIssuePriority(self::$defaultPriorityId);
     }
 
     /**

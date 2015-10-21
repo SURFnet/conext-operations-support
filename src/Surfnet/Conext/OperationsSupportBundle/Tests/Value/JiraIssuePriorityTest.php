@@ -34,7 +34,6 @@ class JiraIssuePriorityTest extends TestCase
         '1002'  => VerificationTestResult::SEVERITY_HIGH,
         '10001' => VerificationTestResult::SEVERITY_CRITICAL,
     ];
-    const DEFAULT_PRIORITY_ID = '1';
 
     /**
      * @test
@@ -107,31 +106,6 @@ class JiraIssuePriorityTest extends TestCase
     /**
      * @test
      * @group value
-     * @dataProvider nonDigitStrings
-     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
-     * @expectedExceptionMessage Default priority ID must consist of one or more digits
-     *
-     * @param mixed $nonDigitString
-     */
-    public function default_priority_id_must_be_valid($nonDigitString)
-    {
-        JiraIssuePriority::configure(self::PRIORITY_SEVERITY_MAP, $nonDigitString);
-    }
-
-    /**
-     * @test
-     * @group value
-     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
-     * @expectedExceptionMessage Given default priority ID doesn't map to a severity
-     */
-    public function default_priority_id_must_be_one_of_the_configured_priority_ids()
-    {
-        JiraIssuePriority::configure(self::PRIORITY_SEVERITY_MAP, '1988');
-    }
-
-    /**
-     * @test
-     * @group value
      */
     public function one_can_be_created_from_a_priority_id()
     {
@@ -167,23 +141,6 @@ class JiraIssuePriorityTest extends TestCase
         $this->configurePriorities();
 
         JiraIssuePriority::forSeverity(VerificationTestResult::SEVERITY_TRIVIAL);
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function the_default_priority_can_be_requested()
-    {
-        $this->configurePriorities();
-
-        $this->assertTrue(
-            JiraIssuePriority::forDefaultPriority()->equals(JiraIssuePriority::forPriority(self::DEFAULT_PRIORITY_ID)),
-            sprintf(
-                'Default JiraIssuePriority should be equal to JiraIssuePriority for priority ID "%s"',
-                self::DEFAULT_PRIORITY_ID
-            )
-        );
     }
 
     /**
@@ -270,6 +227,6 @@ class JiraIssuePriorityTest extends TestCase
 
     private function configurePriorities()
     {
-        JiraIssuePriority::configure(self::PRIORITY_SEVERITY_MAP, self::DEFAULT_PRIORITY_ID);
+        JiraIssuePriority::configure(self::PRIORITY_SEVERITY_MAP);
     }
 }
