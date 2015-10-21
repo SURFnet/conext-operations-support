@@ -46,6 +46,18 @@ final class JiraIssueStatus
     }
 
     /**
+     * @return JiraIssueStatus
+     */
+    public static function muted()
+    {
+        if (self::$mutedStatus === null) {
+            throw new LogicException('Muted status ID has not been set');
+        }
+
+        return self::$mutedStatus;
+    }
+
+    /**
      * @param string $statusId
      */
     public function __construct($statusId)
