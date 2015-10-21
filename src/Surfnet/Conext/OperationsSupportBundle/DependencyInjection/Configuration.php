@@ -23,6 +23,7 @@ use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -33,6 +34,15 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('surfnet_conext_operations_support');
 
+        $this->createSuitesConfiguration($rootNode);
+        $this->createBlacklistConfiguration($rootNode);
+        $this->createJiraConfiguration($rootNode);
+
+        return $treeBuilder;
+    }
+
+    public function createSuitesConfiguration(ArrayNodeDefinition $rootNode)
+    {
         $rootNode
             ->children()
                 ->arrayNode('suites')
@@ -51,7 +61,13 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                ->end()
+                ->end();
+    }
+
+    public function createBlacklistConfiguration(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
                 ->arrayNode('blacklist')
                     ->info('Blacklist tests or entire suites for specific entities (suite, suite.test, *)')
                     ->performNoDeepMerging()
@@ -82,7 +98,13 @@ class Configuration implements ConfigurationInterface
                             ->end()
                         ->end()
                     ->end()
-                ->end()
+                ->end();
+    }
+
+    public function createJiraConfiguration(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
                 ->arrayNode('jira')
                     ->isRequired()
                     ->children()
@@ -117,7 +139,5 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
             ->end();
-
-        return $treeBuilder;
     }
 }
