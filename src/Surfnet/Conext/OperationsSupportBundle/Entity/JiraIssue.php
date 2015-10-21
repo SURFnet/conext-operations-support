@@ -103,8 +103,8 @@ class JiraIssue
     public function needsUpdating(JiraIssuePriority $priority, $summary, $description)
     {
         return !$this->priority->equals($priority)
-        || $this->summary !== $summary
-        || $this->description !== $description;
+            || $this->summary !== $summary
+            || $this->description !== $description;
     }
 
     /**
