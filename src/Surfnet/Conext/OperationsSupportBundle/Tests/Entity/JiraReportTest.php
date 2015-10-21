@@ -39,7 +39,7 @@ class JiraReportTest extends TestCase
      */
     public function an_issue_can_be_tracked()
     {
-        JiraReport::trackIssue($this->uuid(), $this->entity(), 'test.name', $this->issue());
+        JiraReport::trackIssue($this->uuid(), $this->issue(), $this->entity(), 'test.name');
     }
 
     /**
@@ -58,7 +58,7 @@ class JiraReportTest extends TestCase
         $issue0->shouldReceive('needsUpdating')->with($priority, $oldSummary, $description)->andReturn(false);
         $issue0->shouldReceive('needsUpdating')->with($priority, $newSummary, $description)->andReturn(true);
 
-        $report = JiraReport::trackIssue($this->uuid(), $this->entity(), 'test.name', $issue0);
+        $report = JiraReport::trackIssue($this->uuid(), $issue0, $this->entity(), 'test.name');
         $this->assertFalse(
             $report->issueNeedsUpdating($priority, $oldSummary, $description),
             "Report states issue needs updating, even though it's exactly the same"
@@ -80,7 +80,7 @@ class JiraReportTest extends TestCase
         /** @var JiraIssue|MockInterface $issue1 */
         $issue1 = m::mock(JiraIssue::class);
 
-        $report = JiraReport::trackIssue($this->uuid(), $this->entity(), 'test.name', $issue0);
+        $report = JiraReport::trackIssue($this->uuid(), $issue0, $this->entity(), 'test.name');
         $report->issueUpdated($issue1);
     }
 

@@ -86,12 +86,12 @@ class JiraReport
 
     /**
      * @param UuidInterface $reportId
+     * @param JiraIssue     $issue
      * @param Entity        $entity
      * @param string        $testName
-     * @param JiraIssue     $issue
      * @return JiraReport
      */
-    public static function trackIssue(UuidInterface $reportId, Entity $entity, $testName, JiraIssue $issue)
+    public static function trackIssue(UuidInterface $reportId, JiraIssue $issue, Entity $entity, $testName)
     {
         Assert::string($testName, 'Test name must be string');
         Assert::notBlank($testName, 'Test name may not be blank');

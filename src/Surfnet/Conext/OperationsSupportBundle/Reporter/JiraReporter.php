@@ -19,31 +19,38 @@
 namespace Surfnet\Conext\OperationsSupportBundle\Reporter;
 
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactoryInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\OperationsSupportBundle\Entity\JiraIssue;
-use Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport;
 use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
-use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
-use Surfnet\Conext\OperationsSupportBundle\Repository\JiraReportRepository;
+use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
+use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
-use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Service\IssueService;
 
 final class JiraReporter implements VerificationReporter
 {
-    /**
-     * @var JiraReportRepository
-     */
-    private $reportRepository;
+    const REPORT = <<<REPORT
+Test "%s" failed for entity "%s".
+
+%s
+REPORT;
 
     /**
-     * @var IssueService
+     * @var JiraReportService
+     */
+    private $reportService;
+
+    /**
+     * @var JiraIssueService
      */
     private $issueService;
+
+    /**
+     * @var UuidFactoryInterface
+     */
+    private $uuidFactory;
 
     /**
      * @var LoggerInterface
@@ -51,12 +58,14 @@ final class JiraReporter implements VerificationReporter
     private $logger;
 
     public function __construct(
-        JiraReportRepository $reportRepository,
-        IssueService $issueService,
+        JiraReportService $reportService,
+        JiraIssueService $issueService,
+        UuidFactoryInterface $uuidFactory,
         LoggerInterface $logger
     ) {
-        $this->reportRepository = $reportRepository;
+        $this->reportService = $reportService;
         $this->issueService = $issueService;
+        $this->uuidFactory = $uuidFactory;
         $this->logger = $logger;
     }
 
@@ -66,74 +75,36 @@ final class JiraReporter implements VerificationReporter
             throw new LogicException('Cannot report test that has not failed');
         }
 
+        $failedTestName = $result->getFailedTestName();
+
         $this->logger->info(
             sprintf(
                 'Reporting "%s" failure "%s" for entity "%s"',
-                $result->getFailedTestName(),
+                $failedTestName,
                 $result->getReason(),
                 $entity
             )
         );
 
-        $report = $this->reportRepository->findMostRecentlyReported($entity, $result->getFailedTestName());
+        $report = $this->reportService->findMostRecentlyReported($entity, $failedTestName);
 
         if ($report === null) {
             $this->logger->info('No report, creating JIRA issue and tracking report');
-            $this->createAndTrackIssue($entity, $result);
-        } else {
-            // Not yet implemented.
-        }
-    }
 
-    /**
-     * @param Entity                  $entity
-     * @param VerificationSuiteResult $result
-     */
-    private function createAndTrackIssue(Entity $entity, VerificationSuiteResult $result)
-    {
-        $issue    = $this->createIssue($result);
-        $reportId = Uuid::uuid4();
-        $report   = JiraReport::trackIssue($reportId, $entity, $result->getFailedTestName(), $issue);
-
-        $this->reportRepository->add($report);
-
-        $this->logger->info(sprintf('JIRA issue is tracked in "%s"', $reportId->toString()));
-    }
-
-    /**
-     * @param VerificationSuiteResult $result
-     * @return JiraIssue
-     */
-    private function createIssue(VerificationSuiteResult $result)
-    {
-        $priority    = JiraIssuePriority::forSeverity($result->getSeverity());
-        $summary     = $result->getReason();
-        $description = $result->getExplanation();
-
-        $command = new CreateIssueCommand();
-        $command->priority    = $priority->getPriorityId();
-        $command->summary     = $summary;
-        $command->description = $description;
-
-        $createIssueResult = $this->issueService->createIssue($command);
-
-        if ($createIssueResult->wasClientErrorReported()) {
-            throw new RuntimeException(
+            $issue = $this->issueService->createIssue(
+                JiraIssueStatus::open(),
+                JiraIssuePriority::forSeverity($result->getSeverity()),
+                $result->getReason(),
                 sprintf(
-                    'JIRA issue creation unexpectedly failed due to API client error: "%s"',
-                    join(', ', $createIssueResult->getErrorMessages())
+                    self::REPORT,
+                    $failedTestName,
+                    $entity,
+                    $result->getExplanation()
                 )
             );
+
+            $reportId = $this->uuidFactory->uuid4();
+            $this->reportService->trackNewIssue($reportId, $issue, $entity, $failedTestName);
         }
-
-        $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueId()));
-
-        return new JiraIssue(
-            $createIssueResult->getIssueId(),
-            new JiraIssueStatus($createIssueResult->getStatusId()),
-            $priority,
-            $summary,
-            $description
-        );
     }
 }
