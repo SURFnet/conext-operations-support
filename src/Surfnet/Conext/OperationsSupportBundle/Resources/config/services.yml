@@ -47,6 +47,11 @@ services:
         arguments:
             - 'Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport'
 
+    surfnet_conext_operations_support.value.open_jira_status:
+        class: Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus
+        arguments:
+            - '' # See extension
+
     surfnet_conext_operations_support.value.muted_jira_status:
         class: Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus
         arguments:

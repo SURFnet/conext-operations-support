@@ -82,11 +82,24 @@ class JiraIssueStatusTest extends TestCase
      * @group value
      * @runInSeparateProcess
      */
+    public function a_status_can_be_open()
+    {
+        JiraIssueStatus::configure(new JiraIssueStatus('10000'), new JiraIssueStatus('10002'));
+
+        $this->assertTrue((new JiraIssueStatus('10000'))->isOpen(), 'Status ID 10000 should represent a muted status');
+        $this->assertFalse((new JiraIssueStatus('39845'))->isMuted(), "Status ID 39845 shouldn't represent a muted status");
+    }
+
+    /**
+     * @test
+     * @group value
+     * @runInSeparateProcess
+     */
     public function a_status_can_be_muted()
     {
-        JiraIssueStatus::configureMutedStatus(new JiraIssueStatus('10000'));
+        JiraIssueStatus::configure(new JiraIssueStatus('10000'), new JiraIssueStatus('10002'));
 
-        $this->assertTrue((new JiraIssueStatus('10000'))->isMuted(), 'Status ID 10000 should represent a muted status');
+        $this->assertTrue((new JiraIssueStatus('10002'))->isMuted(), 'Status ID 10002 should represent a muted status');
         $this->assertFalse((new JiraIssueStatus('39845'))->isMuted(), "Status ID 39845 shouldn't represent a muted status");
     }
 

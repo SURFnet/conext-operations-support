@@ -25,8 +25,11 @@ class SurfnetConextOperationsSupportBundle extends Bundle
 {
     public function boot()
     {
+        /** @var JiraIssueStatus $openStatus */
+        $openStatus = $this->container->get('surfnet_conext_operations_support.value.open_jira_status');
         /** @var JiraIssueStatus $mutedStatus */
         $mutedStatus = $this->container->get('surfnet_conext_operations_support.value.muted_jira_status');
-        JiraIssueStatus::configureMutedStatus($mutedStatus);
+
+        JiraIssueStatus::configure($openStatus, $mutedStatus);
     }
 }

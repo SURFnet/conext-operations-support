@@ -26,6 +26,11 @@ final class JiraIssueStatus
     /**
      * @var JiraIssueStatus
      */
+    private static $openStatus;
+
+    /**
+     * @var JiraIssueStatus
+     */
     private static $mutedStatus;
 
     /**
@@ -34,15 +39,29 @@ final class JiraIssueStatus
     private $statusId;
 
     /**
+     * @param JiraIssueStatus $openStatus
      * @param JiraIssueStatus $mutedStatus
      */
-    public static function configureMutedStatus(JiraIssueStatus $mutedStatus)
+    public static function configure(JiraIssueStatus $openStatus, JiraIssueStatus $mutedStatus)
     {
-        if (self::$mutedStatus !== null) {
-            throw new LogicException('Muted status has already been set');
+        if (self::$openStatus !== null) {
+            throw new LogicException('JiraIssueStatus has already been set');
         }
 
+        self::$openStatus = $openStatus;
         self::$mutedStatus = $mutedStatus;
+    }
+
+    /**
+     * @return JiraIssueStatus
+     */
+    public static function open()
+    {
+        if (self::$openStatus === null) {
+            throw new LogicException('Open status ID has not been set');
+        }
+
+        return self::$openStatus;
     }
 
     /**
@@ -65,6 +84,18 @@ final class JiraIssueStatus
         Assert::regex($statusId, '~^\d+$~', 'JIRA issue status ID must consist of one or more digits');
 
         $this->statusId = $statusId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOpen()
+    {
+        if (self::$openStatus === null) {
+            throw new LogicException('Open status ID has not been set');
+        }
+
+        return $this->equals(self::$openStatus);
     }
 
     /**

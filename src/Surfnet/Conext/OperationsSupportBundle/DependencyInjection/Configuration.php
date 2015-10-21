@@ -90,7 +90,22 @@ class Configuration implements ConfigurationInterface
                             ->isRequired()
                             ->info(
                                 'Sets the JIRA status ID that represents a muted state. To determine, log into JIRA, ' .
-                                'visit (/jira)/rest/api/2/status and find the status ID of the muted status (eg. On Hold).'
+                                'visit (/jira)/rest/api/2/status and find the status ID of the muted status (eg. ' .
+                                'On Hold).'
+                            )
+                            ->validate()
+                                ->always(function ($statusId) {
+                                    new JiraIssueStatus($statusId);
+                                    return $statusId;
+                                })
+                            ->end()
+                        ->end()
+                        ->scalarNode('open_status_id')
+                            ->isRequired()
+                            ->info(
+                                'Sets the JIRA status ID that represents a open state. To determine, log into JIRA, ' .
+                                'visit (/jira)/rest/api/2/status and find the status ID of the opened status (eg. ' .
+                                'Open).'
                             )
                             ->validate()
                                 ->always(function ($statusId) {

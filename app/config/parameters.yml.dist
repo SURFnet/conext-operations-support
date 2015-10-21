@@ -22,4 +22,5 @@ parameters:
     janus_api_username: janusUser
     janus_api_password: secretPassword
 
+    jira_open_status_id: "0"
     jira_muted_status_id: "0"

@@ -77,6 +77,7 @@ surfnet_conext_operations_support:
     suites:
         []
     jira:
+        open_status_id: %jira_open_status_id%
         muted_status_id: %jira_muted_status_id%
 
 doctrine_date_time_immutable_types:
