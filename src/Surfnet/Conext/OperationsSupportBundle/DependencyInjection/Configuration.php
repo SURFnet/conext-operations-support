@@ -18,10 +18,12 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -133,6 +135,51 @@ class Configuration implements ConfigurationInterface
                                 ->always(function ($statusId) {
                                     new JiraIssueStatus($statusId);
                                     return $statusId;
+                                })
+                            ->end()
+                        ->end()
+                        ->arrayNode('priority_severity_map')
+                            ->isRequired()
+                            ->info(
+                                'Maps JIRA priority IDs to test failure severities ' .
+                                '(critical, high, medium, low, trivial). Priority IDs must be determined using ' .
+                                'JIRA\'s REST API. When logged into JIRA, visit (/jira)/rest/api/2/priority.'
+                            )
+                            ->requiresAtLeastOneElement()
+                            ->useAttributeAsKey('priority_id')
+                            ->prototype('scalar')->end()
+                            ->beforeNormalization()
+                                ->always(function (array $prioritySeverityMap) {
+                                    return array_map(
+                                        function ($severityName) {
+                                            if (!is_string($severityName)) {
+                                                return $severityName;
+                                            }
+
+                                            $constant = VerificationTestResult::class
+                                                . '::SEVERITY_'
+                                                . strtoupper($severityName);
+                                            return defined($constant) ? constant($constant) : $severityName;
+                                        },
+                                        $prioritySeverityMap
+                                    );
+                                })
+                            ->end()
+                            ->validate()
+                                ->always(function (array $prioritySeverityMap) {
+                                    Assert::isArray($prioritySeverityMap, 'Priority severity map must be array');
+
+                                    foreach ($prioritySeverityMap as $priorityId => $severity) {
+                                        new JiraIssuePriority((string) $priorityId);
+                                        Assert::inArray(
+                                            $severity,
+                                            VerificationTestResult::VALID_SEVERITIES,
+                                            'Severity "%s" must be one of ' .
+                                            '"trivial", "low", "medium", "high", "critical"'
+                                        );
+                                    }
+
+                                    return $prioritySeverityMap;
                                 })
                             ->end()
                         ->end()

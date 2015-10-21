@@ -24,3 +24,8 @@ parameters:
 
     jira_open_status_id: "0"
     jira_muted_status_id: "0"
+    jira_trivial_priority_id: "0"
+    jira_low_priority_id: "0"
+    jira_medium_priority_id: "0"
+    jira_high_priority_id: "0"
+    jira_critical_priority_id: "0"

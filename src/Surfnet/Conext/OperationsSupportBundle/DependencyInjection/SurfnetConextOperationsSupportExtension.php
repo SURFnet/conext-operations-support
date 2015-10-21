@@ -37,13 +37,7 @@ class SurfnetConextOperationsSupportExtension extends Extension
 
         $this->configureSuitesToRun($config, $container);
         $this->configureBlacklist($config, $container);
-
-        $container
-            ->getDefinition('surfnet_conext_operations_support.value.muted_jira_status')
-            ->replaceArgument(0, $config['jira']['muted_status_id']);
-        $container
-            ->getDefinition('surfnet_conext_operations_support.value.open_jira_status')
-            ->replaceArgument(0, $config['jira']['open_status_id']);
+        $this->configureJira($config, $container);
     }
 
     private function configureSuitesToRun(array $config, ContainerBuilder $container)
@@ -69,5 +63,24 @@ class SurfnetConextOperationsSupportExtension extends Extension
     {
         $blacklist = $container->getDefinition('surfnet_conext_operations_support.verification_blacklist');
         $blacklist->replaceArgument(0, $config['blacklist']);
+    }
+
+    /**
+     * @param array            $config
+     * @param ContainerBuilder $container
+     */
+    private function configureJira($config, ContainerBuilder $container)
+    {
+        $container
+            ->getDefinition('surfnet_conext_operations_support.value.muted_jira_status')
+            ->replaceArgument(0, $config['jira']['muted_status_id']);
+        $container
+            ->getDefinition('surfnet_conext_operations_support.value.open_jira_status')
+            ->replaceArgument(0, $config['jira']['open_status_id']);
+
+        $container->setParameter(
+            'surfnet_conext_operations_support.jira.priority_severity_map',
+            $config['jira']['priority_severity_map']
+        );
     }
 }

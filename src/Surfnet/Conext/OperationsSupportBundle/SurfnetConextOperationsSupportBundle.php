@@ -18,6 +18,7 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle;
 
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -31,5 +32,9 @@ class SurfnetConextOperationsSupportBundle extends Bundle
         $mutedStatus = $this->container->get('surfnet_conext_operations_support.value.muted_jira_status');
 
         JiraIssueStatus::configure($openStatus, $mutedStatus);
+
+        $prioritySeverityMap =
+            $this->container->getParameter('surfnet_conext_operations_support.jira.priority_severity_map');
+        JiraIssuePriority::configure($prioritySeverityMap);
     }
 }
