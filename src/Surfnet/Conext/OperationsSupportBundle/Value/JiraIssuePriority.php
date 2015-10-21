@@ -155,6 +155,14 @@ final class JiraIssuePriority
     }
 
     /**
+     * @return string
+     */
+    public function getPriorityId()
+    {
+        return $this->priorityId;
+    }
+
+    /**
      * @return int[] VerificationTestResult::SEVERITY_* indexed by their JIRA priority ID counterparts (string).
      */
     private static function getPrioritySeverityMap()
