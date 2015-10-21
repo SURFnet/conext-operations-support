@@ -95,6 +95,19 @@ class JiraIssue
     }
 
     /**
+     * @param JiraIssuePriority $priority
+     * @param string            $summary
+     * @param string            $description
+     * @return bool
+     */
+    public function needsUpdating(JiraIssuePriority $priority, $summary, $description)
+    {
+        return !$this->priority->equals($priority)
+        || $this->summary !== $summary
+        || $this->description !== $description;
+    }
+
+    /**
      * @param JiraIssue $other
      * @return bool
      */

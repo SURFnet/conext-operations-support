@@ -26,6 +26,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\OperationsSupportBundle\DateTime\DateTime;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 
 /**
  * @ORM\Entity(repositoryClass="Surfnet\Conext\OperationsSupportBundle\Repository\DoctrineOrmJiraReportRepository")
@@ -111,12 +112,14 @@ class JiraReport
     }
 
     /**
-     * @param JiraIssue $issue
+     * @param JiraIssuePriority $priority
+     * @param string            $summary
+     * @param string            $description
      * @return bool
      */
-    public function issueNeedsUpdating(JiraIssue $issue)
+    public function issueNeedsUpdating(JiraIssuePriority $priority, $summary, $description)
     {
-        return !$this->issue->equals($issue);
+        return $this->issue->needsUpdating($priority, $summary, $description);
     }
 
     /**

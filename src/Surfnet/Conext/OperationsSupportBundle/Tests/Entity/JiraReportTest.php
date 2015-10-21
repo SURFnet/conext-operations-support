@@ -29,6 +29,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\OperationsSupportBundle\DateTime\DateTime;
 use Surfnet\Conext\OperationsSupportBundle\Entity\JiraIssue;
 use Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 
 class JiraReportTest extends TestCase
 {
@@ -47,20 +48,23 @@ class JiraReportTest extends TestCase
      */
     public function can_indicate_issue_needs_updating()
     {
+        $priority = new JiraIssuePriority('1000');
+        $oldSummary = 'old_summary';
+        $newSummary = 'new_summary';
+        $description = 'description';
+
         /** @var JiraIssue|MockInterface $issue0 */
         $issue0 = m::mock(JiraIssue::class);
-        /** @var JiraIssue|MockInterface $issue1 */
-        $issue1 = m::mock(JiraIssue::class);
-        $issue0->shouldReceive('equals')->with($issue0)->andReturn(true);
-        $issue0->shouldReceive('equals')->with($issue1)->andReturn(false);
+        $issue0->shouldReceive('needsUpdating')->with($priority, $oldSummary, $description)->andReturn(false);
+        $issue0->shouldReceive('needsUpdating')->with($priority, $newSummary, $description)->andReturn(true);
 
         $report = JiraReport::trackIssue($this->uuid(), $this->entity(), 'test.name', $issue0);
         $this->assertFalse(
-            $report->issueNeedsUpdating($issue0),
+            $report->issueNeedsUpdating($priority, $oldSummary, $description),
             "Report states issue needs updating, even though it's exactly the same"
         );
         $this->assertTrue(
-            $report->issueNeedsUpdating($issue1),
+            $report->issueNeedsUpdating($priority, $newSummary, $description),
             "Report states issue doesn't need updating, even though it's different"
         );
     }
@@ -75,14 +79,9 @@ class JiraReportTest extends TestCase
         $issue0 = m::mock(JiraIssue::class);
         /** @var JiraIssue|MockInterface $issue1 */
         $issue1 = m::mock(JiraIssue::class);
-        $issue1->shouldReceive('equals')->with($issue1)->andReturn(true);
 
         $report = JiraReport::trackIssue($this->uuid(), $this->entity(), 'test.name', $issue0);
         $report->issueUpdated($issue1);
-        $this->assertFalse(
-            $report->issueNeedsUpdating($issue1),
-            "Report states issue needs updating, even though it's exactly the same"
-        );
     }
 
     /**
