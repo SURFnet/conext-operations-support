@@ -30,16 +30,18 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
-use Surfnet\Conext\OperationsSupportBundle\Entity\JiraIssue;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\JiraReporter;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class JiraReporterTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public function setUp()
     {
         JiraIssuePriority::configure(
             [
@@ -48,8 +50,7 @@ class JiraReporterTest extends TestCase
                 '10002' => VerificationTestResult::SEVERITY_MEDIUM,
                 '10003' => VerificationTestResult::SEVERITY_HIGH,
                 '10004' => VerificationTestResult::SEVERITY_CRITICAL,
-            ],
-            '10002'
+            ]
         );
         JiraIssueStatus::configure(
             new JiraIssueStatus('10000'),
@@ -84,8 +85,7 @@ class JiraReporterTest extends TestCase
         $reportService = m::mock(JiraReportService::class);
         $reportService->shouldReceive('findMostRecentlyReported')->andReturn(null);
 
-        /** @var MockInterface|JiraIssue $issue */
-        $issue = m::mock(JiraIssue::class);
+        $issueId = 'CONOPS-13';
 
         /** @var MockInterface|JiraIssueService $issueService */
         $issueService = m::mock(JiraIssueService::class);
@@ -98,7 +98,7 @@ class JiraReporterTest extends TestCase
                 $reason,
                 self::containsAll((string) $entity, $explanation, $testName)
             )
-            ->andReturn($issue);
+            ->andReturn($issueId);
 
         $reportId = m::mock(UuidInterface::class);
         /** @var MockInterface|UuidFactoryInterface $uuidFactory */
@@ -107,7 +107,7 @@ class JiraReporterTest extends TestCase
         $reportService
             ->shouldReceive('trackNewIssue')
             ->once()
-            ->with($reportId, $issue, self::voEquals($entity), $testName);
+            ->with($reportId, $issueId, self::voEquals($entity), $testName);
 
         $reporter = new JiraReporter($reportService, $issueService, $uuidFactory, new NullLogger());
         $reporter->reportFailedVerificationFor($entity, $result);

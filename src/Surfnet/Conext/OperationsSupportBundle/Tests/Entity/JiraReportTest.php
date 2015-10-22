@@ -39,49 +39,7 @@ class JiraReportTest extends TestCase
      */
     public function an_issue_can_be_tracked()
     {
-        JiraReport::trackIssue($this->uuid(), $this->issue(), $this->entity(), 'test.name');
-    }
-
-    /**
-     * @test
-     * @group jira
-     */
-    public function can_indicate_issue_needs_updating()
-    {
-        $priority = new JiraIssuePriority('1000');
-        $oldSummary = 'old_summary';
-        $newSummary = 'new_summary';
-        $description = 'description';
-
-        /** @var JiraIssue|MockInterface $issue0 */
-        $issue0 = m::mock(JiraIssue::class);
-        $issue0->shouldReceive('needsUpdating')->with($priority, $oldSummary, $description)->andReturn(false);
-        $issue0->shouldReceive('needsUpdating')->with($priority, $newSummary, $description)->andReturn(true);
-
-        $report = JiraReport::trackIssue($this->uuid(), $issue0, $this->entity(), 'test.name');
-        $this->assertFalse(
-            $report->issueNeedsUpdating($priority, $oldSummary, $description),
-            "Report states issue needs updating, even though it's exactly the same"
-        );
-        $this->assertTrue(
-            $report->issueNeedsUpdating($priority, $newSummary, $description),
-            "Report states issue doesn't need updating, even though it's different"
-        );
-    }
-
-    /**
-     * @test
-     * @group jira
-     */
-    public function issue_can_be_updated()
-    {
-        /** @var JiraIssue|MockInterface $issue0 */
-        $issue0 = m::mock(JiraIssue::class);
-        /** @var JiraIssue|MockInterface $issue1 */
-        $issue1 = m::mock(JiraIssue::class);
-
-        $report = JiraReport::trackIssue($this->uuid(), $issue0, $this->entity(), 'test.name');
-        $report->issueUpdated($issue1);
+        JiraReport::trackIssue($this->uuid(), 'CONOPS-91', $this->entity(), 'test.name');
     }
 
     /**

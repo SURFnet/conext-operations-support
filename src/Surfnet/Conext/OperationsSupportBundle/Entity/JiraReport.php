@@ -26,7 +26,6 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\OperationsSupportBundle\DateTime\DateTime;
-use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 
 /**
  * @ORM\Entity(repositoryClass="Surfnet\Conext\OperationsSupportBundle\Repository\DoctrineOrmJiraReportRepository")
@@ -71,11 +70,11 @@ class JiraReport
     private $testName;
 
     /**
-     * @ORM\Embedded(class="JiraIssue")
+     * @ORM\Column
      *
-     * @var JiraIssue
+     * @var string
      */
-    private $issue;
+    private $issueId;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -86,22 +85,24 @@ class JiraReport
 
     /**
      * @param UuidInterface $reportId
-     * @param JiraIssue     $issue
+     * @param string        $issueId
      * @param Entity        $entity
      * @param string        $testName
      * @return JiraReport
      */
-    public static function trackIssue(UuidInterface $reportId, JiraIssue $issue, Entity $entity, $testName)
+    public static function trackIssue(UuidInterface $reportId, $issueId, Entity $entity, $testName)
     {
+        Assert::string($issueId, 'Issue ID must be string');
+        Assert::notBlank($issueId, 'Issue ID may not be blank');
         Assert::string($testName, 'Test name must be string');
         Assert::notBlank($testName, 'Test name may not be blank');
 
-        $report = new JiraReport();
+        $report             = new JiraReport();
         $report->id         = $reportId->toString();
         $report->entityId   = $entity->getEntityId();
         $report->entityType = $entity->getEntityType();
         $report->testName   = $testName;
-        $report->issue      = $issue;
+        $report->issueId    = $issueId;
         $report->reportedOn = new DateTimeImmutable();
 
         return $report;
@@ -109,32 +110,5 @@ class JiraReport
 
     private function __construct()
     {
-    }
-
-    /**
-     * @param JiraIssuePriority $priority
-     * @param string            $summary
-     * @param string            $description
-     * @return bool
-     */
-    public function issueNeedsUpdating(JiraIssuePriority $priority, $summary, $description)
-    {
-        return $this->issue->needsUpdating($priority, $summary, $description);
-    }
-
-    /**
-     * @param JiraIssue $issue
-     */
-    public function issueUpdated(JiraIssue $issue)
-    {
-        $this->issue = $issue;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isIssueMuted()
-    {
-        return $this->issue->isMuted();
     }
 }

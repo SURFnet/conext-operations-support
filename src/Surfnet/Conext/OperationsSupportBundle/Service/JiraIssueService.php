@@ -49,7 +49,7 @@ class JiraIssueService
      * @param JiraIssuePriority $priority
      * @param string            $summary
      * @param string            $description
-     * @return JiraIssue
+     * @return string
      */
     public function createIssue(JiraIssueStatus $status, JiraIssuePriority $priority, $summary, $description)
     {
@@ -72,6 +72,6 @@ class JiraIssueService
 
         $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueId()));
 
-        return new JiraIssue($createIssueResult->getIssueId(), $status, $priority, $summary, $description);
+        return $createIssueResult->getIssueId();
     }
 }

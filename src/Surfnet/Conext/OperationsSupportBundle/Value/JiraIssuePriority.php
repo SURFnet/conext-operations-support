@@ -41,7 +41,7 @@ final class JiraIssuePriority
     public static function configure(array $prioritySeverityMap)
     {
         if (self::$prioritySeverityMap !== null) {
-            throw new LogicException('JIRA issue priority/severity map and default priority have already been configured');
+            throw new LogicException('JIRA issue priority/severity map has already been configured');
         }
 
         if (array_diff($prioritySeverityMap, VerificationTestResult::VALID_SEVERITIES)

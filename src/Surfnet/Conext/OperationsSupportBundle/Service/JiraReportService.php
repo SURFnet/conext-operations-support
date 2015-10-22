@@ -49,14 +49,14 @@ class JiraReportService
 
     /**
      * @param UuidInterface $id
-     * @param JiraIssue     $issue
+     * @param string        $issueId
      * @param Entity        $entity
      * @param string        $failedTestName
      * @return JiraReport
      */
-    public function trackNewIssue(UuidInterface $id, JiraIssue $issue, Entity $entity, $failedTestName)
+    public function trackNewIssue(UuidInterface $id, $issueId, Entity $entity, $failedTestName)
     {
-        $report = JiraReport::trackIssue($id, $issue, $entity, $failedTestName);
+        $report = JiraReport::trackIssue($id, $issueId, $entity, $failedTestName);
 
         $this->reportRepository->add($report);
 
