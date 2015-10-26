@@ -48,13 +48,17 @@ final class HttpClient implements JiraApiClientInterface
     // @codingStandardsIgnoreStart (arguments with default values must be at the end; sadly, our JiraClient does not agree)
     public function sendRequest($method, $url, $data = array(), $endpoint, AuthenticationInterface $credential)
     {
-        // @codingStandardsIgnoreEnd
-        $response = $this->client->request($method, $endpoint.$url, [
-            'auth' => [
+    // @codingStandardsIgnoreEnd
+        $options = [];
+
+        if ($credential->getId() || $credential->getPassword()) {
+            $options['auth'] = [
                 $credential->getId(),
-                $credential->getPassword()
-            ]
-        ]);
+                $credential->getPassword(),
+            ];
+        }
+
+        $response = $this->client->request($method, $endpoint . $url, $options);
 
         return $response->getBody();
     }

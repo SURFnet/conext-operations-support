@@ -53,26 +53,34 @@ final class Configuration implements ConfigurationInterface
                         ->thenInvalid('The JIRA API base URL should not contain a path')
                     ->end()
                 ->end()
-                ->scalarNode('username')
-                    ->info('The username of the user that will act as a reporter in JIRA')
+                ->scalarNode('consumer_key')
+                    ->info(
+                        'The consumer key for the Application Link in JIRA'
+                    )
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(function ($username) {
-                            return !is_string($username);
+                        ->ifTrue(function ($consumerKey) {
+                            return !is_string($consumerKey);
                         })
-                        ->thenInvalid('The JIRA API username should be a string')
+                        ->thenInvalid(
+                            'The consumer key for the JIRA API Application Link private key must be a non-empty string'
+                        )
                     ->end()
                 ->end()
-                ->scalarNode('password')
-                    ->info('The password of the user that will act as a reporter in JIRA')
+                ->scalarNode('private_key_file')
+                    ->info(
+                        'The path to the private key which public key was registered with the Application Link in JIRA'
+                    )
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(function ($password) {
-                            return !is_string($password);
+                        ->ifTrue(function ($path) {
+                            return !is_string($path);
                         })
-                        ->thenInvalid('The JIRA API password should be a string')
+                        ->thenInvalid(
+                            'The path to the JIRA API Application Link private key must be a non-empty string'
+                        )
                     ->end()
                 ->end()
                 ->scalarNode('project_id')

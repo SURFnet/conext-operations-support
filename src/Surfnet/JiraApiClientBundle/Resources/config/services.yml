@@ -1,24 +1,37 @@
 services:
     surfnet_jira_api_client.guzzle:
+        public: false
         class: GuzzleHttp\Client
         arguments:
             - "" # Client configuration
+
+    surfnet_jira_api_client.guzzle.handler_stack:
         public: false
+        class: GuzzleHttp\HandlerStack
+        factory: [GuzzleHttp\HandlerStack, 'create']
+        calls:
+            - [push, [@surfnet_jira_api_client.guzzle.subscriber.oauth]]
+
+    surfnet_jira_api_client.guzzle.subscriber.oauth:
+        public: false
+        class: GuzzleHttp\Subscriber\Oauth\Oauth1
+        arguments:
+            - # OAuth configuration, see extension
 
     surfnet_jira_api_client.http_client:
-        class: Surfnet\Conext\JiraApiClientBundle\HttpClient
+        public: false
+        class: Surfnet\JiraApiClientBundle\HttpClient\HttpClient
         arguments:
             - @surfnet_jira_api_client.guzzle
             - @logger
 
     surfnet_jira_api_client.authentication:
-        class: Jira_Api_Authentication_Basic
-        arguments:
-            - "" # Username
-            - "" # Password
+        public: false
+        class: Jira_Api_Authentication_Anonymous
 
     surfnet_jira_api_client.jira_client:
         class: Jira_Api
         arguments:
-            - @surfnet_jira_api_client.http_client
+            - '' # Endpoint (base URL)
             - @surfnet_jira_api_client.authentication
+            - @surfnet_jira_api_client.http_client
