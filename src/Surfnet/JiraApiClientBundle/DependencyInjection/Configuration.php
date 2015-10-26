@@ -23,6 +23,9 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 final class Configuration implements ConfigurationInterface
 {
+    /**
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
@@ -103,10 +106,21 @@ final class Configuration implements ConfigurationInterface
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(function ($projectKey) {
-                            return !is_string($projectKey);
+                        ->ifTrue(function ($assignee) {
+                            return !is_string($assignee);
                         })
                         ->thenInvalid('The default assignee should be a string')
+                    ->end()
+                ->end()
+                ->scalarNode('default_reporter')
+                    ->info('The name of the user that will be the default reporter')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                    ->validate()
+                        ->ifTrue(function ($reporter) {
+                            return !is_string($reporter);
+                        })
+                        ->thenInvalid('The default reporter should be a string')
                     ->end()
                 ->end()
             ->end();

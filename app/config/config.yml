@@ -68,6 +68,7 @@ surfnet_jira_api_client:
     private_key_file: %jira_api_private_key_file%
     project_id: %jira_api_project_id%
     default_assignee: %jira_api_default_assignee%
+    default_reporter: %jira_api_default_reporter%
 
 surfnet_janus_api_client:
     base_url: %janus_api_base_url%

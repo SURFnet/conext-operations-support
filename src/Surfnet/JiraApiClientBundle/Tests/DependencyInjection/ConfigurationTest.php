@@ -34,6 +34,7 @@ final class ConfigurationTest extends TestCase
         'private_key_file' => 'non_existent_path',
         'project_id' => '10000',
         'default_assignee' => 'default assignee',
+        'default_reporter' => 'default reporter',
     ];
 
     /**
@@ -131,6 +132,19 @@ final class ConfigurationTest extends TestCase
         $config['default_assignee'] = $value;
 
         $this->assertConfigurationIsInvalid([$config], 'The default assignee should be a string');
+    }
+
+    /**
+     * @test
+     * @group JiraApiClientBundle
+     * @dataProvider nonStringScalarProvider
+     */
+    public function default_reporter_cannot_be_other_than_string($value)
+    {
+        $config = $this->validConfig;
+        $config['default_reporter'] = $value;
+
+        $this->assertConfigurationIsInvalid([$config], 'The default reporter should be a string');
     }
 
     protected function getConfiguration()
