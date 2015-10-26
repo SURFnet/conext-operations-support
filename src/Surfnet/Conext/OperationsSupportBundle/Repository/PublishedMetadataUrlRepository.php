@@ -19,7 +19,6 @@
 namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\Url;
 
 interface PublishedMetadataUrlRepository
 {

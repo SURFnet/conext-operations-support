@@ -29,6 +29,14 @@ interface VerificationTestResult
     const SEVERITY_LOW      = 2;
     const SEVERITY_TRIVIAL  = 1;
 
+    const VALID_SEVERITIES = [
+        VerificationTestResult::SEVERITY_CRITICAL,
+        VerificationTestResult::SEVERITY_HIGH,
+        VerificationTestResult::SEVERITY_MEDIUM,
+        VerificationTestResult::SEVERITY_LOW,
+        VerificationTestResult::SEVERITY_TRIVIAL,
+    ];
+
     /**
      * @return bool
      */

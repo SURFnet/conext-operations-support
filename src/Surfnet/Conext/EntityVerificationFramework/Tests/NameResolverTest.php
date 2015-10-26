@@ -18,9 +18,9 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests;
 
+use Mockery as m;
 use PHPUnit_Framework_TestCase as UnitTest;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
-use Mockery as m;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 use Surfnet\VerificationSuite\NameResolverTestSuite\NameResolverTestSuite;
 use Surfnet\VerificationSuite\NameResolverTestSuite\NoInterfaceSuite;

@@ -18,9 +18,9 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Repository;
 
-use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
-use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
+use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
 
 interface ConfiguredMetadataRepository
 {

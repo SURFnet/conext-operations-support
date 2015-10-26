@@ -37,10 +37,22 @@ doctrine:
         password: "%database_password%"
         charset:  UTF8
 
+        types:
+            evf_entity_id: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityIdType
+            evf_entity_type: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\EntityTypeType
+            ops_jira_issue_status: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\JiraIssueStatusType
+            ops_jira_issue_priority: Surfnet\Conext\OperationsSupportBundle\Doctrine\Type\JiraIssuePriorityType
+
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/DoctrineMigrations"
+    namespace: Surfnet\Conext\Migration
+    table_name: migration_versions
+    name: Conext Operations Support Migrations
 
 swiftmailer:
     transport: "%mailer_transport%"
@@ -64,4 +76,17 @@ surfnet_janus_api_client:
 surfnet_conext_operations_support:
     suites:
         []
+    jira:
+        status_mapping:
+            open:     %jira_open_status_id%
+            muted:    %jira_muted_status_id%
+            resolved: %jira_resolved_status_id%
+        priority_mapping:
+            trivial:  %jira_trivial_priority_id%
+            low:      %jira_low_priority_id%
+            medium:   %jira_medium_priority_id%
+            high:     %jira_high_priority_id%
+            critical: %jira_critical_priority_id%
 
+doctrine_date_time_immutable_types:
+    register: add

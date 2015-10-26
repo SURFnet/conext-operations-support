@@ -17,6 +17,8 @@ class AppKernel extends Kernel
             new Surfnet\JiraApiClientBundle\SurfnetJiraApiClientBundle(),
             new Surfnet\JanusApiClientBundle\SurfnetJanusApiClientBundle(),
             new Surfnet\Conext\OperationsSupportBundle\SurfnetConextOperationsSupportBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new VasekPurchart\DoctrineDateTimeImmutableTypesBundle\DoctrineDateTimeImmutableTypesBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

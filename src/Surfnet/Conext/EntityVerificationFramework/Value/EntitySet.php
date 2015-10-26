@@ -21,7 +21,6 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
 final class EntitySet implements Countable, IteratorAggregate
 {

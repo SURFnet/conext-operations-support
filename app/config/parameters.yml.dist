@@ -1,9 +1,9 @@
 parameters:
-    database_host:     127.0.0.1
+    database_host:     192.168.67.10
     database_port:     ~
     database_name:     conext
-    database_user:     root
-    database_password: ~
+    database_user:     conext
+    database_password: conext
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -21,3 +21,12 @@ parameters:
     janus_api_base_url: "https://service-registry.invalid/janus/api/"
     janus_api_username: janusUser
     janus_api_password: secretPassword
+
+    jira_open_status_id: "0"
+    jira_muted_status_id: "1"
+    jira_resolved_status_id: "2"
+    jira_trivial_priority_id: "0"
+    jira_low_priority_id: "0"
+    jira_medium_priority_id: "0"
+    jira_high_priority_id: "0"
+    jira_critical_priority_id: "0"

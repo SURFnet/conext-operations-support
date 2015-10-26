@@ -22,8 +22,8 @@ use Closure;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
 
 class Context implements VerificationContext
