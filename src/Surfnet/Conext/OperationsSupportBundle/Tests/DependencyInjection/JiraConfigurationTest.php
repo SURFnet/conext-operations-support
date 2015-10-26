@@ -31,7 +31,7 @@ class JiraConfigurationTest extends TestCase
             'status_mapping' => [
                 'open'     => '10000',
                 'muted'    => '10001',
-                'resolved' => '10002',
+                'closed'   => '10002',
             ],
             'priority_mapping' => [
                  'trivial'  => '10000',

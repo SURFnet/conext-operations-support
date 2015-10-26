@@ -106,13 +106,13 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService = m::mock(IssueService::class);
         $service = new JiraIssueService(
             $issueApiService,
-            [JiraIssueStatus::OPEN => '10000', JiraIssueStatus::MUTED => '10001', JiraIssueStatus::RESOLVED => '10002'],
+            [JiraIssueStatus::OPEN => '10000', JiraIssueStatus::MUTED => '10001', JiraIssueStatus::CLOSED => '10002'],
             [],
             new NullLogger()
         );
 
         $this->assertEquals(new JiraIssueStatus('10000'), $service->mapStatusToJiraStatusId(JiraIssueStatus::OPEN));
-        $this->assertEquals(new JiraIssueStatus('10002'), $service->mapStatusToJiraStatusId(JiraIssueStatus::RESOLVED));
+        $this->assertEquals(new JiraIssueStatus('10002'), $service->mapStatusToJiraStatusId(JiraIssueStatus::CLOSED));
     }
 
     /**

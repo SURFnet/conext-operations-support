@@ -24,7 +24,7 @@ final class JiraIssueStatus
 {
     const OPEN = 'OPEN';
     const MUTED = 'MUTED';
-    const RESOLVED = 'RESOLVED';
+    const CLOSED = 'CLOSED';
 
     /**
      * @var string

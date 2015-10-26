@@ -81,7 +81,7 @@ surfnet_conext_operations_support:
         status_mapping:
             open:     %jira_open_status_id%
             muted:    %jira_muted_status_id%
-            resolved: %jira_resolved_status_id%
+            closed:   %jira_closed_status_id%
         priority_mapping:
             trivial:  %jira_trivial_priority_id%
             low:      %jira_low_priority_id%
