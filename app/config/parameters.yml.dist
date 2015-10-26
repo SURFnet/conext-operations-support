@@ -13,6 +13,7 @@ parameters:
     secret:            ThisTokenIsNotSoSecretChangeIt
 
     jira_api_base_url: "https://jira.surfnet.invalid"
+    jira_api_verify_ssl: true
     jira_api_consumer_key: app_link_consumer_key
     jira_api_private_key_file: /path/to/private.key
     jira_api_project_id: "10000"

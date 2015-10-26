@@ -53,6 +53,10 @@ final class Configuration implements ConfigurationInterface
                         ->thenInvalid('The JIRA API base URL should not contain a path')
                     ->end()
                 ->end()
+                ->booleanNode('verify_ssl')
+                    ->info('Whether to verify the SSL certificate of the JIRA API')
+                    ->defaultTrue()
+                ->end()
                 ->scalarNode('consumer_key')
                     ->info(
                         'The consumer key for the Application Link in JIRA'

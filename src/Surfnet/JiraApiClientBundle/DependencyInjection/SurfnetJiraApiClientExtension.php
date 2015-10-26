@@ -40,6 +40,7 @@ final class SurfnetJiraApiClientExtension extends Extension
             ->replaceArgument(0, [
                 'handler' => new Reference('surfnet_jira_api_client.guzzle.handler_stack'),
                 'auth'    => 'oauth',
+                'verify'  => $config['verify_ssl'],
             ]);
 
         $container

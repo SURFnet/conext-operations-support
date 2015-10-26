@@ -63,6 +63,7 @@ swiftmailer:
 
 surfnet_jira_api_client:
     base_url: %jira_api_base_url%
+    verify_ssl: %jira_api_verify_ssl%
     consumer_key: %jira_api_consumer_key%
     private_key_file: %jira_api_private_key_file%
     project_id: %jira_api_project_id%
