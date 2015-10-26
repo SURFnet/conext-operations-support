@@ -22,22 +22,13 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\NullLogger;
-use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidInterface;
-use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
-use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
-use Surfnet\Conext\OperationsSupportBundle\Entity\JiraIssue;
 use Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport;
-use Surfnet\Conext\OperationsSupportBundle\Reporter\JiraReporter;
 use Surfnet\Conext\OperationsSupportBundle\Repository\JiraReportRepository;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
-use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
-use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Result\CreateIssueResult;
-use Surfnet\JiraApiClientBundle\Service\IssueService;
 
 class JiraReportServiceTest extends TestCase
 {

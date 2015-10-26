@@ -18,7 +18,6 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
-use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Blacklist;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
@@ -26,6 +25,8 @@ use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\Config\Definition\Builder\ScalarNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -110,81 +111,79 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('jira')
                     ->isRequired()
                     ->children()
-                        ->scalarNode('open_status_id')
+                        ->arrayNode('status_mapping')
                             ->isRequired()
                             ->info(
-                                'Sets the JIRA status ID that represents a open state. To determine, log into JIRA, ' .
-                                'visit (/jira)/rest/api/2/status and find the status ID of the opened status (eg. ' .
-                                'Open).'
+                                'Maps report statuses to JIRA issue status IDs. Status IDs must be determined using ' .
+                                'JIRA\'s REST API. When logged into JIRA, visit (/jira)/rest/api/2/status.'
                             )
+                            ->children()
+                                ->append($this->createJiraStatusMappingConfiguration('open'))
+                                ->append($this->createJiraStatusMappingConfiguration('muted'))
+                                ->append($this->createJiraStatusMappingConfiguration('resolved'))
+                            ->end()
                             ->validate()
-                                ->always(function ($statusId) {
-                                    new JiraIssueStatus($statusId);
-                                    return $statusId;
+                                ->ifTrue(function (array $mapping) {
+                                    return $mapping !== array_unique($mapping);
                                 })
+                                ->thenInvalid('All report statuses must map to a different JIRA status ID')
                             ->end()
                         ->end()
-                        ->scalarNode('muted_status_id')
+                        ->arrayNode('priority_mapping')
                             ->isRequired()
                             ->info(
-                                'Sets the JIRA status ID that represents a muted state. To determine, log into JIRA, ' .
-                                'visit (/jira)/rest/api/2/status and find the status ID of the muted status (eg. ' .
-                                'On Hold).'
-                            )
-                            ->validate()
-                                ->always(function ($statusId) {
-                                    new JiraIssueStatus($statusId);
-                                    return $statusId;
-                                })
-                            ->end()
-                        ->end()
-                        ->arrayNode('priority_severity_map')
-                            ->isRequired()
-                            ->info(
-                                'Maps JIRA priority IDs to test failure severities ' .
-                                '(critical, high, medium, low, trivial). Priority IDs must be determined using ' .
+                                'Maps test failure severities (critical, high, medium, low, trivial) to JIRA ' .
+                                'priority IDs. Priority IDs must be determined using ' .
                                 'JIRA\'s REST API. When logged into JIRA, visit (/jira)/rest/api/2/priority.'
                             )
-                            ->requiresAtLeastOneElement()
-                            ->useAttributeAsKey('priority_id')
-                            ->prototype('scalar')->end()
-                            ->beforeNormalization()
-                                ->always(function (array $prioritySeverityMap) {
-                                    return array_map(
-                                        function ($severityName) {
-                                            if (!is_string($severityName)) {
-                                                return $severityName;
-                                            }
-
-                                            $constant = VerificationTestResult::class
-                                                . '::SEVERITY_'
-                                                . strtoupper($severityName);
-                                            return defined($constant) ? constant($constant) : $severityName;
-                                        },
-                                        $prioritySeverityMap
-                                    );
-                                })
+                            ->children()
+                                ->append($this->createJiraPriorityMappingConfiguration('trivial'))
+                                ->append($this->createJiraPriorityMappingConfiguration('low'))
+                                ->append($this->createJiraPriorityMappingConfiguration('medium'))
+                                ->append($this->createJiraPriorityMappingConfiguration('high'))
+                                ->append($this->createJiraPriorityMappingConfiguration('critical'))
                             ->end()
                             ->validate()
-                                ->always(function (array $prioritySeverityMap) {
-                                    Assert::isArray($prioritySeverityMap, 'Priority severity map must be array');
-
-                                    foreach ($prioritySeverityMap as $priorityId => $severity) {
-                                        new JiraIssuePriority((string) $priorityId);
-                                        Assert::inArray(
-                                            $severity,
-                                            VerificationTestResult::VALID_SEVERITIES,
-                                            'Severity "%s" must be one of ' .
-                                            '"trivial", "low", "medium", "high", "critical"'
-                                        );
-                                    }
-
-                                    return $prioritySeverityMap;
+                                ->ifTrue(function (array $mapping) {
+                                    return $mapping !== array_unique($mapping);
                                 })
+                                ->thenInvalid('All test failure severities must map to a different JIRA priority ID')
                             ->end()
                         ->end()
                     ->end()
                 ->end()
+            ->end();
+    }
+
+    /**
+     * @param string $statusName
+     * @return NodeDefinition
+     */
+    private function createJiraStatusMappingConfiguration($statusName)
+    {
+        return (new ScalarNodeDefinition($statusName))
+            ->isRequired()
+            ->validate()
+                ->always(function ($statusId) {
+                    new JiraIssueStatus($statusId);
+                    return $statusId;
+                })
+            ->end();
+    }
+
+    /**
+     * @param string $priorityName
+     * @return NodeDefinition
+     */
+    private function createJiraPriorityMappingConfiguration($priorityName)
+    {
+        return (new ScalarNodeDefinition($priorityName))
+            ->isRequired()
+            ->validate()
+                ->always(function ($priorityId) {
+                    new JiraIssuePriority($priorityId);
+                    return $priorityId;
+                })
             ->end();
     }
 }

@@ -77,14 +77,16 @@ surfnet_conext_operations_support:
     suites:
         []
     jira:
-        open_status_id: %jira_open_status_id%
-        muted_status_id: %jira_muted_status_id%
-        priority_severity_map:
-                %jira_trivial_priority_id%:  trivial
-                %jira_low_priority_id%:      low
-                %jira_medium_priority_id%:   medium
-                %jira_high_priority_id%:     high
-                %jira_critical_priority_id%: critical
+        status_mapping:
+            open:     %jira_open_status_id%
+            muted:    %jira_muted_status_id%
+            resolved: %jira_resolved_status_id%
+        priority_mapping:
+            trivial:  %jira_trivial_priority_id%
+            low:      %jira_low_priority_id%
+            medium:   %jira_medium_priority_id%
+            high:     %jira_high_priority_id%
+            critical: %jira_critical_priority_id%
 
 doctrine_date_time_immutable_types:
     register: add

@@ -18,6 +18,7 @@
 
 namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -69,18 +70,17 @@ class SurfnetConextOperationsSupportExtension extends Extension
      * @param array            $config
      * @param ContainerBuilder $container
      */
-    private function configureJira($config, ContainerBuilder $container)
+    private function configureJira(array $config, ContainerBuilder $container)
     {
         $container
-            ->getDefinition('surfnet_conext_operations_support.value.muted_jira_status')
-            ->replaceArgument(0, $config['jira']['muted_status_id']);
-        $container
-            ->getDefinition('surfnet_conext_operations_support.value.open_jira_status')
-            ->replaceArgument(0, $config['jira']['open_status_id']);
-
-        $container->setParameter(
-            'surfnet_conext_operations_support.jira.priority_severity_map',
-            $config['jira']['priority_severity_map']
-        );
+            ->getDefinition('surfnet_conext_operations_support.service.jira_issue')
+            ->replaceArgument(1, $config['jira']['status_mapping'])
+            ->replaceArgument(2, [
+                VerificationTestResult::SEVERITY_TRIVIAL  => $config['jira']['priority_mapping']['trivial'],
+                VerificationTestResult::SEVERITY_LOW      => $config['jira']['priority_mapping']['low'],
+                VerificationTestResult::SEVERITY_MEDIUM   => $config['jira']['priority_mapping']['medium'],
+                VerificationTestResult::SEVERITY_HIGH     => $config['jira']['priority_mapping']['high'],
+                VerificationTestResult::SEVERITY_CRITICAL => $config['jira']['priority_mapping']['critical'],
+            ]);
     }
 }

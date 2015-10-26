@@ -35,23 +35,6 @@ use Surfnet\JiraApiClientBundle\Service\IssueService;
  */
 class JiraIssueServiceTest extends TestCase
 {
-    public function setUp()
-    {
-        JiraIssuePriority::configure(
-            [
-                '10000' => VerificationTestResult::SEVERITY_TRIVIAL,
-                '10001' => VerificationTestResult::SEVERITY_LOW,
-                '10002' => VerificationTestResult::SEVERITY_MEDIUM,
-                '10003' => VerificationTestResult::SEVERITY_HIGH,
-                '10004' => VerificationTestResult::SEVERITY_CRITICAL,
-            ]
-        );
-        JiraIssueStatus::configure(
-            new JiraIssueStatus('10000'),
-            new JiraIssueStatus('10002')
-        );
-    }
-
     /**
      * @test
      * @group service
@@ -59,8 +42,8 @@ class JiraIssueServiceTest extends TestCase
      */
     public function it_successfully_creates_issues()
     {
-        $status      = JiraIssueStatus::open();
-        $priority    = JiraIssuePriority::forSeverity(VerificationTestResult::SEVERITY_MEDIUM);
+        $status      = new JiraIssueStatus('10000');
+        $priority    = new JiraIssuePriority('10002');
         $summary     = 'summary';
         $description = 'description';
 
@@ -76,7 +59,7 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService = m::mock(IssueService::class);
         $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
 
-        $service = new JiraIssueService($issueApiService, new NullLogger());
+        $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
         $issueId = $service->createIssue($status, $priority, $summary, $description);
 
         $this->assertSame('CONOPS-10', $issueId);
@@ -91,8 +74,8 @@ class JiraIssueServiceTest extends TestCase
      */
     public function it_throws_on_client_errors()
     {
-        $status      = JiraIssueStatus::open();
-        $priority    = JiraIssuePriority::forSeverity(VerificationTestResult::SEVERITY_MEDIUM);
+        $status      = new JiraIssueStatus('10000');
+        $priority    = new JiraIssuePriority('10002');
         $summary     = 'summary';
         $description = 'description';
 
@@ -108,7 +91,53 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService = m::mock(IssueService::class);
         $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
 
-        $service = new JiraIssueService($issueApiService, new NullLogger());
+        $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
         $service->createIssue($status, $priority, $summary, $description);
+    }
+
+    /**
+     * @test
+     * @group service
+     * @group jira
+     */
+    public function it_maps_status_to_jira_status_id()
+    {
+        /** @var MockInterface|IssueService $issueApiService */
+        $issueApiService = m::mock(IssueService::class);
+        $service = new JiraIssueService(
+            $issueApiService,
+            [JiraIssueStatus::OPEN => '10000', JiraIssueStatus::MUTED => '10001', JiraIssueStatus::RESOLVED => '10002'],
+            [],
+            new NullLogger()
+        );
+
+        $this->assertEquals(new JiraIssueStatus('10000'), $service->mapStatusToJiraStatusId(JiraIssueStatus::OPEN));
+        $this->assertEquals(new JiraIssueStatus('10002'), $service->mapStatusToJiraStatusId(JiraIssueStatus::RESOLVED));
+    }
+
+    /**
+     * @test
+     * @group service
+     * @group jira
+     */
+    public function it_maps_severity_to_jira_priority_id()
+    {
+        /** @var MockInterface|IssueService $issueApiService */
+        $issueApiService = m::mock(IssueService::class);
+        $service = new JiraIssueService(
+            $issueApiService,
+            [],
+            [VerificationTestResult::SEVERITY_TRIVIAL => '10000', VerificationTestResult::SEVERITY_LOW => '10001'],
+            new NullLogger()
+        );
+
+        $this->assertEquals(
+            new JiraIssuePriority('10000'),
+            $service->mapSeverityToJiraPriorityId(VerificationTestResult::SEVERITY_TRIVIAL)
+        );
+        $this->assertEquals(
+            new JiraIssuePriority('10001'),
+            $service->mapSeverityToJiraPriorityId(VerificationTestResult::SEVERITY_LOW)
+        );
     }
 }

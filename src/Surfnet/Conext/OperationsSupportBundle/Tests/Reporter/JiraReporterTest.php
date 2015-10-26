@@ -36,27 +36,10 @@ use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
-/**
- * @runTestsInSeparateProcesses
- */
 class JiraReporterTest extends TestCase
 {
-    public function setUp()
-    {
-        JiraIssuePriority::configure(
-            [
-                '10000' => VerificationTestResult::SEVERITY_TRIVIAL,
-                '10001' => VerificationTestResult::SEVERITY_LOW,
-                '10002' => VerificationTestResult::SEVERITY_MEDIUM,
-                '10003' => VerificationTestResult::SEVERITY_HIGH,
-                '10004' => VerificationTestResult::SEVERITY_CRITICAL,
-            ]
-        );
-        JiraIssueStatus::configure(
-            new JiraIssueStatus('10000'),
-            new JiraIssueStatus('10002')
-        );
-    }
+    const STATUS_ID_OPEN = '10000';
+    const PRIORITY_ID_MEDIUM = '10002';
 
     /**
      * @test
@@ -93,12 +76,20 @@ class JiraReporterTest extends TestCase
             ->shouldReceive('createIssue')
             ->once()
             ->with(
-                self::voEquals(JiraIssueStatus::open()),
-                self::voEquals(new JiraIssuePriority('10002')),
+                self::voEquals(new JiraIssueStatus(self::STATUS_ID_OPEN)),
+                self::voEquals(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM)),
                 $reason,
                 self::containsAll((string) $entity, $explanation, $testName)
             )
             ->andReturn($issueId);
+        $issueService
+            ->shouldReceive('mapStatusToJiraStatusId')
+            ->with(JiraIssueStatus::OPEN)
+            ->andReturn(new JiraIssueStatus(self::STATUS_ID_OPEN));
+        $issueService
+            ->shouldReceive('mapSeverityToJiraPriorityId')
+            ->with($severity)
+            ->andReturn(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM));
 
         $reportId = m::mock(UuidInterface::class);
         /** @var MockInterface|UuidFactoryInterface $uuidFactory */

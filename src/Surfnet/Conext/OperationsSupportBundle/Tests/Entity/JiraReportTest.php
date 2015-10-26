@@ -19,7 +19,6 @@
 namespace Surfnet\Conext\OperationsSupportBundle\Tests\Entity;
 
 use Mockery as m;
-use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -27,9 +26,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\OperationsSupportBundle\DateTime\DateTime;
-use Surfnet\Conext\OperationsSupportBundle\Entity\JiraIssue;
 use Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport;
-use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 
 class JiraReportTest extends TestCase
 {
@@ -56,13 +53,5 @@ class JiraReportTest extends TestCase
     private function entity()
     {
         return new Entity(new EntityId('meh'), EntityType::IdP());
-    }
-
-    /**
-     * @return JiraIssue|MockInterface
-     */
-    private function issue()
-    {
-        return m::mock(JiraIssue::class);
     }
 }

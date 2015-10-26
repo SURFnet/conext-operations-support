@@ -19,7 +19,6 @@
 namespace Surfnet\JiraApiClientBundle;
 
 use Assert\Assertion as BaseAssertion;
-use SimpleXMLElement;
 
 class Assert extends BaseAssertion
 {

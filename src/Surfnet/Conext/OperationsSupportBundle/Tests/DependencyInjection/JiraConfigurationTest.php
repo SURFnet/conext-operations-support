@@ -28,14 +28,17 @@ class JiraConfigurationTest extends TestCase
 
     private $validConfiguration = [
         'jira' => [
-            'open_status_id' => '10000',
-            'muted_status_id' => '10002',
-            'priority_severity_map' => [
-                '10000' => 'trivial',
-                '10001' => 'low',
-                '10002' => 'medium',
-                '10003' => 'high',
-                '10004' => 'critical',
+            'status_mapping' => [
+                'open'     => '10000',
+                'muted'    => '10001',
+                'resolved' => '10002',
+            ],
+            'priority_mapping' => [
+                 'trivial'  => '10000',
+                 'low'      => '10001',
+                 'medium'   => '10002',
+                 'high'     => '10003',
+                 'critical' => '10004',
             ],
         ]
     ];
@@ -43,21 +46,10 @@ class JiraConfigurationTest extends TestCase
     /**
      * @test
      * @group Configuration
-     * @dataProvider nonDigitStrings
-     *
-     * @param nonDigitString
      */
-    public function open_status_id_is_validated($nonDigitString)
+    public function it_accepts_a_valid_configuration()
     {
-        $config = $this->validConfiguration;
-        $config['jira']['open_status_id'] = $nonDigitString;
-
-        $this->assertPartialConfigurationIsInvalid(
-            [$config],
-            'jira',
-            '~open_status_id.+JIRA issue status ID must consist of one or more digits~',
-            true
-        );
+        $this->assertConfigurationIsValid(['surfnet_conext_operations_support' => $this->validConfiguration], 'jira');
     }
 
     /**
@@ -67,16 +59,36 @@ class JiraConfigurationTest extends TestCase
      *
      * @param nonDigitString
      */
-    public function muted_status_id_is_validated($nonDigitString)
+    public function status_ids_are_validated($nonDigitString)
     {
         $config = $this->validConfiguration;
-        $config['jira']['muted_status_id'] = $nonDigitString;
+        $config['jira']['status_mapping']['open'] = $nonDigitString;
 
         $this->assertPartialConfigurationIsInvalid(
             [$config],
             'jira',
-            '~muted_status_id.+JIRA issue status ID must consist of one or more digits~',
-            true
+            'Invalid configuration for path "surfnet_conext_operations_support.jira.status_mapping.open": ' .
+            'JIRA issue status ID must consist of one or more digits'
+        );
+    }
+
+    /**
+     * @test
+     * @group Configuration
+     * @dataProvider nonDigitStrings
+     *
+     * @param mixed $nonDigitString
+     */
+    public function priority_ids_in_priority_mapping_are_validated($nonDigitString)
+    {
+        $config = $this->validConfiguration;
+        $config['jira']['priority_mapping']['trivial'] = $nonDigitString;
+
+        $this->assertPartialConfigurationIsInvalid(
+            [$config],
+            'jira',
+            'Invalid configuration for path "surfnet_conext_operations_support.jira.priority_mapping.trivial": ' .
+            'Priority ID must consist of one or more digits, got '
         );
     }
 
@@ -91,68 +103,6 @@ class JiraConfigurationTest extends TestCase
             'float 0'  => [0.0],
             'null'     => [null],
             'bool'     => [false],
-        ];
-    }
-
-    /**
-     * @test
-     * @group Configuration
-     * @dataProvider arrayKeysNotSuitableAsPriorityIds
-     *
-     * @param mixed $priorityId
-     */
-    public function priority_ids_in_priority_severity_map_are_validated($priorityId)
-    {
-        $config = $this->validConfiguration;
-        $config['jira']['priority_severity_map']['192abc'] = 'medium';
-
-        $this->assertPartialConfigurationIsInvalid(
-            [$config],
-            'jira',
-            '~priority_severity_map.+Priority ID must consist of one or more digits~',
-            true
-        );
-    }
-
-    public function arrayKeysNotSuitableAsPriorityIds()
-    {
-        return [
-            'empty'    => [''],
-            'alphanum' => ['192abc'],
-        ];
-    }
-    
-    /**
-     * @test
-     * @group Configuration
-     * @dataProvider invalidSeverityNames
-     */
-    public function severities_are_validated($invalidSeverityName)
-    {
-        $config = $this->validConfiguration;
-        $config['jira']['priority_severity_map']['10000'] = $invalidSeverityName;
-
-        $this->assertPartialConfigurationIsInvalid(
-            [$config],
-            'jira',
-            '~priority_severity_map.+(Severity.+must be one of|Expected scalar, but got)~',
-            true
-        );
-    }
-
-    public function invalidSeverityNames()
-    {
-        return [
-            'unknown severity name' => ['worse'],
-            'integer'  => [8],
-            'int 0'    => [0],
-            'float'    => [1.23],
-            'float 0'  => [0.0],
-            'null'     => [null],
-            'bool'     => [false],
-            'array'    => [[]],
-            'object'   => [new \stdClass],
-            'resource' => [fopen('php://memory', 'w')],
         ];
     }
 

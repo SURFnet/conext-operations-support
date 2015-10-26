@@ -19,7 +19,7 @@
 namespace Surfnet\Conext\OperationsSupportBundle\Service;
 
 use Psr\Log\LoggerInterface;
-use Surfnet\Conext\OperationsSupportBundle\Entity\JiraIssue;
+use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
@@ -34,13 +34,29 @@ class JiraIssueService
     private $issueApiService;
 
     /**
+     * @var array Report status to status ID mapping
+     */
+    private $statusMapping;
+
+    /**
+     * @var array Test failure severity to priority ID mapping
+     */
+    private $priorityMapping;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
-    public function __construct(IssueService $issueApiService, LoggerInterface $logger)
-    {
+    public function __construct(
+        IssueService $issueApiService,
+        array $statusMapping,
+        array $priorityMapping,
+        LoggerInterface $logger
+    ) {
         $this->issueApiService = $issueApiService;
+        $this->statusMapping   = $statusMapping;
+        $this->priorityMapping = $priorityMapping;
         $this->logger          = $logger;
     }
 
@@ -73,5 +89,31 @@ class JiraIssueService
         $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueId()));
 
         return $createIssueResult->getIssueId();
+    }
+
+    /**
+     * @param string $status
+     * @return JiraIssueStatus
+     */
+    public function mapStatusToJiraStatusId($status)
+    {
+        if (!array_key_exists($status, $this->statusMapping)) {
+            throw new LogicException(sprintf('No status mapping present for status "%s"', $status));
+        }
+
+        return new JiraIssueStatus($this->statusMapping[$status]);
+    }
+
+    /**
+     * @param int $severity
+     * @return JiraIssuePriority
+     */
+    public function mapSeverityToJiraPriorityId($severity)
+    {
+        if (!array_key_exists($severity, $this->priorityMapping)) {
+            throw new LogicException(sprintf('No priority mapping present for severity "%s"', $severity));
+        }
+
+        return new JiraIssuePriority($this->priorityMapping[$severity]);
     }
 }

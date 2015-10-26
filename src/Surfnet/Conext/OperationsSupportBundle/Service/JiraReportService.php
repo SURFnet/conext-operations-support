@@ -19,13 +19,10 @@
 namespace Surfnet\Conext\OperationsSupportBundle\Service;
 
 use Psr\Log\LoggerInterface;
-use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\OperationsSupportBundle\Entity\JiraIssue;
 use Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport;
 use Surfnet\Conext\OperationsSupportBundle\Repository\JiraReportRepository;
-use Surfnet\JiraApiClientBundle\Service\IssueService;
 
 class JiraReportService
 {

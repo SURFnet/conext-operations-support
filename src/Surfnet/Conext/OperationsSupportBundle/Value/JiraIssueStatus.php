@@ -19,62 +19,17 @@
 namespace Surfnet\Conext\OperationsSupportBundle\Value;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 
 final class JiraIssueStatus
 {
-    /**
-     * @var JiraIssueStatus
-     */
-    private static $openStatus;
-
-    /**
-     * @var JiraIssueStatus
-     */
-    private static $mutedStatus;
+    const OPEN = 'OPEN';
+    const MUTED = 'MUTED';
+    const RESOLVED = 'RESOLVED';
 
     /**
      * @var string
      */
     private $statusId;
-
-    /**
-     * @param JiraIssueStatus $openStatus
-     * @param JiraIssueStatus $mutedStatus
-     */
-    public static function configure(JiraIssueStatus $openStatus, JiraIssueStatus $mutedStatus)
-    {
-        if (self::$openStatus !== null) {
-            throw new LogicException('JiraIssueStatus has already been set');
-        }
-
-        self::$openStatus = $openStatus;
-        self::$mutedStatus = $mutedStatus;
-    }
-
-    /**
-     * @return JiraIssueStatus
-     */
-    public static function open()
-    {
-        if (self::$openStatus === null) {
-            throw new LogicException('Open status ID has not been set');
-        }
-
-        return self::$openStatus;
-    }
-
-    /**
-     * @return JiraIssueStatus
-     */
-    public static function muted()
-    {
-        if (self::$mutedStatus === null) {
-            throw new LogicException('Muted status ID has not been set');
-        }
-
-        return self::$mutedStatus;
-    }
 
     /**
      * @param string $statusId
@@ -84,30 +39,6 @@ final class JiraIssueStatus
         Assert::regex($statusId, '~^\d+$~', 'JIRA issue status ID must consist of one or more digits');
 
         $this->statusId = $statusId;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isOpen()
-    {
-        if (self::$openStatus === null) {
-            throw new LogicException('Open status ID has not been set');
-        }
-
-        return $this->equals(self::$openStatus);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMuted()
-    {
-        if (self::$mutedStatus === null) {
-            throw new LogicException('Muted status ID has not been set');
-        }
-
-        return $this->equals(self::$mutedStatus);
     }
 
     /**
