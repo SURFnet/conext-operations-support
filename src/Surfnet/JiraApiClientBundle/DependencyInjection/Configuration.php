@@ -18,6 +18,7 @@
 
 namespace Surfnet\JiraApiClientBundle\DependencyInjection;
 
+use Surfnet\JiraApiClientBundle\Assert;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -121,6 +122,17 @@ final class Configuration implements ConfigurationInterface
                             return !is_string($reporter);
                         })
                         ->thenInvalid('The default reporter should be a string')
+                    ->end()
+                ->end()
+                ->scalarNode('issue_type')
+                    ->info('The ID of the type of issue to create')
+                    ->isRequired()
+                    ->cannotBeEmpty()
+                    ->validate()
+                        ->always(function ($issueType) {
+                            Assert::regex($issueType, '~^\d+$~', 'The issue type ID should be a string of digits');
+                            return $issueType;
+                        })
                     ->end()
                 ->end()
             ->end();

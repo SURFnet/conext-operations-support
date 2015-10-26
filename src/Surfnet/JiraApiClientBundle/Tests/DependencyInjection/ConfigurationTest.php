@@ -35,6 +35,7 @@ final class ConfigurationTest extends TestCase
         'project_id' => '10000',
         'default_assignee' => 'default assignee',
         'default_reporter' => 'default reporter',
+        'issue_type' => '24',
     ];
 
     /**
@@ -145,6 +146,19 @@ final class ConfigurationTest extends TestCase
         $config['default_reporter'] = $value;
 
         $this->assertConfigurationIsInvalid([$config], 'The default reporter should be a string');
+    }
+
+    /**
+     * @test
+     * @group JiraApiClientBundle
+     * @dataProvider nonStringScalarProvider
+     */
+    public function issue_type_cannot_be_other_than_string($value)
+    {
+        $config = $this->validConfig;
+        $config['issue_type'] = $value;
+
+        $this->assertConfigurationIsInvalid([$config], 'The issue type ID should be a string of digits');
     }
 
     protected function getConfiguration()

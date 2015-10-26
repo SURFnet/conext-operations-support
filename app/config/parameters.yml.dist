@@ -19,6 +19,7 @@ parameters:
     jira_api_project_id: "10000"
     jira_api_default_reporter: "SURFconext Monitor"
     jira_api_default_assignee: "@@ Studenten Supportteam"
+    jira_api_issue_type: '10000'
 
     janus_api_base_url: "https://service-registry.invalid/janus/api/"
     janus_api_username: janusUser
