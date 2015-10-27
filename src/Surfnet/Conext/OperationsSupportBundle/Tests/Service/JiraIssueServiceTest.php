@@ -60,9 +60,9 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
 
         $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
-        $issueId = $service->createIssue($status, $priority, $summary, $description);
+        $issueKey = $service->createIssue($status, $priority, $summary, $description);
 
-        $this->assertSame('CONOPS-10', $issueId);
+        $this->assertSame('CONOPS-10', $issueKey);
     }
 
     /**

@@ -90,7 +90,7 @@ REPORT;
         if ($report === null) {
             $this->logger->info('No report, creating JIRA issue and tracking report');
 
-            $issueId = $this->issueService->createIssue(
+            $issueKey = $this->issueService->createIssue(
                 $this->issueService->mapStatusToJiraStatusId(JiraIssueStatus::OPEN),
                 $this->issueService->mapSeverityToJiraPriorityId($result->getSeverity()),
                 $result->getReason(),
@@ -103,7 +103,7 @@ REPORT;
             );
 
             $reportId = $this->uuidFactory->uuid4();
-            $this->reportService->trackNewIssue($reportId, $issueId, $entity, $failedTestName);
+            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $failedTestName);
         }
     }
 }

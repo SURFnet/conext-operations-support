@@ -86,9 +86,9 @@ class JiraIssueService
             );
         }
 
-        $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueId()));
+        $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueKey()));
 
-        return $createIssueResult->getIssueId();
+        return $createIssueResult->getIssueKey();
     }
 
     /**

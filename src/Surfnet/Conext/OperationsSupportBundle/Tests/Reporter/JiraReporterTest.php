@@ -68,7 +68,7 @@ class JiraReporterTest extends TestCase
         $reportService = m::mock(JiraReportService::class);
         $reportService->shouldReceive('findMostRecentlyReported')->andReturn(null);
 
-        $issueId = 'CONOPS-13';
+        $issueKey = 'CONOPS-13';
 
         /** @var MockInterface|JiraIssueService $issueService */
         $issueService = m::mock(JiraIssueService::class);
@@ -80,7 +80,7 @@ class JiraReporterTest extends TestCase
                 $reason,
                 self::containsAll((string) $entity, $explanation, $testName)
             )
-            ->andReturn($issueId);
+            ->andReturn($issueKey);
         $issueService
             ->shouldReceive('mapSeverityToJiraPriorityId')
             ->with($severity)
@@ -93,7 +93,7 @@ class JiraReporterTest extends TestCase
         $reportService
             ->shouldReceive('trackNewIssue')
             ->once()
-            ->with($reportId, $issueId, self::voEquals($entity), $testName);
+            ->with($reportId, $issueKey, self::voEquals($entity), $testName);
 
         $reporter = new JiraReporter($reportService, $issueService, $uuidFactory, new NullLogger());
         $reporter->reportFailedVerificationFor($entity, $result);
