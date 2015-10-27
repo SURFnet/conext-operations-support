@@ -66,7 +66,7 @@ surfnet_jira_api_client:
     verify_ssl: %jira_api_verify_ssl%
     consumer_key: %jira_api_consumer_key%
     private_key_file: %jira_api_private_key_file%
-    project_id: %jira_api_project_id%
+    project_key: %jira_api_project_key%
     default_assignee: %jira_api_default_assignee%
     default_reporter: %jira_api_default_reporter%
     issue_type: %jira_api_issue_type%

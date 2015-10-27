@@ -32,7 +32,7 @@ final class ConfigurationTest extends TestCase
         'base_url' => 'http://api.invalid',
         'consumer_key' => 'consumer_key',
         'private_key_file' => 'non_existent_path',
-        'project_id' => '10000',
+        'project_key' => '10000',
         'default_assignee' => 'default assignee',
         'default_reporter' => 'default reporter',
         'issue_type' => '24',
@@ -114,12 +114,12 @@ final class ConfigurationTest extends TestCase
      * @group JiraApiClientBundle
      * @dataProvider nonStringScalarProvider
      */
-    public function project_id_cannot_be_other_than_string($value)
+    public function project_key_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config['project_id'] = $value;
+        $config['project_key'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], 'The project id should be a string');
+        $this->assertConfigurationIsInvalid([$config], 'The project key should be a string');
     }
 
     /**

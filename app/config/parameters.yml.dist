@@ -16,7 +16,7 @@ parameters:
     jira_api_verify_ssl: true
     jira_api_consumer_key: app_link_consumer_key
     jira_api_private_key_file: /path/to/private.key
-    jira_api_project_id: "10000"
+    jira_api_project_key: "CXT"
     jira_api_default_reporter: "SURFconext Monitor"
     jira_api_default_assignee: "@@ Studenten Supportteam"
     jira_api_issue_type: '10000'

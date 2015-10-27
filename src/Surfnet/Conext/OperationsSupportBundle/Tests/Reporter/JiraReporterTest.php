@@ -76,16 +76,11 @@ class JiraReporterTest extends TestCase
             ->shouldReceive('createIssue')
             ->once()
             ->with(
-                self::voEquals(new JiraIssueStatus(self::STATUS_ID_OPEN)),
                 self::voEquals(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM)),
                 $reason,
                 self::containsAll((string) $entity, $explanation, $testName)
             )
             ->andReturn($issueId);
-        $issueService
-            ->shouldReceive('mapStatusToJiraStatusId')
-            ->with(JiraIssueStatus::OPEN)
-            ->andReturn(new JiraIssueStatus(self::STATUS_ID_OPEN));
         $issueService
             ->shouldReceive('mapSeverityToJiraPriorityId')
             ->with($severity)

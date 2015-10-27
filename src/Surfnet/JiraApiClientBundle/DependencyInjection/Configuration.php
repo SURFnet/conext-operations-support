@@ -91,15 +91,15 @@ final class Configuration implements ConfigurationInterface
                         )
                     ->end()
                 ->end()
-                ->scalarNode('project_id')
-                    ->info('The id of the project that will be reported to in JIRA')
+                ->scalarNode('project_key')
+                    ->info('The key of the project that will be reported to in JIRA')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($projectKey) {
                             return !is_string($projectKey);
                         })
-                        ->thenInvalid('The project id should be a string')
+                        ->thenInvalid('The project key should be a string')
                     ->end()
                 ->end()
                 ->scalarNode('default_assignee')
