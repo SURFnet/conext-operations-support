@@ -110,12 +110,12 @@ final class HttpClient implements JiraApiClientInterface
     {
         $body = $response->getBody();
 
-        if ($body->isSeekable()) {
-            $contents = $body->getContents();
-            $body->seek(0);
-        } else {
-            $contents = null;
+        if (!$body->isSeekable()) {
+            return null;
         }
+
+        $contents = $body->getContents();
+        $body->seek(0);
 
         return $contents;
     }
