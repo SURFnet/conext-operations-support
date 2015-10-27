@@ -56,5 +56,10 @@ final class SurfnetJiraApiClientExtension extends Extension
                 'private_key_passphrase' => '',
                 'signature_method'       => Oauth1::SIGNATURE_METHOD_RSA,
             ]);
+
+        $container
+            ->getDefinition('surfnet_jira_api_client.service.rest_issue')
+            ->replaceArgument(1, $config['project_key'])
+            ->replaceArgument(2, $config['issue_type']);
     }
 }

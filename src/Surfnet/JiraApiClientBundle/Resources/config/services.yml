@@ -1,4 +1,15 @@
 services:
+    surfnet_jira_api_client.service.issue:
+        alias: surfnet_jira_api_client.service.rest_issue
+
+    surfnet_jira_api_client.service.rest_issue:
+        public: false
+        class: Surfnet\JiraApiClientBundle\Service\RestIssueService
+        arguments:
+            - @surfnet_jira_api_client.jira_client
+            - # Project key
+            - # Issue type ID
+
     surfnet_jira_api_client.guzzle:
         public: false
         class: GuzzleHttp\Client

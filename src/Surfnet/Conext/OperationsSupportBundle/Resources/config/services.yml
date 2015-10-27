@@ -56,7 +56,7 @@ services:
     surfnet_conext_operations_support.service.jira_issue:
         class: Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService
         arguments:
-            - ~ # Issue API service, yet to implement in JiraApiClientBundle
+            - @surfnet_jira_api_client.service.issue
             - # Status mapping
             - # Priority mapping
             - @logger
