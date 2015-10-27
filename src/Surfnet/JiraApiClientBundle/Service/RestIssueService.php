@@ -66,6 +66,7 @@ final class RestIssueService implements IssueService
         /** @var ApiResult|false $result */
         $result = $this->apiClient->createIssue($this->projectKey, $command->summary, $this->issueTypeId, [
             'priority' => ['id' => $command->priorityId],
+            'description' => $command->description,
         ]);
 
         if (!$result) {
