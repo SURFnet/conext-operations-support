@@ -33,8 +33,6 @@ final class ConfigurationTest extends TestCase
         'consumer_key' => 'consumer_key',
         'private_key_file' => 'non_existent_path',
         'project_key' => '10000',
-        'default_assignee' => 'default assignee',
-        'default_reporter' => 'default reporter',
         'issue_type' => '24',
     ];
 
@@ -120,32 +118,6 @@ final class ConfigurationTest extends TestCase
         $config['project_key'] = $value;
 
         $this->assertConfigurationIsInvalid([$config], 'The project key should be a string');
-    }
-
-    /**
-     * @test
-     * @group JiraApiClientBundle
-     * @dataProvider nonStringScalarProvider
-     */
-    public function default_assignee_cannot_be_other_than_string($value)
-    {
-        $config = $this->validConfig;
-        $config['default_assignee'] = $value;
-
-        $this->assertConfigurationIsInvalid([$config], 'The default assignee should be a string');
-    }
-
-    /**
-     * @test
-     * @group JiraApiClientBundle
-     * @dataProvider nonStringScalarProvider
-     */
-    public function default_reporter_cannot_be_other_than_string($value)
-    {
-        $config = $this->validConfig;
-        $config['default_reporter'] = $value;
-
-        $this->assertConfigurationIsInvalid([$config], 'The default reporter should be a string');
     }
 
     /**
