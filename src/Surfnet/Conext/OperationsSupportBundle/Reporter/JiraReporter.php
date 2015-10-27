@@ -26,7 +26,6 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
-use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
 final class JiraReporter implements VerificationReporter
 {
@@ -91,7 +90,6 @@ REPORT;
             $this->logger->info('No report, creating JIRA issue and tracking report');
 
             $issueKey = $this->issueService->createIssue(
-                $this->issueService->mapStatusToJiraStatusId(JiraIssueStatus::OPEN),
                 $this->issueService->mapSeverityToJiraPriorityId($result->getSeverity()),
                 $result->getReason(),
                 sprintf(

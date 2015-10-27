@@ -23,11 +23,6 @@ final class CreateIssueCommand
     /**
      * @var string
      */
-    public $statusId;
-
-    /**
-     * @var string
-     */
     public $priorityId;
 
     /**

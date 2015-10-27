@@ -34,7 +34,6 @@ use Surfnet\Conext\OperationsSupportBundle\Reporter\JiraReporter;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
-use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
 class JiraReporterTest extends TestCase
 {

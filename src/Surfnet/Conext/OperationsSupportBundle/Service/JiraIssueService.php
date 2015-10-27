@@ -61,16 +61,14 @@ class JiraIssueService
     }
 
     /**
-     * @param JiraIssueStatus   $status
      * @param JiraIssuePriority $priority
      * @param string            $summary
      * @param string            $description
      * @return string
      */
-    public function createIssue(JiraIssueStatus $status, JiraIssuePriority $priority, $summary, $description)
+    public function createIssue(JiraIssuePriority $priority, $summary, $description)
     {
         $command = new CreateIssueCommand();
-        $command->statusId    = $status->getStatusId();
         $command->priorityId  = $priority->getPriorityId();
         $command->summary     = $summary;
         $command->description = $description;

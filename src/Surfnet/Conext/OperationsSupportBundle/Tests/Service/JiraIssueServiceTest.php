@@ -48,7 +48,6 @@ class JiraIssueServiceTest extends TestCase
         $description = 'description';
 
         $command = new CreateIssueCommand();
-        $command->statusId    = $status->getStatusId();
         $command->priorityId  = $priority->getPriorityId();
         $command->summary     = $summary;
         $command->description = $description;
@@ -60,7 +59,7 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
 
         $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
-        $issueKey = $service->createIssue($status, $priority, $summary, $description);
+        $issueKey = $service->createIssue($priority, $summary, $description);
 
         $this->assertSame('CONOPS-10', $issueKey);
     }
@@ -80,7 +79,6 @@ class JiraIssueServiceTest extends TestCase
         $description = 'description';
 
         $command = new CreateIssueCommand();
-        $command->statusId    = $status->getStatusId();
         $command->priorityId  = $priority->getPriorityId();
         $command->summary     = $summary;
         $command->description = $description;
@@ -92,7 +90,7 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
 
         $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
-        $service->createIssue($status, $priority, $summary, $description);
+        $service->createIssue($priority, $summary, $description);
     }
 
     /**
