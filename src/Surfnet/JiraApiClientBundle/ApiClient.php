@@ -16,8 +16,20 @@
  * limitations under the License.
  */
 
-namespace Surfnet\JiraApiClientBundle\Command;
+namespace Surfnet\JiraApiClientBundle;
 
-final class UpdateIssueCommand
+use Jira_Api as JiraApiClient;
+use Jira_Api_Result as ApiResult;
+
+final class ApiClient extends JiraApiClient
 {
+    /**
+     * @param string $issueKey
+     * @param string $commentId
+     * @return ApiResult|false
+     */
+    public function getComment($issueKey, $commentId)
+    {
+        return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/comment/%s', urlencode($issueKey), urlencode($commentId)));
+    }
 }

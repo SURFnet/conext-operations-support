@@ -41,7 +41,7 @@ services:
         class: Jira_Api_Authentication_Anonymous
 
     surfnet_jira_api_client.jira_client:
-        class: Jira_Api
+        class: Surfnet\JiraApiClientBundle\ApiClient
         arguments:
             - '' # Endpoint (base URL)
             - @surfnet_jira_api_client.authentication
