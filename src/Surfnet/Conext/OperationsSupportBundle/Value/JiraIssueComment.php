@@ -16,27 +16,34 @@
  * limitations under the License.
  */
 
-namespace Surfnet\JiraApiClientBundle\Dto;
+namespace Surfnet\Conext\OperationsSupportBundle\Value;
 
-final class Issue
+use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\JiraApiClientBundle\Dto\Comment;
+
+final class JiraIssueComment
 {
     /**
      * @var string
      */
-    public $priorityId;
+    private $body;
+
+    public static function fromCommentDto(Comment $dto)
+    {
+        $comment = new JiraIssueComment();
+        $comment->body = $dto->body;
+
+        return $comment;
+    }
 
     /**
-     * @var string
+     * @param string $body
+     * @return bool
      */
-    public $statusId;
+    public function bodyEquals($body)
+    {
+        Assert::string($body, 'Summary must be a string');
 
-    /**
-     * @var string
-     */
-    public $summary;
-
-    /**
-     * @var string
-     */
-    public $description;
+        return $this->body === $body;
+    }
 }

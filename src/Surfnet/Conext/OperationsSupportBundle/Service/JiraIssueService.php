@@ -20,10 +20,13 @@ namespace Surfnet\Conext\OperationsSupportBundle\Service;
 
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
-use Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssue;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueComment;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
+use Surfnet\JiraApiClientBundle\Command\CommentOnIssueCommand;
 use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
+use Surfnet\JiraApiClientBundle\Command\ReprioritiseIssueCommand;
 use Surfnet\JiraApiClientBundle\Service\IssueService;
 
 class JiraIssueService
@@ -78,6 +81,52 @@ class JiraIssueService
         $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $issueKey));
 
         return $issueKey;
+    }
+
+    /**
+     * @param string            $issueKey
+     * @param JiraIssuePriority $priority
+     */
+    public function reprioritiseIssue($issueKey, JiraIssuePriority $priority)
+    {
+        $command = new ReprioritiseIssueCommand();
+        $command->issueKey = $issueKey;
+        $command->priorityId = $priority->getPriorityId();
+
+        $this->issueApiService->reprioritiseIssue($command);
+    }
+
+    /**
+     * @param string $issueKey
+     * @param string $commentBody
+     * @return string
+     */
+    public function commentOnIssue($issueKey, $commentBody)
+    {
+        $command = new CommentOnIssueCommand();
+        $command->issueKey = $issueKey;
+        $command->body     = $commentBody;
+
+        return $this->issueApiService->commentOnIssue($command);
+    }
+
+    /**
+     * @param $issueKey
+     * @return JiraIssue
+     */
+    public function getIssue($issueKey)
+    {
+        return JiraIssue::fromIssueDto($this->issueApiService->getIssue($issueKey));
+    }
+
+    /**
+     * @param string $issueKey
+     * @param string $commentId
+     * @return JiraIssueComment
+     */
+    public function getComment($issueKey, $commentId)
+    {
+        return JiraIssueComment::fromCommentDto($this->issueApiService->getComment($issueKey, $commentId));
     }
 
     /**
