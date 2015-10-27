@@ -41,7 +41,6 @@ class JiraIssueServiceTest extends TestCase
      */
     public function it_successfully_creates_issues()
     {
-        $status      = new JiraIssueStatus('10000');
         $priority    = new JiraIssuePriority('10002');
         $summary     = 'summary';
         $description = 'description';
