@@ -77,4 +77,9 @@ final class EntityTypeType extends Type
     {
         return self::NAME;
     }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
 }
