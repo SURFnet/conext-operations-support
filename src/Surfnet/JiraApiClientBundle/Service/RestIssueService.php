@@ -95,8 +95,8 @@ final class RestIssueService implements IssueService
             ]
         ]);
 
-        if (!$result) {
-            throw new RuntimeException('Unknown error while reprioritising JIRA issue: API result object false');
+        if ($result) {
+            throw new RuntimeException('Unknown error while reprioritising JIRA issue: expected HTTP 204 No Content');
         }
     }
 
