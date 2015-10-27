@@ -41,17 +41,17 @@ class JiraReportServiceTest extends TestCase
         /** @var MockInterface|UuidInterface $reportId */
         $reportId = m::mock(UuidInterface::class);
         $reportId->shouldReceive('toString')->andReturn('abcd');
-        $issueId = 'CONOPS-19';
+        $issueKey = 'CONOPS-19';
         $entity = new Entity(new EntityId('meh'), EntityType::IdP());
         $failedTestName = 'test.name';
 
-        $report = JiraReport::trackIssue($reportId, $issueId, $entity, $failedTestName);
+        $report = JiraReport::trackIssue($reportId, $issueKey, $entity, $failedTestName);
 
         /** @var MockInterface|JiraReportRepository $reportRepository */
         $reportRepository = m::mock(JiraReportRepository::class);
         $reportRepository->shouldReceive('add')->once()->with(m::anyOf($report));
 
         $service = new JiraReportService($reportRepository, new NullLogger());
-        $service->trackNewIssue($reportId, $issueId, $entity, $failedTestName);
+        $service->trackNewIssue($reportId, $issueKey, $entity, $failedTestName);
     }
 }

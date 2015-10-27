@@ -48,7 +48,6 @@ class JiraIssueServiceTest extends TestCase
         $description = 'description';
 
         $command = new CreateIssueCommand();
-        $command->statusId    = $status->getStatusId();
         $command->priorityId  = $priority->getPriorityId();
         $command->summary     = $summary;
         $command->description = $description;
@@ -60,9 +59,9 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
 
         $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
-        $issueId = $service->createIssue($status, $priority, $summary, $description);
+        $issueKey = $service->createIssue($priority, $summary, $description);
 
-        $this->assertSame('CONOPS-10', $issueId);
+        $this->assertSame('CONOPS-10', $issueKey);
     }
 
     /**
@@ -80,7 +79,6 @@ class JiraIssueServiceTest extends TestCase
         $description = 'description';
 
         $command = new CreateIssueCommand();
-        $command->statusId    = $status->getStatusId();
         $command->priorityId  = $priority->getPriorityId();
         $command->summary     = $summary;
         $command->description = $description;
@@ -92,7 +90,7 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
 
         $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
-        $service->createIssue($status, $priority, $summary, $description);
+        $service->createIssue($priority, $summary, $description);
     }
 
     /**
@@ -106,13 +104,13 @@ class JiraIssueServiceTest extends TestCase
         $issueApiService = m::mock(IssueService::class);
         $service = new JiraIssueService(
             $issueApiService,
-            [JiraIssueStatus::OPEN => '10000', JiraIssueStatus::MUTED => '10001', JiraIssueStatus::RESOLVED => '10002'],
+            [JiraIssueStatus::OPEN => '10000', JiraIssueStatus::MUTED => '10001', JiraIssueStatus::CLOSED => '10002'],
             [],
             new NullLogger()
         );
 
         $this->assertEquals(new JiraIssueStatus('10000'), $service->mapStatusToJiraStatusId(JiraIssueStatus::OPEN));
-        $this->assertEquals(new JiraIssueStatus('10002'), $service->mapStatusToJiraStatusId(JiraIssueStatus::RESOLVED));
+        $this->assertEquals(new JiraIssueStatus('10002'), $service->mapStatusToJiraStatusId(JiraIssueStatus::CLOSED));
     }
 
     /**

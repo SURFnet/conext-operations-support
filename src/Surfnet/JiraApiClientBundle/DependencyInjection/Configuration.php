@@ -18,6 +18,7 @@
 
 namespace Surfnet\JiraApiClientBundle\DependencyInjection;
 
+use Surfnet\JiraApiClientBundle\Assert;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -53,48 +54,60 @@ final class Configuration implements ConfigurationInterface
                         ->thenInvalid('The JIRA API base URL should not contain a path')
                     ->end()
                 ->end()
-                ->scalarNode('username')
-                    ->info('The username of the user that will act as a reporter in JIRA')
+                ->booleanNode('verify_ssl')
+                    ->info('Whether to verify the SSL certificate of the JIRA API')
+                    ->defaultTrue()
+                ->end()
+                ->scalarNode('consumer_key')
+                    ->info(
+                        'The consumer key for the Application Link in JIRA'
+                    )
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(function ($username) {
-                            return !is_string($username);
+                        ->ifTrue(function ($consumerKey) {
+                            return !is_string($consumerKey);
                         })
-                        ->thenInvalid('The JIRA API username should be a string')
+                        ->thenInvalid(
+                            'The consumer key for the JIRA API Application Link private key must be a non-empty string'
+                        )
                     ->end()
                 ->end()
-                ->scalarNode('password')
-                    ->info('The password of the user that will act as a reporter in JIRA')
+                ->scalarNode('private_key_file')
+                    ->info(
+                        'The path to the private key which public key was registered with the Application Link in JIRA'
+                    )
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(function ($password) {
-                            return !is_string($password);
+                        ->ifTrue(function ($path) {
+                            return !is_string($path);
                         })
-                        ->thenInvalid('The JIRA API password should be a string')
+                        ->thenInvalid(
+                            'The path to the JIRA API Application Link private key must be a non-empty string'
+                        )
                     ->end()
                 ->end()
-                ->scalarNode('project_id')
-                    ->info('The id of the project that will be reported to in JIRA')
+                ->scalarNode('project_key')
+                    ->info('The key of the project that will be reported to in JIRA')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
                         ->ifTrue(function ($projectKey) {
                             return !is_string($projectKey);
                         })
-                        ->thenInvalid('The project id should be a string')
+                        ->thenInvalid('The project key should be a string')
                     ->end()
                 ->end()
-                ->scalarNode('default_assignee')
-                    ->info('The name of the user that will be the default assignee')
+                ->scalarNode('issue_type')
+                    ->info('The ID of the type of issue to create')
                     ->isRequired()
                     ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(function ($projectKey) {
-                            return !is_string($projectKey);
+                        ->always(function ($issueType) {
+                            Assert::regex($issueType, '~^\d+$~', 'The issue type ID should be a string of digits');
+                            return $issueType;
                         })
-                        ->thenInvalid('The default assignee should be a string')
                     ->end()
                 ->end()
             ->end();

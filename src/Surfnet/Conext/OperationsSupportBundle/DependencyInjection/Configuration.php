@@ -120,7 +120,7 @@ class Configuration implements ConfigurationInterface
                             ->children()
                                 ->append($this->createJiraStatusMappingConfiguration('open'))
                                 ->append($this->createJiraStatusMappingConfiguration('muted'))
-                                ->append($this->createJiraStatusMappingConfiguration('resolved'))
+                                ->append($this->createJiraStatusMappingConfiguration('closed'))
                             ->end()
                             ->validate()
                                 ->ifTrue(function (array $mapping) {

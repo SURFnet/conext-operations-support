@@ -61,16 +61,14 @@ class JiraIssueService
     }
 
     /**
-     * @param JiraIssueStatus   $status
      * @param JiraIssuePriority $priority
      * @param string            $summary
      * @param string            $description
      * @return string
      */
-    public function createIssue(JiraIssueStatus $status, JiraIssuePriority $priority, $summary, $description)
+    public function createIssue(JiraIssuePriority $priority, $summary, $description)
     {
         $command = new CreateIssueCommand();
-        $command->statusId    = $status->getStatusId();
         $command->priorityId  = $priority->getPriorityId();
         $command->summary     = $summary;
         $command->description = $description;
@@ -86,9 +84,9 @@ class JiraIssueService
             );
         }
 
-        $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueId()));
+        $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueKey()));
 
-        return $createIssueResult->getIssueId();
+        return $createIssueResult->getIssueKey();
     }
 
     /**

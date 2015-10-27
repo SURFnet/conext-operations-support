@@ -16,22 +16,10 @@
  * limitations under the License.
  */
 
-namespace Surfnet\JiraApiClientBundle\Command;
+namespace Surfnet\JiraApiClientBundle\Exception;
 
-final class CreateIssueCommand
+use RuntimeException as CoreRuntimeException;
+
+final class RuntimeException extends CoreRuntimeException implements Exception
 {
-    /**
-     * @var string
-     */
-    public $priorityId;
-
-    /**
-     * @var string
-     */
-    public $summary;
-
-    /**
-     * @var string
-     */
-    public $description;
 }

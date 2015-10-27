@@ -1,24 +1,48 @@
 services:
-  surfnet_jira_api_client.guzzle:
-    class: GuzzleHttp\Client
-    arguments:
-      - "" # Client configuration
-    public: false
+    surfnet_jira_api_client.service.issue:
+        alias: surfnet_jira_api_client.service.rest_issue
 
-  surfnet_jira_api_client.http_client:
-    class: Surfnet\Conext\JiraApiClientBundle\HttpClient
-    arguments:
-      - @surfnet_jira_api_client.guzzle
-      - @logger
+    surfnet_jira_api_client.service.rest_issue:
+        public: false
+        class: Surfnet\JiraApiClientBundle\Service\RestIssueService
+        arguments:
+            - @surfnet_jira_api_client.jira_client
+            - # Project key
+            - # Issue type ID
 
-  surfnet_jira_api_client.authentication:
-    class: Jira_Api_Authentication_Basic
-    arguments:
-      - "" # Username
-      - "" # Password
+    surfnet_jira_api_client.guzzle:
+        public: false
+        class: GuzzleHttp\Client
+        arguments:
+            - "" # Client configuration
 
-  surfnet_jira_api_client.jira_client:
-    class: Jira_Api
-    arguments:
-      - @surfnet_jira_api_client.http_client
-      - @surfnet_jira_api_client.authentication
+    surfnet_jira_api_client.guzzle.handler_stack:
+        public: false
+        class: GuzzleHttp\HandlerStack
+        factory: [GuzzleHttp\HandlerStack, 'create']
+        calls:
+            - [push, [@surfnet_jira_api_client.guzzle.subscriber.oauth]]
+
+    surfnet_jira_api_client.guzzle.subscriber.oauth:
+        public: false
+        class: GuzzleHttp\Subscriber\Oauth\Oauth1
+        arguments:
+            - # OAuth configuration, see extension
+
+    surfnet_jira_api_client.http_client:
+        public: false
+        class: Surfnet\JiraApiClientBundle\HttpClient\HttpClient
+        arguments:
+            - @surfnet_jira_api_client.guzzle
+            - @logger
+
+    surfnet_jira_api_client.authentication:
+        public: false
+        class: Jira_Api_Authentication_Anonymous
+
+    surfnet_jira_api_client.jira_client:
+        class: Jira_Api
+        arguments:
+            - '' # Endpoint (base URL)
+            - @surfnet_jira_api_client.authentication
+            - @surfnet_jira_api_client.http_client

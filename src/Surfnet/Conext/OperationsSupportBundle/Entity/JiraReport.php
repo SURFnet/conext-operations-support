@@ -32,11 +32,11 @@ use Surfnet\Conext\OperationsSupportBundle\DateTime\DateTime;
  * @ORM\Table(uniqueConstraints={
  *     @ORM\UniqueConstraint(
  *         name="conops_jirareport_uniq_entity_id_type_testname",
- *         columns={"entity_id", "entity_type", "test_name", "issue_id"}
+ *         columns={"entity_id", "entity_type", "test_name", "issue_key"}
  *     )
  * })
  *
- * @SuppressWarnings(PHPMD.UnusedPrivateFields) -- Fields id, issueId and reportedOn are used only for querying.
+ * @SuppressWarnings(PHPMD.UnusedPrivateFields) -- Fields id, issueKey and reportedOn are used only for querying.
  */
 class JiraReport
 {
@@ -74,7 +74,7 @@ class JiraReport
      *
      * @var string
      */
-    private $issueId;
+    private $issueKey;
 
     /**
      * @ORM\Column(type="datetime_immutable")
@@ -85,15 +85,15 @@ class JiraReport
 
     /**
      * @param UuidInterface $reportId
-     * @param string        $issueId
+     * @param string        $issueKey
      * @param Entity        $entity
      * @param string        $testName
      * @return JiraReport
      */
-    public static function trackIssue(UuidInterface $reportId, $issueId, Entity $entity, $testName)
+    public static function trackIssue(UuidInterface $reportId, $issueKey, Entity $entity, $testName)
     {
-        Assert::string($issueId, 'Issue ID must be string');
-        Assert::notBlank($issueId, 'Issue ID may not be blank');
+        Assert::string($issueKey, 'Issue key must be string');
+        Assert::notBlank($issueKey, 'Issue key may not be blank');
         Assert::string($testName, 'Test name must be string');
         Assert::notBlank($testName, 'Test name may not be blank');
 
@@ -102,7 +102,7 @@ class JiraReport
         $report->entityId   = $entity->getEntityId();
         $report->entityType = $entity->getEntityType();
         $report->testName   = $testName;
-        $report->issueId    = $issueId;
+        $report->issueKey   = $issueKey;
         $report->reportedOn = new DateTimeImmutable();
 
         return $report;

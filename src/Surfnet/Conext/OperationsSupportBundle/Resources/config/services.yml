@@ -40,6 +40,31 @@ services:
         tags:
             -  { name: console.command }
 
+    surfnet_conext_operations_support.command.jira_issue_statuses:
+        class: Surfnet\Conext\OperationsSupportBundle\Console\Command\JiraIssueStatusesCommand
+        tags:
+            -  { name: console.command }
+
+    surfnet_conext_operations_support.command.jira_issue_priorities:
+        class: Surfnet\Conext\OperationsSupportBundle\Console\Command\JiraIssuePrioritiesCommand
+        tags:
+            -  { name: console.command }
+
+    surfnet_conext_operations_support.command.jira_issue_types:
+        class: Surfnet\Conext\OperationsSupportBundle\Console\Command\JiraIssueTypesCommand
+        tags:
+            -  { name: console.command }
+
+    surfnet_conext_operations_support.command.jira_projects:
+        class: Surfnet\Conext\OperationsSupportBundle\Console\Command\JiraProjectsCommand
+        tags:
+            -  { name: console.command }
+
+    surfnet_conext_operations_support.command.jira_issue_view:
+        class: Surfnet\Conext\OperationsSupportBundle\Console\Command\JiraIssueViewCommand
+        tags:
+            -  { name: console.command }
+
     surfnet_conext_operations_support.verification_blacklist:
         class: Surfnet\Conext\EntityVerificationFramework\Blacklist
         factory: [Surfnet\Conext\EntityVerificationFramework\BlacklistFactory, 'fromDescriptors']
@@ -56,7 +81,7 @@ services:
     surfnet_conext_operations_support.service.jira_issue:
         class: Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService
         arguments:
-            - ~ # Issue API service, yet to implement in JiraApiClientBundle
+            - @surfnet_jira_api_client.service.issue
             - # Status mapping
             - # Priority mapping
             - @logger

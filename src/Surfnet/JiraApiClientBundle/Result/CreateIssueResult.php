@@ -29,7 +29,7 @@ final class CreateIssueResult
     /**
      * @var string
      */
-    private $issueId;
+    private $issueKey;
 
     /**
      * @var string[]
@@ -37,16 +37,16 @@ final class CreateIssueResult
     private $errorMessages;
 
     /**
-     * @param string $issueId
+     * @param string $issueKey
      * @return CreateIssueResult
      */
-    public static function success($issueId)
+    public static function success($issueKey)
     {
-        Assert::string($issueId, 'Issue ID must be a string');
-        Assert::notBlank($issueId, 'Issue ID may not be blank');
+        Assert::string($issueKey, 'Issue key must be a string');
+        Assert::notBlank($issueKey, 'Issue key may not be blank');
 
         $result = new CreateIssueResult(self::STATUS_SUCCESS);
-        $result->issueId = $issueId;
+        $result->issueKey = $issueKey;
 
         return $result;
     }
@@ -92,13 +92,13 @@ final class CreateIssueResult
     /**
      * @return string
      */
-    public function getIssueId()
+    public function getIssueKey()
     {
         if (!$this->wasSuccessful()) {
-            throw new LogicException('Issue ID is not available when issue creation not successful');
+            throw new LogicException('Issue key is not available when issue creation not successful');
         }
 
-        return $this->issueId;
+        return $this->issueKey;
     }
 
     /**

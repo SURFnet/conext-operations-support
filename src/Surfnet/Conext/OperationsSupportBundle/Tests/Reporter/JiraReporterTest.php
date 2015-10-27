@@ -34,7 +34,6 @@ use Surfnet\Conext\OperationsSupportBundle\Reporter\JiraReporter;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
-use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
 class JiraReporterTest extends TestCase
 {
@@ -68,7 +67,7 @@ class JiraReporterTest extends TestCase
         $reportService = m::mock(JiraReportService::class);
         $reportService->shouldReceive('findMostRecentlyReported')->andReturn(null);
 
-        $issueId = 'CONOPS-13';
+        $issueKey = 'CONOPS-13';
 
         /** @var MockInterface|JiraIssueService $issueService */
         $issueService = m::mock(JiraIssueService::class);
@@ -76,16 +75,11 @@ class JiraReporterTest extends TestCase
             ->shouldReceive('createIssue')
             ->once()
             ->with(
-                self::voEquals(new JiraIssueStatus(self::STATUS_ID_OPEN)),
                 self::voEquals(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM)),
                 $reason,
                 self::containsAll((string) $entity, $explanation, $testName)
             )
-            ->andReturn($issueId);
-        $issueService
-            ->shouldReceive('mapStatusToJiraStatusId')
-            ->with(JiraIssueStatus::OPEN)
-            ->andReturn(new JiraIssueStatus(self::STATUS_ID_OPEN));
+            ->andReturn($issueKey);
         $issueService
             ->shouldReceive('mapSeverityToJiraPriorityId')
             ->with($severity)
@@ -98,7 +92,7 @@ class JiraReporterTest extends TestCase
         $reportService
             ->shouldReceive('trackNewIssue')
             ->once()
-            ->with($reportId, $issueId, self::voEquals($entity), $testName);
+            ->with($reportId, $issueKey, self::voEquals($entity), $testName);
 
         $reporter = new JiraReporter($reportService, $issueService, $uuidFactory, new NullLogger());
         $reporter->reportFailedVerificationFor($entity, $result);

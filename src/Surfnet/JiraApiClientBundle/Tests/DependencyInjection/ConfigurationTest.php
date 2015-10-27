@@ -30,10 +30,10 @@ final class ConfigurationTest extends TestCase
 
     private $validConfig = [
         'base_url' => 'http://api.invalid',
-        'username' => 'test user',
-        'password' => 'test password',
-        'project_id' => '10000',
-        'default_assignee' => 'default assignee',
+        'consumer_key' => 'consumer_key',
+        'private_key_file' => 'non_existent_path',
+        'project_key' => '10000',
+        'issue_type' => '24',
     ];
 
     /**
@@ -78,12 +78,16 @@ final class ConfigurationTest extends TestCase
      * @group JiraApiClientBundle
      * @dataProvider nonStringScalarProvider
      */
-    public function username_cannot_be_other_than_string($value)
+    public function consumer_key_must_be_string($value)
     {
         $config = $this->validConfig;
-        $config['username'] = $value;
+        $config['consumer_key'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], 'The JIRA API username should be a string');
+        $this->assertConfigurationIsInvalid(
+            [$config],
+            'Invalid configuration for path "surfnet_jira_api_client.consumer_key": ' .
+            'The consumer key for the JIRA API Application Link private key must be a non-empty string'
+        );
     }
 
     /**
@@ -91,12 +95,16 @@ final class ConfigurationTest extends TestCase
      * @group JiraApiClientBundle
      * @dataProvider nonStringScalarProvider
      */
-    public function password_cannot_be_other_than_string($value)
+    public function private_key_file_must_be_string($value)
     {
         $config = $this->validConfig;
-        $config['password'] = $value;
+        $config['private_key_file'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], 'The JIRA API password should be a string');
+        $this->assertConfigurationIsInvalid(
+            [$config],
+            'Invalid configuration for path "surfnet_jira_api_client.private_key_file": ' .
+            'The path to the JIRA API Application Link private key must be a non-empty string'
+        );
     }
 
     /**
@@ -104,12 +112,12 @@ final class ConfigurationTest extends TestCase
      * @group JiraApiClientBundle
      * @dataProvider nonStringScalarProvider
      */
-    public function project_id_cannot_be_other_than_string($value)
+    public function project_key_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config['project_id'] = $value;
+        $config['project_key'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], 'The project id should be a string');
+        $this->assertConfigurationIsInvalid([$config], 'The project key should be a string');
     }
 
     /**
@@ -117,12 +125,12 @@ final class ConfigurationTest extends TestCase
      * @group JiraApiClientBundle
      * @dataProvider nonStringScalarProvider
      */
-    public function default_assignee_cannot_be_other_than_string($value)
+    public function issue_type_cannot_be_other_than_string($value)
     {
         $config = $this->validConfig;
-        $config['default_assignee'] = $value;
+        $config['issue_type'] = $value;
 
-        $this->assertConfigurationIsInvalid([$config], 'The default assignee should be a string');
+        $this->assertConfigurationIsInvalid([$config], 'The issue type ID should be a string of digits');
     }
 
     protected function getConfiguration()
