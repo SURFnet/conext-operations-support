@@ -97,7 +97,10 @@ final class HttpClient implements JiraApiClientInterface
         }
 
         $responseContents = $this->readResponseBodyContents($response);
-        $this->logger->info('Received response from JIRA API', ['payload' => $responseContents]);
+        $this->logger->info(
+            sprintf('Received HTTP %d response from JIRA API', $response->getStatusCode()),
+            ['payload' => $responseContents]
+        );
 
         return $responseContents;
     }
