@@ -49,17 +49,29 @@ final class JiraIssue
      */
     public static function fromIssueDto(Issue $dto)
     {
-        $issue = new JiraIssue();
-        $issue->priority    = new JiraIssuePriority($dto->priorityId);
-        $issue->status      = new JiraIssueStatus($dto->statusId);
-        $issue->summary     = $dto->summary;
-        $issue->description = $dto->description;
-
-        return $issue;
+        return new JiraIssue(
+            new JiraIssuePriority($dto->priorityId),
+            new JiraIssueStatus($dto->statusId),
+            $dto->summary,
+            $dto->description
+        );
     }
 
-    private function __construct()
+    /**
+     * @param JiraIssuePriority $priority
+     * @param JiraIssueStatus   $status
+     * @param string            $summary
+     * @param string            $description
+     */
+    public function __construct(JiraIssuePriority $priority, JiraIssueStatus $status, $summary, $description)
     {
+        Assert::string($summary, 'Summary must be a string');
+        Assert::string($description, 'Description must be a string');
+
+        $this->priority = $priority;
+        $this->status = $status;
+        $this->summary = $summary;
+        $this->description = $description;
     }
 
     /**

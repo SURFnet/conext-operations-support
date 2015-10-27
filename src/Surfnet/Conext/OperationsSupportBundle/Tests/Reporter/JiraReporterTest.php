@@ -23,6 +23,7 @@ use Mockery\Matcher\Closure as ClosureMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\NullLogger;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
@@ -30,15 +31,24 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
+use Surfnet\Conext\OperationsSupportBundle\Entity\JiraReport;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\JiraReporter;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssue;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
 class JiraReporterTest extends TestCase
 {
     const STATUS_ID_OPEN = '10000';
+    const STATUS_ID_MUTED = '10001';
     const PRIORITY_ID_MEDIUM = '10002';
+
+    const FAILED_TEST_NAME = 'test.name';
+    const FAILED_TEST_REASON = 'reason';
+    const FAILED_TEST_EXPLANATION = 'explanation';
+    const FAILED_TEST_SEVERITY = VerificationTestResult::SEVERITY_MEDIUM;
 
     /**
      * @test
@@ -50,18 +60,7 @@ class JiraReporterTest extends TestCase
         $entityType = EntityType::IdP();
         $entity     = new Entity($entityId, $entityType);
 
-        $testName = 'test.name';
-        $reason = 'reason';
-        $explanation = 'explanation';
-        $severity = VerificationTestResult::SEVERITY_MEDIUM;
-
-        /** @var MockInterface|VerificationSuiteResult $result */
-        $result = m::mock(VerificationSuiteResult::class);
-        $result->shouldReceive('hasTestFailed')->andReturn(true);
-        $result->shouldReceive('getFailedTestName')->andReturn($testName);
-        $result->shouldReceive('getReason')->andReturn($reason);
-        $result->shouldReceive('getExplanation')->andReturn($explanation);
-        $result->shouldReceive('getSeverity')->andReturn($severity);
+        $result = $this->getFailedSuiteResult();
 
         /** @var MockInterface|JiraReportService $reportService */
         $reportService = m::mock(JiraReportService::class);
@@ -76,13 +75,13 @@ class JiraReporterTest extends TestCase
             ->once()
             ->with(
                 self::voEquals(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM)),
-                $reason,
-                self::containsAll((string) $entity, $explanation, $testName)
+                self::FAILED_TEST_REASON,
+                self::containsAll((string) $entity, self::FAILED_TEST_EXPLANATION, self::FAILED_TEST_NAME)
             )
             ->andReturn($issueKey);
         $issueService
             ->shouldReceive('mapSeverityToJiraPriorityId')
-            ->with($severity)
+            ->with(self::FAILED_TEST_SEVERITY)
             ->andReturn(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM));
 
         $reportId = m::mock(UuidInterface::class);
@@ -92,7 +91,52 @@ class JiraReporterTest extends TestCase
         $reportService
             ->shouldReceive('trackNewIssue')
             ->once()
-            ->with($reportId, $issueKey, self::voEquals($entity), $testName);
+            ->with($reportId, $issueKey, self::voEquals($entity), self::FAILED_TEST_NAME);
+
+        $reporter = new JiraReporter($reportService, $issueService, $uuidFactory, new NullLogger());
+        $reporter->reportFailedVerificationFor($entity, $result);
+    }
+
+    /**
+     * @test
+     * @group reporter
+     */
+    public function it_ignores_muted_issues()
+    {
+        $entityId   = new EntityId('meh');
+        $entityType = EntityType::IdP();
+        $entity     = new Entity($entityId, $entityType);
+
+        $result = $this->getFailedSuiteResult();
+
+        $issueKey = 'CONOPS-13';
+        $reportId = Uuid::uuid4();
+        $report   = JiraReport::trackIssue($reportId, $issueKey, $entity, self::FAILED_TEST_NAME);
+        $issue    = new JiraIssue(
+            new JiraIssuePriority(self::PRIORITY_ID_MEDIUM),
+            new JiraIssueStatus(self::STATUS_ID_MUTED),
+            'summary',
+            'description'
+        );
+
+        /** @var MockInterface|JiraReportService $reportService */
+        $reportService = m::mock(JiraReportService::class);
+        $reportService->shouldReceive('findMostRecentlyReported')->andReturn($report);
+
+        /** @var MockInterface|JiraIssueService $issueService */
+        $issueService = m::mock(JiraIssueService::class);
+        $issueService->shouldReceive('getIssue')->once()->with($issueKey)->andReturn($issue);
+        $issueService
+            ->shouldReceive('mapSeverityToJiraPriorityId')
+            ->with(self::FAILED_TEST_SEVERITY)
+            ->andReturn(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM));
+        $issueService
+            ->shouldReceive('mapStatusToJiraStatusId')
+            ->with(JiraIssueStatus::MUTED)
+            ->andReturn(new JiraIssueStatus(self::STATUS_ID_MUTED));
+
+        /** @var MockInterface|UuidFactoryInterface $uuidFactory */
+        $uuidFactory = m::mock(UuidFactoryInterface::class);
 
         $reporter = new JiraReporter($reportService, $issueService, $uuidFactory, new NullLogger());
         $reporter->reportFailedVerificationFor($entity, $result);
@@ -126,5 +170,21 @@ class JiraReporterTest extends TestCase
 
             return true;
         });
+    }
+
+    /**
+     * @return MockInterface|VerificationSuiteResult
+     */
+    private function getFailedSuiteResult()
+    {
+        /** @var MockInterface|VerificationSuiteResult $result */
+        $result = m::mock(VerificationSuiteResult::class);
+        $result->shouldReceive('hasTestFailed')->andReturn(true);
+        $result->shouldReceive('getFailedTestName')->andReturn(self::FAILED_TEST_NAME);
+        $result->shouldReceive('getReason')->andReturn(self::FAILED_TEST_REASON);
+        $result->shouldReceive('getExplanation')->andReturn(self::FAILED_TEST_EXPLANATION);
+        $result->shouldReceive('getSeverity')->andReturn(self::FAILED_TEST_SEVERITY);
+
+        return $result;
     }
 }
