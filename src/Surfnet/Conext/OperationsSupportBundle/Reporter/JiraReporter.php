@@ -81,22 +81,20 @@ BODY;
             throw new LogicException('Cannot report test that has not failed');
         }
 
-        $failedTestName = $result->getFailedTestName();
-
         $this->logger->info(
             sprintf(
                 'Reporting "%s" failure "%s" for entity "%s"',
-                $failedTestName,
+                $result->getFailedTestName(),
                 $result->getReason(),
                 $entity
             )
         );
 
-        $report           = $this->reportService->findMostRecentlyReported($entity, $failedTestName);
+        $report           = $this->reportService->findMostRecentlyReported($entity, $result->getFailedTestName());
         $issuePriority    = $this->issueService->mapSeverityToJiraPriorityId($result->getSeverity());
         $issueDescription = sprintf(
             self::ISSUE_DESCRIPTION,
-            $failedTestName,
+            $result->getFailedTestName(),
             $entity,
             $result->getExplanation()
         );
@@ -113,7 +111,7 @@ BODY;
             );
 
             $reportId = $this->uuidFactory->uuid4();
-            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $failedTestName);
+            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $result->getFailedTestName());
 
             return;
         }
@@ -135,7 +133,7 @@ BODY;
             );
 
             $reportId = $this->uuidFactory->uuid4();
-            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $failedTestName);
+            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $result->getFailedTestName());
 
             return;
         }
