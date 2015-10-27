@@ -90,7 +90,7 @@ final class RestIssueService implements IssueService
         $result = $this->apiClient->editIssue($command->issueKey, [
             'update' => [
                 'priority' => [
-                    ['set' => $command->priorityId]
+                    ['set' => ['id' => $command->priorityId]]
                 ]
             ]
         ]);
