@@ -73,20 +73,11 @@ class JiraIssueService
         $command->summary     = $summary;
         $command->description = $description;
 
-        $createIssueResult = $this->issueApiService->createIssue($command);
+        $issueKey = $this->issueApiService->createIssue($command);
 
-        if ($createIssueResult->wasClientErrorReported()) {
-            throw new RuntimeException(
-                sprintf(
-                    'JIRA issue creation unexpectedly failed due to API client error: "%s"',
-                    join(', ', $createIssueResult->getErrorMessages())
-                )
-            );
-        }
+        $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $issueKey));
 
-        $this->logger->info(sprintf('Reported failure in JIRA issue "%s"', $createIssueResult->getIssueKey()));
-
-        return $createIssueResult->getIssueKey();
+        return $issueKey;
     }
 
     /**

@@ -25,7 +25,6 @@ use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
 use Surfnet\JiraApiClientBundle\Command\UpdateIssueCommand;
 use Surfnet\JiraApiClientBundle\Exception\LogicException;
 use Surfnet\JiraApiClientBundle\Exception\RuntimeException;
-use Surfnet\JiraApiClientBundle\Result\CreateIssueResult;
 
 final class RestIssueService implements IssueService
 {
@@ -73,19 +72,13 @@ final class RestIssueService implements IssueService
 
         $resource = $result->getResult();
 
-        if (!is_array($resource)) {
-            throw new RuntimeException(
-                'API responded in an unexpected manner: returned issue resource is not an issue structure'
-            );
-        }
+        Assert::keyExists(
+            $resource,
+            'key',
+            'API responded in an unexpected manner: returned issue structure misses "key" key'
+        );
 
-        if (!array_key_exists('key', $resource)) {
-            throw new RuntimeException(
-                'API responded in an unexpected manner: returned issue structure misses "key" key'
-            );
-        }
-
-        return CreateIssueResult::success($resource['key']);
+        return $resource['key'];
     }
 
     public function updateIssue(UpdateIssueCommand $command)

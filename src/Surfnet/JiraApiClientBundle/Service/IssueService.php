@@ -27,7 +27,7 @@ interface IssueService
 {
     /**
      * @param CreateIssueCommand $command
-     * @return CreateIssueResult
+     * @return string Key of the created issue
      */
     public function createIssue(CreateIssueCommand $command);
 
