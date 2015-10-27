@@ -20,6 +20,7 @@ namespace Surfnet\Conext\OperationsSupportBundle\DependencyInjection;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\NameResolver;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -74,7 +75,11 @@ class SurfnetConextOperationsSupportExtension extends Extension
     {
         $container
             ->getDefinition('surfnet_conext_operations_support.service.jira_issue')
-            ->replaceArgument(1, $config['jira']['status_mapping'])
+            ->replaceArgument(1, [
+                JiraIssueStatus::OPEN   => $config['jira']['status_mapping']['open'],
+                JiraIssueStatus::MUTED  => $config['jira']['status_mapping']['muted'],
+                JiraIssueStatus::CLOSED => $config['jira']['status_mapping']['closed'],
+            ])
             ->replaceArgument(2, [
                 VerificationTestResult::SEVERITY_TRIVIAL  => $config['jira']['priority_mapping']['trivial'],
                 VerificationTestResult::SEVERITY_LOW      => $config['jira']['priority_mapping']['low'],
