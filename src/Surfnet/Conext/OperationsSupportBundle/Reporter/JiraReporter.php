@@ -22,6 +22,7 @@ use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
+use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
@@ -119,6 +120,7 @@ BODY;
         $issueKey = $report->getIssueKey();
         $issue    = $this->issueService->getIssue($issueKey);
         if ($issue->statusEquals($this->issueService->mapStatusToJiraStatusId(JiraIssueStatus::MUTED))) {
+            $this->logger->info('JIRA issue is muted, no further action');
             return;
         }
 
@@ -140,6 +142,8 @@ BODY;
 
         // ... or reprioritise...
         if (!$issue->priorityEquals($issuePriority)) {
+            $this->logger->info(sprintf('Reprioritising issue to %s', $this->severityToString($result->getSeverity())));
+
             $this->issueService->reprioritiseIssue($issueKey, $issuePriority);
         }
 
@@ -147,15 +151,43 @@ BODY;
             && $this->issueService->getComment($issueKey, $report->getMostRecentCommentId())->bodyEquals($commentBody);
 
         if ($mostRecentCommentIsUpToDate) {
+            $this->logger->info('Latest comment on JIRA issue is up to date, no further action');
             return;
         } elseif ($issue->summaryAndDescriptionEqual($result->getReason(), $issueDescription)) {
+            $this->logger->info('JIRA issue summary and description are up to date, no further action');
             return;
         }
+
+        $this->logger->info('Commenting on JIRA issue');
 
         // ... and comment on, if needed.
         $commentId = $this->issueService->commentOnIssue($issueKey, $commentBody);
         $report->addComment($commentId);
 
+        $this->logger->info('Updating report');
+
         $this->reportService->updateReport($report);
+    }
+
+    /**
+     * @param int $severity
+     * @return string
+     */
+    private function severityToString($severity)
+    {
+        switch ($severity) {
+            case VerificationTestResult::SEVERITY_CRITICAL:
+                return 'CRITICAL';
+            case VerificationTestResult::SEVERITY_HIGH:
+                return 'HIGH';
+            case VerificationTestResult::SEVERITY_MEDIUM:
+                return 'MEDIUM';
+            case VerificationTestResult::SEVERITY_LOW:
+                return 'LOW';
+            case VerificationTestResult::SEVERITY_TRIVIAL:
+                return 'TRIVIAL';
+            default:
+                throw new LogicException(sprintf('Unknown severity "%d"', $severity));
+        }
     }
 }
