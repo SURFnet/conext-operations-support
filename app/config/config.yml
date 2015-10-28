@@ -77,7 +77,7 @@ surfnet_janus_api_client:
 
 surfnet_conext_operations_support:
     suites:
-        []
+        published_metadata_availability_suite: []
     jira:
         status_mapping:
             open:     %jira_open_status_id%
