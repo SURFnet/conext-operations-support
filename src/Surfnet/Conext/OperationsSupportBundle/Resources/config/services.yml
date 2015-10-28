@@ -90,3 +90,14 @@ services:
             - # Status mapping
             - # Priority mapping
             - @logger
+
+    surfnet_conext_operations_support.reporter.jira:
+        class: Surfnet\Conext\OperationsSupportBundle\Reporter\JiraReporter
+        arguments:
+            - @surfnet_conext_operations_support.service.jira_report
+            - @surfnet_conext_operations_support.service.jira_issue
+            - @surfnet_conext_operations_support.factory.ramsey_uuid
+            - @logger
+
+    surfnet_conext_operations_support.factory.ramsey_uuid:
+        class: Ramsey\Uuid\UuidFactory

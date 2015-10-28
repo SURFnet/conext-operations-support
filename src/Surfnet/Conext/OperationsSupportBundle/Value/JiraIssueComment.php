@@ -44,6 +44,6 @@ final class JiraIssueComment
     {
         Assert::string($body, 'Summary must be a string');
 
-        return $this->body === $body;
+        return str_replace("\r", '', $this->body) === $body;
     }
 }
