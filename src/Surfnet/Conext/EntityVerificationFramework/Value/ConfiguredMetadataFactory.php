@@ -129,8 +129,7 @@ final class ConfiguredMetadataFactory
         $coinData = isset($metadataData['coin']) ? $metadataData['coin'] : [];
         $guestQualifier = null;
         if (isset($coinData['guest_qualifier'])) {
-            Assert::boolean($coinData['guest_qualifier'], null, 'metadata.coin.guest_qualifier');
-            $guestQualifier = $coinData['guest_qualifier'];
+            $guestQualifier = new GuestQualifier($coinData['guest_qualifier']);
         }
 
         $freeformProperties = [];

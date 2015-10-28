@@ -51,7 +51,7 @@ class ConfiguredMetadata
     private $acceptableNameIdFormats;
     /** @var PemEncodedX509Certificate|null */
     private $certData;
-    /** @var boolean|null */
+    /** @var GuestQualifier|null */
     private $guestQualifier;
     /** @var mixed[] Array indexed by string keys */
     private $freeformProperties = [];
@@ -70,7 +70,7 @@ class ConfiguredMetadata
      * @param null|NameIdFormat              $defaultNameIdFormat
      * @param null|MultiLocaleUrl            $url
      * @param bool|null                      $signRedirects
-     * @param bool|null                      $guestQualifier
+     * @param GuestQualifier|null            $guestQualifier
      * @param mixed[]                        $freeformProperties
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -89,7 +89,7 @@ class ConfiguredMetadata
         NameIdFormat $defaultNameIdFormat = null,
         MultiLocaleUrl $url = null,
         $signRedirects = null,
-        $guestQualifier = null,
+        GuestQualifier $guestQualifier = null,
         array $freeformProperties = []
     ) {
         if ($publishedMetadataUrl !== null) {
@@ -98,10 +98,6 @@ class ConfiguredMetadata
 
         if ($signRedirects !== null) {
             Assert::boolean($signRedirects, null, 'signRedirects');
-        }
-
-        if ($guestQualifier !== null) {
-            Assert::boolean($guestQualifier, null, 'guestQualifier');
         }
 
         $this->entityType                = $entityType;
