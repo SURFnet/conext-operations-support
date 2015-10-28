@@ -36,6 +36,7 @@ class SurfnetJanusApiClientExtension extends Extension
         $container->getDefinition('surfnet_janus_api_client.guzzle')
             ->replaceArgument(0, [
                 'base_url' => $config['base_url'],
+                'verify' => $config['verify_ssl'],
                 'auth' => [
                     $config['username'],
                     $config['password'],

@@ -20,6 +20,7 @@ parameters:
     jira_api_issue_type: '10000'
 
     janus_api_base_url: "https://service-registry.invalid/janus/api/"
+    janus_api_verify_ssl: true
     janus_api_username: janusUser
     janus_api_password: secretPassword
 

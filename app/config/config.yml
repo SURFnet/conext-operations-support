@@ -71,6 +71,7 @@ surfnet_jira_api_client:
 
 surfnet_janus_api_client:
     base_url: %janus_api_base_url%
+    verify_ssl: %janus_api_verify_ssl%
     username: %janus_api_username%
     password: %janus_api_password%
 
