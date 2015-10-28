@@ -65,6 +65,11 @@ services:
         tags:
             -  { name: console.command }
 
+    surfnet_conext_operations_support.command.jira_my_permissions:
+        class: Surfnet\Conext\OperationsSupportBundle\Console\Command\JiraMyPermissionsCommand
+        tags:
+            -  { name: console.command }
+
     surfnet_conext_operations_support.verification_blacklist:
         class: Surfnet\Conext\EntityVerificationFramework\Blacklist
         factory: [Surfnet\Conext\EntityVerificationFramework\BlacklistFactory, 'fromDescriptors']

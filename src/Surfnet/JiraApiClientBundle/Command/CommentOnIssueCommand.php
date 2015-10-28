@@ -18,6 +18,15 @@
 
 namespace Surfnet\JiraApiClientBundle\Command;
 
-final class UpdateIssueCommand
+final class CommentOnIssueCommand
 {
+    /**
+     * @var string
+     */
+    public $issueKey;
+
+    /**
+     * @var string
+     */
+    public $body;
 }

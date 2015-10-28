@@ -16,8 +16,12 @@
  * limitations under the License.
  */
 
-namespace Surfnet\JiraApiClientBundle\Result;
+namespace Surfnet\JiraApiClientBundle\Dto;
 
-final class UpdateIssueResult
+final class Comment
 {
+    /**
+     * @var string
+     */
+    public $body;
 }

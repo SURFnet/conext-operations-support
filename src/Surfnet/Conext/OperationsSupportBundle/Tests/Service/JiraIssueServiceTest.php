@@ -27,7 +27,6 @@ use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Result\CreateIssueResult;
 use Surfnet\JiraApiClientBundle\Service\IssueService;
 
 /**
@@ -42,7 +41,6 @@ class JiraIssueServiceTest extends TestCase
      */
     public function it_successfully_creates_issues()
     {
-        $status      = new JiraIssueStatus('10000');
         $priority    = new JiraIssuePriority('10002');
         $summary     = 'summary';
         $description = 'description';
@@ -52,45 +50,14 @@ class JiraIssueServiceTest extends TestCase
         $command->summary     = $summary;
         $command->description = $description;
 
-        $result = CreateIssueResult::success('CONOPS-10');
-
         /** @var MockInterface|IssueService $issueApiService */
         $issueApiService = m::mock(IssueService::class);
-        $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
+        $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn('CONOPS-10');
 
         $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
         $issueKey = $service->createIssue($priority, $summary, $description);
 
         $this->assertSame('CONOPS-10', $issueKey);
-    }
-
-    /**
-     * @test
-     * @group service
-     * @group jira
-     * @expectedException \Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException
-     * @expectedExceptionMessageRegExp ~JIRA issue creation unexpectedly failed due to API client error.+I.M. Weasel.+I.R. Baboon~
-     */
-    public function it_throws_on_client_errors()
-    {
-        $status      = new JiraIssueStatus('10000');
-        $priority    = new JiraIssuePriority('10002');
-        $summary     = 'summary';
-        $description = 'description';
-
-        $command = new CreateIssueCommand();
-        $command->priorityId  = $priority->getPriorityId();
-        $command->summary     = $summary;
-        $command->description = $description;
-
-        $result = CreateIssueResult::clientError(['I.M. Weasel', 'I.R. Baboon']);
-
-        /** @var MockInterface|IssueService $issueApiService */
-        $issueApiService = m::mock(IssueService::class);
-        $issueApiService->shouldReceive('createIssue')->once()->with(m::anyOf($command))->andReturn($result);
-
-        $service = new JiraIssueService($issueApiService, [], [], new NullLogger());
-        $service->createIssue($priority, $summary, $description);
     }
 
     /**

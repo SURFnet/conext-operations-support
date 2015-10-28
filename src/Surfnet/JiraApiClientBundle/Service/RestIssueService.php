@@ -18,14 +18,15 @@
 
 namespace Surfnet\JiraApiClientBundle\Service;
 
-use Jira_Api as ApiClient;
 use Jira_Api_Result as ApiResult;
+use Surfnet\JiraApiClientBundle\ApiClient;
 use Surfnet\JiraApiClientBundle\Assert;
+use Surfnet\JiraApiClientBundle\Command\CommentOnIssueCommand;
 use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Command\UpdateIssueCommand;
-use Surfnet\JiraApiClientBundle\Exception\LogicException;
+use Surfnet\JiraApiClientBundle\Command\ReprioritiseIssueCommand;
+use Surfnet\JiraApiClientBundle\Dto\Comment;
+use Surfnet\JiraApiClientBundle\Dto\Issue;
 use Surfnet\JiraApiClientBundle\Exception\RuntimeException;
-use Surfnet\JiraApiClientBundle\Result\CreateIssueResult;
 
 final class RestIssueService implements IssueService
 {
@@ -65,31 +66,119 @@ final class RestIssueService implements IssueService
         /** @var ApiResult|false $result */
         $result = $this->apiClient->createIssue($this->projectKey, $command->summary, $this->issueTypeId, [
             'priority' => ['id' => $command->priorityId],
+            'description' => $command->description,
         ]);
 
         if (!$result) {
-            throw new RuntimeException('Unknown error while creating JIRA issue');
+            throw new RuntimeException('Unknown error while creating JIRA issue: API result object false');
         }
 
         $resource = $result->getResult();
 
-        if (!is_array($resource)) {
-            throw new RuntimeException(
-                'API responded in an unexpected manner: returned issue resource is not an issue structure'
-            );
-        }
+        Assert::keyExists(
+            $resource,
+            'key',
+            'API responded in an unexpected manner: returned issue structure misses "key" key'
+        );
 
-        if (!array_key_exists('key', $resource)) {
-            throw new RuntimeException(
-                'API responded in an unexpected manner: returned issue structure misses "key" key'
-            );
-        }
-
-        return CreateIssueResult::success($resource['key']);
+        return $resource['key'];
     }
 
-    public function updateIssue(UpdateIssueCommand $command)
+    public function reprioritiseIssue(ReprioritiseIssueCommand $command)
     {
-        throw new LogicException('Issue updating is not yet implemented');
+        /** @var ApiResult|false $result */
+        $result = $this->apiClient->editIssue($command->issueKey, [
+            'update' => [
+                'priority' => [
+                    ['set' => ['id' => $command->priorityId]]
+                ]
+            ]
+        ]);
+
+        if ($result) {
+            throw new RuntimeException('Unknown error while reprioritising JIRA issue: expected HTTP 204 No Content');
+        }
+    }
+
+    public function commentOnIssue(CommentOnIssueCommand $command)
+    {
+        /** @var ApiResult|false $result */
+        $result = $this->apiClient->addComment($command->issueKey, ['body' => $command->body]);
+
+        if (!$result) {
+            throw new RuntimeException('Unknown error while adding comment to JIRA issue: API result object false');
+        }
+
+        $resource = $result->getResult();
+
+        Assert::keyExists(
+            $resource,
+            'id',
+            'API responded in an unexpected manner: returned comment structure misses "id" key'
+        );
+
+        return $resource['id'];
+    }
+
+    public function getIssue($issueKey)
+    {
+        /** @var ApiResult|false $result */
+        $result = $this->apiClient->getIssue($issueKey);
+
+        if (!$result) {
+            throw new RuntimeException('Unknown error while fetching JIRA issue: API result object false');
+        }
+
+        $resource = $result->getResult();
+
+        Assert::keyExists($resource, 'fields', 'Issue resource must contain "fields"');
+        Assert::keyExists($resource['fields'], 'priority', 'Issue resource must contain "fields.priority"');
+        Assert::keyExists($resource['fields'], 'priority', 'Issue resource must contain "fields.priority"');
+        Assert::keyExists($resource['fields']['priority'], 'id', 'Issue resource must contain "fields.priority.id"');
+        Assert::keyExists($resource['fields']['status'], 'id', 'Issue resource must contain "fields.status.id"');
+        Assert::keyExists($resource['fields'], 'summary', 'Issue resource must contain "fields.summary"');
+        Assert::keyExists($resource['fields'], 'description', 'Issue resource must contain "fields.description"');
+        Assert::string(
+            $resource['fields']['priority']['id'],
+            'Issue resource "fields.priority.id" must be a string, got "%s"'
+        );
+        Assert::string(
+            $resource['fields']['status']['id'],
+            'Issue resource "fields.status.id" must be a string, got "%s"'
+        );
+        Assert::string($resource['fields']['summary'], 'Issue resource "fields.summary" must be a string, got "%s"');
+        Assert::nullOrString(
+            $resource['fields']['description'],
+            'Issue resource "fields.description" must be a string or NULL, got "%s"'
+        );
+        Assert::notBlank($resource['fields']['priority']['id'], 'Issue resource "fields.priority.id" may not be blank');
+        Assert::notBlank($resource['fields']['status']['id'], 'Issue resource "fields.status.id" may not be blank');
+
+        $issue = new Issue();
+        $issue->priorityId = $resource['fields']['priority']['id'];
+        $issue->statusId = $resource['fields']['status']['id'];
+        $issue->summary = $resource['fields']['summary'];
+        $issue->description = $resource['fields']['description'];
+
+        return $issue;
+    }
+
+    public function getComment($issueKey, $commentId)
+    {
+        $result = $this->apiClient->getComment($issueKey, $commentId);
+
+        if (!$result) {
+            throw new RuntimeException('Unknown error while fetching JIRA issue comment: API result object false');
+        }
+
+        $resource = $result->getResult();
+
+        Assert::keyExists($resource, 'body', 'Comment resource must contain "body"');
+        Assert::string($resource['body'], 'Comment resource "body" must be a string');
+
+        $comment = new Comment();
+        $comment->body = $resource['body'];
+
+        return $comment;
     }
 }

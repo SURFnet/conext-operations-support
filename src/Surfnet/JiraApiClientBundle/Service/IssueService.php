@@ -18,22 +18,42 @@
 
 namespace Surfnet\JiraApiClientBundle\Service;
 
+use Surfnet\JiraApiClientBundle\Command\CommentOnIssueCommand;
 use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Command\UpdateIssueCommand;
-use Surfnet\JiraApiClientBundle\Result\CreateIssueResult;
-use Surfnet\JiraApiClientBundle\Result\UpdateIssueResult;
+use Surfnet\JiraApiClientBundle\Command\ReprioritiseIssueCommand;
+use Surfnet\JiraApiClientBundle\Dto\Comment;
+use Surfnet\JiraApiClientBundle\Dto\Issue;
 
 interface IssueService
 {
     /**
      * @param CreateIssueCommand $command
-     * @return CreateIssueResult
+     * @return string Key of the created issue
      */
     public function createIssue(CreateIssueCommand $command);
 
     /**
-     * @param UpdateIssueCommand $command
-     * @return UpdateIssueResult
+     * @param ReprioritiseIssueCommand $command
+     * @return void
      */
-    public function updateIssue(UpdateIssueCommand $command);
+    public function reprioritiseIssue(ReprioritiseIssueCommand $command);
+
+    /**
+     * @param CommentOnIssueCommand $command
+     * @return string ID of the created comment
+     */
+    public function commentOnIssue(CommentOnIssueCommand $command);
+
+    /**
+     * @param string $issueKey
+     * @return Issue
+     */
+    public function getIssue($issueKey);
+
+    /**
+     * @param string $issueKey
+     * @param string $commentId
+     * @return Comment
+     */
+    public function getComment($issueKey, $commentId);
 }
