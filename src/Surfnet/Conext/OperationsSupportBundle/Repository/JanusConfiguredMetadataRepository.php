@@ -75,6 +75,12 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
         $this->logger->debug(sprintf('Fetching published metadata URL for entity "%s" from Janus', $entity));
 
         $url = $this->getMetadataFor($entity)->getPublishedMetadataUrl();
+        if (!$url) {
+            $this->logger->debug(sprintf('No published metadata URL is known for entity "%s"', $entity));
+
+            return null;
+        }
+
         if (!$url->isValid()) {
             $this->logger->debug(sprintf('Published metadata URL "%s" is not valid, returning NULL', $url));
 

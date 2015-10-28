@@ -78,7 +78,9 @@ abstract class Suite implements VerificationSuite
             }
 
             if ($testResult->hasTestFailed()) {
-                $logger->debug('Test "%s" failed for Entity "%s" ("%s")');
+                $logger->debug(
+                    sprintf('Test "%s" failed for Entity "%s" ("%s")', $testName, $entity, $testResult->getReason())
+                );
 
                 return SuiteResult::failedTest($testResult, $testName);
             }
