@@ -26,14 +26,22 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraIssueService;
 use Surfnet\Conext\OperationsSupportBundle\Service\JiraReportService;
+use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 
 final class JiraReporter implements VerificationReporter
 {
-    const REPORT = <<<REPORT
+    const ISSUE_DESCRIPTION = <<<DESCRIPTION
 Test "%s" failed for entity "%s".
 
 %s
-REPORT;
+DESCRIPTION;
+
+    const COMMENT_BODY = <<<BODY
+*Test failure reason/explanation have changed*
+
+%s:
+%s
+BODY;
 
     /**
      * @var JiraReportService
@@ -73,35 +81,81 @@ REPORT;
             throw new LogicException('Cannot report test that has not failed');
         }
 
-        $failedTestName = $result->getFailedTestName();
-
         $this->logger->info(
             sprintf(
                 'Reporting "%s" failure "%s" for entity "%s"',
-                $failedTestName,
+                $result->getFailedTestName(),
                 $result->getReason(),
                 $entity
             )
         );
 
-        $report = $this->reportService->findMostRecentlyReported($entity, $failedTestName);
+        $report           = $this->reportService->findMostRecentlyReported($entity, $result->getFailedTestName());
+        $issuePriority    = $this->issueService->mapSeverityToJiraPriorityId($result->getSeverity());
+        $issueDescription = sprintf(
+            self::ISSUE_DESCRIPTION,
+            $result->getFailedTestName(),
+            $entity,
+            $result->getExplanation()
+        );
+        $commentBody = sprintf(self::COMMENT_BODY, $result->getReason(), $result->getExplanation());
 
+        // Track a new issue using a report if we're not tracking an issue...
         if ($report === null) {
             $this->logger->info('No report, creating JIRA issue and tracking report');
 
             $issueKey = $this->issueService->createIssue(
-                $this->issueService->mapSeverityToJiraPriorityId($result->getSeverity()),
+                $issuePriority,
                 $result->getReason(),
-                sprintf(
-                    self::REPORT,
-                    $failedTestName,
-                    $entity,
-                    $result->getExplanation()
-                )
+                $issueDescription
             );
 
             $reportId = $this->uuidFactory->uuid4();
-            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $failedTestName);
+            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $result->getFailedTestName());
+
+            return;
         }
+
+        $issueKey = $report->getIssueKey();
+        $issue    = $this->issueService->getIssue($issueKey);
+        if ($issue->statusEquals($this->issueService->mapStatusToJiraStatusId(JiraIssueStatus::MUTED))) {
+            return;
+        }
+
+        // ... or track a new issue using a new report if the previous issue has already been closed...
+        if ($issue->statusEquals($this->issueService->mapStatusToJiraStatusId(JiraIssueStatus::CLOSED))) {
+            $this->logger->info('JIRA issue is closed, creating new issue and tracking using new report');
+
+            $issueKey = $this->issueService->createIssue(
+                $issuePriority,
+                $result->getReason(),
+                $issueDescription
+            );
+
+            $reportId = $this->uuidFactory->uuid4();
+            $this->reportService->trackNewIssue($reportId, $issueKey, $entity, $result->getFailedTestName());
+
+            return;
+        }
+
+        // ... or reprioritise...
+        if (!$issue->priorityEquals($issuePriority)) {
+            $this->issueService->reprioritiseIssue($issueKey, $issuePriority);
+        }
+
+        $mostRecentCommentIsUpToDate = $report->wasCommentedOn()
+            && $this->issueService->getComment($issueKey, $report->getMostRecentCommentId())->bodyEquals($commentBody);
+
+        if ($mostRecentCommentIsUpToDate) {
+            return;
+        } elseif ($issue->summaryAndDescriptionEqual($result->getReason(), $issueDescription)) {
+            return;
+        }
+
+        // ... and comment on, if needed.
+        $commentId = $this->issueService->commentOnIssue($issueKey, $commentBody);
+        $report->addComment($commentId);
+
+        $this->reportService->updateReport($report);
     }
 }

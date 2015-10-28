@@ -63,6 +63,14 @@ class JiraReportService
     }
 
     /**
+     * @param JiraReport $report
+     */
+    public function updateReport(JiraReport $report)
+    {
+        $this->reportRepository->replace($report);
+    }
+
+    /**
      * @param Entity $entity
      * @param string $testName
      * @return JiraReport|null

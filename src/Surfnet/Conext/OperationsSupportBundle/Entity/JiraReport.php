@@ -25,7 +25,7 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
-use Surfnet\Conext\OperationsSupportBundle\DateTime\DateTime;
+use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
 
 /**
  * @ORM\Entity(repositoryClass="Surfnet\Conext\OperationsSupportBundle\Repository\DoctrineOrmJiraReportRepository")
@@ -77,6 +77,13 @@ class JiraReport
     private $issueKey;
 
     /**
+     * @ORM\Column(nullable=true)
+     *
+     * @var string|null
+     */
+    private $mostRecentCommentId;
+
+    /**
      * @ORM\Column(type="datetime_immutable")
      *
      * @var DateTimeImmutable
@@ -97,7 +104,7 @@ class JiraReport
         Assert::string($testName, 'Test name must be string');
         Assert::notBlank($testName, 'Test name may not be blank');
 
-        $report             = new JiraReport();
+        $report = new JiraReport();
         $report->id         = $reportId->toString();
         $report->entityId   = $entity->getEntityId();
         $report->entityType = $entity->getEntityType();
@@ -110,5 +117,44 @@ class JiraReport
 
     private function __construct()
     {
+    }
+
+    /**
+     * @param string $commentId
+     */
+    public function addComment($commentId)
+    {
+        Assert::string($commentId, 'Comment ID must be string');
+        Assert::notBlank($commentId, 'Comment ID may not be blank');
+
+        $this->mostRecentCommentId = $commentId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIssueKey()
+    {
+        return $this->issueKey;
+    }
+
+    /**
+     * @return bool
+     */
+    public function wasCommentedOn()
+    {
+        return $this->mostRecentCommentId !== null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMostRecentCommentId()
+    {
+        if (!$this->wasCommentedOn()) {
+            throw new LogicException('JIRA issue was never commented on');
+        }
+
+        return $this->mostRecentCommentId;
     }
 }

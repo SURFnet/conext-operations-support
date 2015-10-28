@@ -147,9 +147,9 @@ final class RestIssueService implements IssueService
             'Issue resource "fields.status.id" must be a string, got "%s"'
         );
         Assert::string($resource['fields']['summary'], 'Issue resource "fields.summary" must be a string, got "%s"');
-        Assert::nullOrString(
+        Assert::string(
             $resource['fields']['description'],
-            'Issue resource "fields.description" must be a string or NULL, got "%s"'
+            'Issue resource "fields.description" must be a string, got "%s"'
         );
         Assert::notBlank($resource['fields']['priority']['id'], 'Issue resource "fields.priority.id" may not be blank');
         Assert::notBlank($resource['fields']['status']['id'], 'Issue resource "fields.status.id" may not be blank');
