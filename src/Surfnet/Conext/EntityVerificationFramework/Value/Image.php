@@ -38,6 +38,8 @@ final class Image
     {
         $image = new Image();
 
+        Assert::isArray($data, 'Image data must be an array structure');
+
         if (array_key_exists('url', $data)) {
             $image->url = Url::fromString($data['url']);
         }
