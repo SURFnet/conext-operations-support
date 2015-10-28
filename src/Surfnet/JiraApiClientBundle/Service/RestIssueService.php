@@ -138,10 +138,19 @@ final class RestIssueService implements IssueService
         Assert::keyExists($resource['fields']['status'], 'id', 'Issue resource must contain "fields.status.id"');
         Assert::keyExists($resource['fields'], 'summary', 'Issue resource must contain "fields.summary"');
         Assert::keyExists($resource['fields'], 'description', 'Issue resource must contain "fields.description"');
-        Assert::string($resource['fields']['priority']['id'], 'Issue resource "fields.priority.id" must be a string, got "%s"');
-        Assert::string($resource['fields']['status']['id'], 'Issue resource "fields.status.id" must be a string, got "%s"');
+        Assert::string(
+            $resource['fields']['priority']['id'],
+            'Issue resource "fields.priority.id" must be a string, got "%s"'
+        );
+        Assert::string(
+            $resource['fields']['status']['id'],
+            'Issue resource "fields.status.id" must be a string, got "%s"'
+        );
         Assert::string($resource['fields']['summary'], 'Issue resource "fields.summary" must be a string, got "%s"');
-        Assert::nullOrString($resource['fields']['description'], 'Issue resource "fields.description" must be a string or NULL, got "%s"');
+        Assert::nullOrString(
+            $resource['fields']['description'],
+            'Issue resource "fields.description" must be a string or NULL, got "%s"'
+        );
         Assert::notBlank($resource['fields']['priority']['id'], 'Issue resource "fields.priority.id" may not be blank');
         Assert::notBlank($resource['fields']['status']['id'], 'Issue resource "fields.status.id" may not be blank');
 

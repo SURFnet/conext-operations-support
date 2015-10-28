@@ -30,6 +30,9 @@ final class ApiClient extends JiraApiClient
      */
     public function getComment($issueKey, $commentId)
     {
-        return $this->api(self::REQUEST_GET, sprintf('/rest/api/2/issue/%s/comment/%s', urlencode($issueKey), urlencode($commentId)));
+        return $this->api(
+            self::REQUEST_GET,
+            sprintf('/rest/api/2/issue/%s/comment/%s', urlencode($issueKey), urlencode($commentId))
+        );
     }
 }
