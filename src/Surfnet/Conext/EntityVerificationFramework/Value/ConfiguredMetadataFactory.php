@@ -61,7 +61,7 @@ final class ConfiguredMetadataFactory
             $logoData = $metadataData['logo'];
             Assert::isArray($logoData, 'SP metadata\'s "logo" key must contain an array', 'metadata.logo');
 
-            $logos = ImageList::deserialise($data, 'metadata.logo');
+            $logos = ImageList::deserialise($metadataData['logo'], 'metadata.logo');
         } else {
             $logos = new ImageList();
         }
@@ -77,18 +77,20 @@ final class ConfiguredMetadataFactory
             $defaultNameIdFormat = new NameIdFormat($metadataData['NameIDFormat']);
         }
 
-        $acceptableNameIdFormats = [];
+        $acceptableNameIdFormats = new NameIdFormatList();
         if (isset($metadataData['NameIDFormats'])) {
             Assert::isArray(
                 $metadataData['NameIDFormats'],
                 'Metadata "NameIDFormats" must be an array',
                 'metadata.NameIDFormats'
             );
-            $acceptableNameIdFormats = array_map(
-                function ($data) {
-                    return new NameIdFormat($data);
-                },
-                $metadataData['NameIDFormats']
+            $acceptableNameIdFormats = new NameIdFormatList(
+                array_map(
+                    function ($data) {
+                        return new NameIdFormat($data);
+                    },
+                    $metadataData['NameIDFormats']
+                )
             );
         }
 
@@ -129,8 +131,7 @@ final class ConfiguredMetadataFactory
         $coinData = isset($metadataData['coin']) ? $metadataData['coin'] : [];
         $guestQualifier = null;
         if (isset($coinData['guest_qualifier'])) {
-            Assert::boolean($coinData['guest_qualifier'], null, 'metadata.coin.guest_qualifier');
-            $guestQualifier = $coinData['guest_qualifier'];
+            $guestQualifier = new GuestQualifier($coinData['guest_qualifier']);
         }
 
         $freeformProperties = [];

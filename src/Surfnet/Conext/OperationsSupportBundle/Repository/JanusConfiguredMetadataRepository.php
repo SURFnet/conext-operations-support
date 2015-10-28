@@ -59,7 +59,7 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
         $this->logger->debug(sprintf('Fetching connection detail for entity "%s" from Janus', $entity));
 
         $id = $this->getConnectionIdForEntity($entity);
-        $this->logger->debug(sprintf('Entity\'s connection id is "%d', $id));
+        $this->logger->debug(sprintf('Entity\'s connection id is "%d"', $id));
 
         $data = $this->apiService->read('connections/%d.json', [$id]);
         $this->logger->debug('Fetched connection detail');
