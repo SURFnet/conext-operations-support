@@ -77,18 +77,20 @@ final class ConfiguredMetadataFactory
             $defaultNameIdFormat = new NameIdFormat($metadataData['NameIDFormat']);
         }
 
-        $acceptableNameIdFormats = [];
+        $acceptableNameIdFormats = new NameIdFormatList();
         if (isset($metadataData['NameIDFormats'])) {
             Assert::isArray(
                 $metadataData['NameIDFormats'],
                 'Metadata "NameIDFormats" must be an array',
                 'metadata.NameIDFormats'
             );
-            $acceptableNameIdFormats = array_map(
-                function ($data) {
-                    return new NameIdFormat($data);
-                },
-                $metadataData['NameIDFormats']
+            $acceptableNameIdFormats = new NameIdFormatList(
+                array_map(
+                    function ($data) {
+                        return new NameIdFormat($data);
+                    },
+                    $metadataData['NameIDFormats']
+                )
             );
         }
 
