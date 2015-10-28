@@ -3,12 +3,12 @@
 
 # Conext Operations Support
 
-# Adding new verifications
+## Adding new verifications
 
 The verification suites should all reside in the `Surfnet\VerificationSuite` namespace, this is located in the
  `src/Surfnet/VerificationSuite` folder.
 
-## Creating a new Suite
+### Creating a new Suite
 
 1. Create a new Suite namespace in the `Surfnet\VerificationSuite` namespace, e.g. `Surfnet\VerificationSuite\ExampleSuite`
 2. Create a new Suite class, e.g. `Surfnet\VerificationSuite\ExampleSuite\ExampleSuite`. It is required to name the Suite 
@@ -20,7 +20,7 @@ class the same as the suite namespace. The Suite will be identified by its names
     - `getReasonToSkip() : string`: if the suite is skipped, the returned string is logged as the reason why.
 4. **@TODO** DOCUMENT CONFIGURATION!
 
-## Creating a new Test
+### Creating a new Test
 
 1. Create a new Test in the correct namespace, e.g. `Surfnet\VerificationSuite\ExampleSuite\Test\ExampleTest`. All tests
  within a suite must be placed in the `Test` folder within the suite namespace
@@ -36,6 +36,12 @@ class the same as the suite namespace. The Suite will be identified by its names
      actually caused the test to fail. This can be as in detail as required to fix the issue. The `$severity` should be
      one of five levels, available as constants on the `TestResult` class. 
 4. **@TODO** DOCUMENT CONFIGURATION!
+
+## Running the suites
+
+```console
+$ app/console operations-support:suites:run -vvv --reporter=jira
+```
 
 ## Development
 
