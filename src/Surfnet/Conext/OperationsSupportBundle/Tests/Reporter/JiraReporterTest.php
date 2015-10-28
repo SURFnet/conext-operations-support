@@ -43,12 +43,13 @@ class JiraReporterTest extends TestCase
 {
     const STATUS_ID_OPEN = '10000';
     const STATUS_ID_MUTED = '10001';
+    const STATUS_ID_CLOSED = '10002';
     const PRIORITY_ID_MEDIUM = '10002';
+    const PRIORITY_ID_CRITICAL = '10004';
 
     const FAILED_TEST_NAME = 'test.name';
-    const FAILED_TEST_REASON = 'reason';
-    const FAILED_TEST_EXPLANATION = 'explanation';
-    const FAILED_TEST_SEVERITY = VerificationTestResult::SEVERITY_MEDIUM;
+    const FAILED_TEST_REASON = 'test_reason';
+    const FAILED_TEST_EXPLANATION = 'test_explanation';
 
     /**
      * @test
@@ -60,7 +61,7 @@ class JiraReporterTest extends TestCase
         $entityType = EntityType::IdP();
         $entity     = new Entity($entityId, $entityType);
 
-        $result = $this->getFailedSuiteResult();
+        $result = $this->getFailedSuiteResult(VerificationTestResult::SEVERITY_MEDIUM);
 
         /** @var MockInterface|JiraReportService $reportService */
         $reportService = m::mock(JiraReportService::class);
@@ -68,8 +69,7 @@ class JiraReporterTest extends TestCase
 
         $issueKey = 'CONOPS-13';
 
-        /** @var MockInterface|JiraIssueService $issueService */
-        $issueService = m::mock(JiraIssueService::class);
+        $issueService = $this->getJiraIssueServiceMock();
         $issueService
             ->shouldReceive('createIssue')
             ->once()
@@ -79,10 +79,6 @@ class JiraReporterTest extends TestCase
                 self::containsAll((string) $entity, self::FAILED_TEST_EXPLANATION, self::FAILED_TEST_NAME)
             )
             ->andReturn($issueKey);
-        $issueService
-            ->shouldReceive('mapSeverityToJiraPriorityId')
-            ->with(self::FAILED_TEST_SEVERITY)
-            ->andReturn(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM));
 
         $reportId = m::mock(UuidInterface::class);
         /** @var MockInterface|UuidFactoryInterface $uuidFactory */
@@ -107,7 +103,7 @@ class JiraReporterTest extends TestCase
         $entityType = EntityType::IdP();
         $entity     = new Entity($entityId, $entityType);
 
-        $result = $this->getFailedSuiteResult();
+        $result = $this->getFailedSuiteResult(VerificationTestResult::SEVERITY_MEDIUM);
 
         $issueKey = 'CONOPS-13';
         $reportId = Uuid::uuid4();
@@ -123,17 +119,98 @@ class JiraReporterTest extends TestCase
         $reportService = m::mock(JiraReportService::class);
         $reportService->shouldReceive('findMostRecentlyReported')->andReturn($report);
 
-        /** @var MockInterface|JiraIssueService $issueService */
-        $issueService = m::mock(JiraIssueService::class);
+        $issueService = $this->getJiraIssueServiceMock();
+        $issueService->shouldReceive('getIssue')->once()->with($issueKey)->andReturn($issue);
+
+        /** @var MockInterface|UuidFactoryInterface $uuidFactory */
+        $uuidFactory = m::mock(UuidFactoryInterface::class);
+
+        $reporter = new JiraReporter($reportService, $issueService, $uuidFactory, new NullLogger());
+        $reporter->reportFailedVerificationFor($entity, $result);
+    }
+
+    /**
+     * @test
+     * @group reporter
+     */
+    public function it_reprioritises_issues()
+    {
+        $entityId   = new EntityId('meh');
+        $entityType = EntityType::IdP();
+        $entity     = new Entity($entityId, $entityType);
+
+        $result = $this->getFailedSuiteResult(VerificationTestResult::SEVERITY_CRITICAL);
+
+        $issueKey = 'CONOPS-13';
+        $reportId = Uuid::uuid4();
+        $report   = JiraReport::trackIssue($reportId, $issueKey, $entity, self::FAILED_TEST_NAME);
+        $issue    = new JiraIssue(
+            new JiraIssuePriority(self::PRIORITY_ID_MEDIUM),
+            new JiraIssueStatus(self::STATUS_ID_OPEN),
+            $result->getReason(),
+            sprintf(JiraReporter::ISSUE_DESCRIPTION, $result->getFailedTestName(), $entity, $result->getExplanation())
+        );
+
+        /** @var MockInterface|JiraReportService $reportService */
+        $reportService = m::mock(JiraReportService::class);
+        $reportService->shouldReceive('findMostRecentlyReported')->andReturn($report);
+
+        $issueService = $this->getJiraIssueServiceMock();
         $issueService->shouldReceive('getIssue')->once()->with($issueKey)->andReturn($issue);
         $issueService
-            ->shouldReceive('mapSeverityToJiraPriorityId')
-            ->with(self::FAILED_TEST_SEVERITY)
-            ->andReturn(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM));
+            ->shouldReceive('reprioritiseIssue')
+            ->once()
+            ->with($issueKey, self::voEquals(new JiraIssuePriority(self::PRIORITY_ID_CRITICAL)))
+            ->andReturn($issue);
+
+        /** @var MockInterface|UuidFactoryInterface $uuidFactory */
+        $uuidFactory = m::mock(UuidFactoryInterface::class);
+
+        $reporter = new JiraReporter($reportService, $issueService, $uuidFactory, new NullLogger());
+        $reporter->reportFailedVerificationFor($entity, $result);
+    }
+
+    /**
+     * @test
+     * @group reporter
+     */
+    public function it_comments_on_issues_when_the_reason_or_explanation_has_changed()
+    {
+        $entityId   = new EntityId('meh');
+        $entityType = EntityType::IdP();
+        $entity     = new Entity($entityId, $entityType);
+
+        $result = $this->getFailedSuiteResult(VerificationTestResult::SEVERITY_MEDIUM);
+
+        $issueKey = 'CONOPS-13';
+        $reportId = Uuid::uuid4();
+        $report   = JiraReport::trackIssue($reportId, $issueKey, $entity, self::FAILED_TEST_NAME);
+        $issue    = new JiraIssue(
+            new JiraIssuePriority(self::PRIORITY_ID_MEDIUM),
+            new JiraIssueStatus(self::STATUS_ID_OPEN),
+            'old_reason',
+            'old_explanation'
+        );
+
+        /** @var MockInterface|JiraReportService $reportService */
+        $reportService = m::mock(JiraReportService::class);
+        $reportService->shouldReceive('findMostRecentlyReported')->andReturn($report);
+        $reportService->shouldReceive('updateReport')->andReturn($report);
+
+        $issueService = $this->getJiraIssueServiceMock();
+        $issueService->shouldReceive('getIssue')->once()->with($issueKey)->andReturn($issue);
         $issueService
-            ->shouldReceive('mapStatusToJiraStatusId')
-            ->with(JiraIssueStatus::MUTED)
-            ->andReturn(new JiraIssueStatus(self::STATUS_ID_MUTED));
+            ->shouldReceive('commentOnIssue')
+            ->once()
+            ->with(
+                $issueKey,
+                self::containsAll(
+                    'reason/explanation have changed',
+                    self::FAILED_TEST_REASON,
+                    self::FAILED_TEST_EXPLANATION
+                )
+            )
+            ->andReturn('10038');
 
         /** @var MockInterface|UuidFactoryInterface $uuidFactory */
         $uuidFactory = m::mock(UuidFactoryInterface::class);
@@ -173,9 +250,10 @@ class JiraReporterTest extends TestCase
     }
 
     /**
+     * @param int $severity
      * @return MockInterface|VerificationSuiteResult
      */
-    private function getFailedSuiteResult()
+    private function getFailedSuiteResult($severity)
     {
         /** @var MockInterface|VerificationSuiteResult $result */
         $result = m::mock(VerificationSuiteResult::class);
@@ -183,8 +261,39 @@ class JiraReporterTest extends TestCase
         $result->shouldReceive('getFailedTestName')->andReturn(self::FAILED_TEST_NAME);
         $result->shouldReceive('getReason')->andReturn(self::FAILED_TEST_REASON);
         $result->shouldReceive('getExplanation')->andReturn(self::FAILED_TEST_EXPLANATION);
-        $result->shouldReceive('getSeverity')->andReturn(self::FAILED_TEST_SEVERITY);
+        $result->shouldReceive('getSeverity')->andReturn($severity);
 
         return $result;
+    }
+
+    /**
+     * @return MockInterface|JiraIssueService
+     */
+    private function getJiraIssueServiceMock()
+    {
+        /** @var MockInterface|JiraIssueService $issueService */
+        $issueService = m::mock(JiraIssueService::class);
+        $issueService
+            ->shouldReceive('mapStatusToJiraStatusId')
+            ->with(JiraIssueStatus::OPEN)
+            ->andReturn(new JiraIssueStatus(self::STATUS_ID_OPEN));
+        $issueService
+            ->shouldReceive('mapStatusToJiraStatusId')
+            ->with(JiraIssueStatus::MUTED)
+            ->andReturn(new JiraIssueStatus(self::STATUS_ID_MUTED));
+        $issueService
+            ->shouldReceive('mapStatusToJiraStatusId')
+            ->with(JiraIssueStatus::CLOSED)
+            ->andReturn(new JiraIssueStatus(self::STATUS_ID_CLOSED));
+        $issueService
+            ->shouldReceive('mapSeverityToJiraPriorityId')
+            ->with(VerificationTestResult::SEVERITY_MEDIUM)
+            ->andReturn(new JiraIssuePriority(self::PRIORITY_ID_MEDIUM));
+        $issueService
+            ->shouldReceive('mapSeverityToJiraPriorityId')
+            ->with(VerificationTestResult::SEVERITY_CRITICAL)
+            ->andReturn(new JiraIssuePriority(self::PRIORITY_ID_CRITICAL));
+
+        return $issueService;
     }
 }

@@ -143,9 +143,8 @@ BODY;
             $this->issueService->reprioritiseIssue($issueKey, $issuePriority);
         }
 
-        $mostRecentCommentId         = $report->getMostRecentCommentId();
         $mostRecentCommentIsUpToDate = $report->wasCommentedOn()
-            && $this->issueService->getComment($issueKey, $mostRecentCommentId)->bodyEquals($commentBody);
+            && $this->issueService->getComment($issueKey, $report->getMostRecentCommentId())->bodyEquals($commentBody);
 
         if ($mostRecentCommentIsUpToDate) {
             return;
