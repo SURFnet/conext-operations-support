@@ -84,7 +84,8 @@ final class JiraIssue
         Assert::string($summary, 'Summary must be a string');
         Assert::string($description, 'Description must be a string');
 
-        return $this->summary === $summary && $this->description === $description;
+        return str_replace("\r", '', $this->summary) === $summary
+            && str_replace("\r", '', $this->description) === $description;
     }
 
     /**
