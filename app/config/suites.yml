@@ -1,0 +1,6 @@
+surfnet_conext_operations_support:
+    suites:
+        published_metadata_availability_suite:
+            - is_available_test
+    blacklist:
+        # foo: []
