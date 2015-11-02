@@ -11,19 +11,28 @@ parameters:
     jira_api_verify_ssl: true
     jira_api_consumer_key: app_link_consumer_key
     jira_api_private_key_file: /path/to/private.key
+    # Log into JIRA, view https://jira.instance/rest/api/2/project, and pick the key of the appropriate project
     jira_api_project_key: "CXT"
+    # Log into JIRA, view https://jira.instance/rest/api/2/issuetype, and pick the ID of the appropriate issue type
+    # to create. Ensure it is NOT a subtask.
     jira_api_issue_type: '10000'
 
-    janus_api_base_url: "https://service-registry.invalid/janus/api/"
-    janus_api_verify_ssl: true
-    janus_api_username: janusUser
-    janus_api_password: secretPassword
-
+    # Log into JIRA, view https://jira.instance/rest/api/2/project/{projectKey}/statuses, and pick the ID of the
+    # status that is assigned to issues when they're created.
     jira_open_status_id: "0"
+    # Pick the ID of the status that communicates the issue is muted; no further updates to the issue will be reported.
     jira_muted_status_id: "1"
+    # Pick the ID of the status that communicates the issue has been resolved/closed.
     jira_closed_status_id: "2"
+    # Log into JIRA, view https://jira.instance/rest/api/2/priority, and map the priorities to their JIRA priority
+    # ID counterparts.
     jira_trivial_priority_id: "0"
     jira_low_priority_id: "0"
     jira_medium_priority_id: "0"
     jira_high_priority_id: "0"
     jira_critical_priority_id: "0"
+
+    janus_api_base_url: "https://service-registry.invalid/janus/api/"
+    janus_api_verify_ssl: true
+    janus_api_username: janusUser
+    janus_api_password: secretPassword
