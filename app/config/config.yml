@@ -2,6 +2,7 @@ imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
     - { resource: services.yml }
+    - { resource: suites.yml }
 
 parameters:
     locale: en
@@ -53,10 +54,10 @@ doctrine_migrations:
     name: Conext Operations Support Migrations
 
 swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
+    transport: "smtp"
+    host:      "127.0.0.1"
+    username:  ~
+    password:  ~
     spool:     { type: memory }
 
 surfnet_jira_api_client:
@@ -74,9 +75,6 @@ surfnet_janus_api_client:
     password: %janus_api_password%
 
 surfnet_conext_operations_support:
-    suites:
-        published_metadata_availability_suite:
-            - is_available_test
     jira:
         status_mapping:
             open:     %jira_open_status_id%
