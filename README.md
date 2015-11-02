@@ -12,10 +12,13 @@
 
 Required: PHP CLI ^5.6
 
- * Checkout a tag or download a tarball from GitHub
- * Run `composer install --no-dev --ignore-platform-reqs`
+ * Checkout a tag from GitHub: `git clone https://github.com/SURFnet/conext-operations-support conops-0.1.0 && cd conops-0.1.0 && git checkout 0.1.0`
+ * Install the PHP dependencies `SYMFONY_ENV=prod composer install --prefer-dist --ignore-platform-reqs --no-dev --no-interaction --optimize-autoloader`
  * Configure application parameters by copying parameters.yml.dist to parameters.yml and modifying the values
    according to the instructions in the file.
+ * Run `SYMFONY_ENV=prod app/console cache:clear`
+ * Create a tarball by running `tar -czf conops-0.1.0.tgz conops-0.1.0/`
+ * Attach the tarball to the GitHub release
 
 ## Running suites
 
