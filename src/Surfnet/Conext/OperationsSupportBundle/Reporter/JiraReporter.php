@@ -142,7 +142,9 @@ BODY;
 
         // ... or reprioritise...
         if (!$issue->priorityEquals($issuePriority)) {
-            $this->logger->debug(sprintf('Reprioritising issue to %s', $this->severityToString($result->getSeverity())));
+            $this->logger->debug(
+                sprintf('Reprioritising issue to %s', $this->severityToString($result->getSeverity()))
+            );
 
             $this->issueService->reprioritiseIssue($issueKey, $issuePriority);
         }
