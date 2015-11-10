@@ -27,6 +27,7 @@ use Psr\Log\NullLogger;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
+use Surfnet\Conext\EntityVerificationFramework\ContextFactory;
 use Surfnet\Conext\EntityVerificationFramework\Runner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
@@ -91,9 +92,12 @@ class RunnerTest extends UnitTest
 
         $this->runner = new Runner(
             $this->configuredMetadataRepository,
-            $this->publishedMetadataRepository,
             $this->blacklist,
-            m::mock(ClientInterface::class),
+            new ContextFactory(
+                $this->configuredMetadataRepository,
+                $this->publishedMetadataRepository,
+                m::mock(ClientInterface::class)
+            ),
             new NullLogger()
         );
     }

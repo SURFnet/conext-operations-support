@@ -3,10 +3,21 @@ services:
         class: Surfnet\Conext\EntityVerificationFramework\Runner
         arguments:
             - @surfnet_conext_operations_support.repository.configured_metadata.janus
-            - @surfnet_conext_operations_support.repository.published_metadata.guzzle
             - @surfnet_conext_operations_support.verification_blacklist
-            - @surfnet_conext_operations_support.guzzle.test_client
+            - @surfnet_conext_operations_support.context_factory
             - @logger
+
+    surfnet_conext_operations_support.context_factory:
+        public: false
+        class: Surfnet\Conext\EntityVerificationFramework\ContextFactory
+        arguments:
+            - @surfnet_conext_operations_support.repository.configured_metadata
+            - @surfnet_conext_operations_support.repository.published_metadata
+            - @surfnet_conext_operations_support.guzzle.test_client
+
+    surfnet_conext_operations_support.repository.configured_metadata:
+        public: false
+        alias: surfnet_conext_operations_support.repository.configured_metadata.janus
 
     surfnet_conext_operations_support.repository.configured_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyConfiguredMetadataRepository
@@ -16,6 +27,10 @@ services:
         arguments:
             - @surfnet_janus_api_client.service.api
             - @logger
+
+    surfnet_conext_operations_support.repository.published_metadata:
+        public: false
+        alias: surfnet_conext_operations_support.repository.published_metadata.guzzle
 
     surfnet_conext_operations_support.repository.published_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyPublishedMetadataRepository
