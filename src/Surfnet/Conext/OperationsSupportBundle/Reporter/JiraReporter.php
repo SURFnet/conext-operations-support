@@ -82,7 +82,7 @@ BODY;
             throw new LogicException('Cannot report test that has not failed');
         }
 
-        $this->logger->info(
+        $this->logger->debug(
             sprintf(
                 'Reporting "%s" failure "%s" for entity "%s"',
                 $result->getFailedTestName(),
@@ -103,7 +103,7 @@ BODY;
 
         // Track a new issue using a report if we're not tracking an issue...
         if ($report === null) {
-            $this->logger->info('No report, creating JIRA issue and tracking report');
+            $this->logger->debug('No report, creating JIRA issue and tracking report');
 
             $issueKey = $this->issueService->createIssue(
                 $issuePriority,
@@ -120,13 +120,13 @@ BODY;
         $issueKey = $report->getIssueKey();
         $issue    = $this->issueService->getIssue($issueKey);
         if ($issue->statusEquals($this->issueService->mapStatusToJiraStatusId(JiraIssueStatus::MUTED))) {
-            $this->logger->info('JIRA issue is muted, no further action');
+            $this->logger->debug('JIRA issue is muted, no further action');
             return;
         }
 
         // ... or track a new issue using a new report if the previous issue has already been closed...
         if ($issue->statusEquals($this->issueService->mapStatusToJiraStatusId(JiraIssueStatus::CLOSED))) {
-            $this->logger->info('JIRA issue is closed, creating new issue and tracking using new report');
+            $this->logger->debug('JIRA issue is closed, creating new issue and tracking using new report');
 
             $issueKey = $this->issueService->createIssue(
                 $issuePriority,
@@ -142,7 +142,9 @@ BODY;
 
         // ... or reprioritise...
         if (!$issue->priorityEquals($issuePriority)) {
-            $this->logger->info(sprintf('Reprioritising issue to %s', $this->severityToString($result->getSeverity())));
+            $this->logger->debug(
+                sprintf('Reprioritising issue to %s', $this->severityToString($result->getSeverity()))
+            );
 
             $this->issueService->reprioritiseIssue($issueKey, $issuePriority);
         }
@@ -151,20 +153,20 @@ BODY;
             && $this->issueService->getComment($issueKey, $report->getMostRecentCommentId())->bodyEquals($commentBody);
 
         if ($mostRecentCommentIsUpToDate) {
-            $this->logger->info('Latest comment on JIRA issue is up to date, no further action');
+            $this->logger->debug('Latest comment on JIRA issue is up to date, no further action');
             return;
         } elseif ($issue->summaryAndDescriptionEqual($result->getReason(), $issueDescription)) {
-            $this->logger->info('JIRA issue summary and description are up to date, no further action');
+            $this->logger->debug('JIRA issue summary and description are up to date, no further action');
             return;
         }
 
-        $this->logger->info('Commenting on JIRA issue');
+        $this->logger->debug('Commenting on JIRA issue');
 
         // ... and comment on, if needed.
         $commentId = $this->issueService->commentOnIssue($issueKey, $commentBody);
         $report->addComment($commentId);
 
-        $this->logger->info('Updating report');
+        $this->logger->debug('Updating report');
 
         $this->reportService->updateReport($report);
     }
