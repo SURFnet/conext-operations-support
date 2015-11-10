@@ -122,7 +122,8 @@ services:
         public: false
         class: GuzzleHttp\Client
         arguments:
-            - { handler: @surfnet_conext_operations_support.guzzle.test_client.handler_stack }
+            - handler: @surfnet_conext_operations_support.guzzle.test_client.handler_stack
+              exceptions: false
 
     surfnet_conext_operations_support.guzzle.test_client.handler_stack:
         public: false
