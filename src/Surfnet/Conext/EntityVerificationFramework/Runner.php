@@ -18,6 +18,7 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework;
 
+use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationReporter;
@@ -53,6 +54,13 @@ class Runner implements VerificationRunner
     private $blacklist;
 
     /**
+     * An HTTP client that can be used by tests.
+     *
+     * @var ClientInterface
+     */
+    private $testHttpClient;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -61,11 +69,13 @@ class Runner implements VerificationRunner
         ConfiguredMetadataRepository $configuredMetadataRepository,
         PublishedMetadataRepository $publishedMetadataRepository,
         VerificationBlacklist $blacklist,
+        ClientInterface $testHttpClient,
         LoggerInterface $logger
     ) {
         $this->configuredMetadataRepository = $configuredMetadataRepository;
         $this->publishedMetadataRepository  = $publishedMetadataRepository;
         $this->blacklist                    = $blacklist;
+        $this->testHttpClient               = $testHttpClient;
         $this->logger                       = $logger;
     }
 
@@ -103,6 +113,7 @@ class Runner implements VerificationRunner
                 $entity,
                 $this->configuredMetadataRepository->getMetadataFor($entity),
                 $getRemoteMetadata,
+                $this->testHttpClient,
                 $this->logger
             );
 

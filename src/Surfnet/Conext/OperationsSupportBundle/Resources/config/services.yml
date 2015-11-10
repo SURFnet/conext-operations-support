@@ -5,6 +5,7 @@ services:
             - @surfnet_conext_operations_support.repository.configured_metadata.janus
             - @surfnet_conext_operations_support.repository.published_metadata.guzzle
             - @surfnet_conext_operations_support.verification_blacklist
+            - @surfnet_conext_operations_support.guzzle.test_client
             - @logger
 
     surfnet_conext_operations_support.repository.configured_metadata.dummy:
@@ -101,3 +102,22 @@ services:
 
     surfnet_conext_operations_support.factory.ramsey_uuid:
         class: Ramsey\Uuid\UuidFactory
+
+    surfnet_conext_operations_support.guzzle.test_client:
+        public: false
+        class: GuzzleHttp\Client
+        arguments:
+            - { handler: @surfnet_conext_operations_support.guzzle.test_client.handler_stack }
+
+    surfnet_conext_operations_support.guzzle.test_client.handler_stack:
+        public: false
+        class: GuzzleHttp\HandlerStack
+        factory: [GuzzleHttp\HandlerStack, 'create']
+        calls:
+            - [ push, [@surfnet_conext_operations_support.guzzle.test_client.middleware.logging] ]
+
+    surfnet_conext_operations_support.guzzle.test_client.middleware.logging:
+        public: false
+        class: Surfnet\Conext\OperationsSupportBundle\Guzzle\Middleware\LoggingMiddleware
+        arguments:
+            - @logger

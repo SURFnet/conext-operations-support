@@ -18,6 +18,7 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests;
 
+use GuzzleHttp\ClientInterface;
 use Mockery as m;
 use Mockery\Matcher\Closure as ClosureMatcher;
 use Mockery\MockInterface;
@@ -92,6 +93,7 @@ class RunnerTest extends UnitTest
             $this->configuredMetadataRepository,
             $this->publishedMetadataRepository,
             $this->blacklist,
+            m::mock(ClientInterface::class),
             new NullLogger()
         );
     }
