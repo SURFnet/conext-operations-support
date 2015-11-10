@@ -35,7 +35,7 @@ class ConfiguredMetadata
     private $singleSignOnServices = [];
     /** @var ContactSet */
     private $contacts;
-    /** @var MultiLocaleString */
+    /** @var MultiLocaleString|null */
     private $name;
     /** @var ImageList */
     private $logos;
@@ -62,9 +62,9 @@ class ConfiguredMetadata
      * @param SingleSignOnServiceList        $singleSignOnServices
      * @param NameIdFormatList               $acceptableNameIdFormats
      * @param ContactSet                     $contacts
-     * @param MultiLocaleString              $name
      * @param MultiLocaleString              $keywords
      * @param ImageList                      $logos
+     * @param null|MultiLocaleString         $name
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
      * @param null|NameIdFormat              $defaultNameIdFormat
@@ -81,9 +81,9 @@ class ConfiguredMetadata
         SingleSignOnServiceList $singleSignOnServices,
         NameIdFormatList $acceptableNameIdFormats,
         ContactSet $contacts,
-        MultiLocaleString $name,
         MultiLocaleString $keywords,
         ImageList $logos,
+        MultiLocaleString $name = null,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
         NameIdFormat $defaultNameIdFormat = null,
