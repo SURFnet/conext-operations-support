@@ -124,6 +124,8 @@ services:
         arguments:
             - handler: @surfnet_conext_operations_support.guzzle.test_client.handler_stack
               exceptions: false
+              connect_timeout: 2
+              timeout: 2
 
     surfnet_conext_operations_support.guzzle.test_client.handler_stack:
         public: false
