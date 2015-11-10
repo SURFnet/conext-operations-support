@@ -94,6 +94,8 @@ class JiraIssueService
         $command->priorityId = $priority->getPriorityId();
 
         $this->issueApiService->reprioritiseIssue($command);
+
+        $this->logger->info(sprintf('Reprioritised JIRA issue "%s"', $issueKey));
     }
 
     /**
@@ -107,7 +109,11 @@ class JiraIssueService
         $command->issueKey = $issueKey;
         $command->body     = $commentBody;
 
-        return $this->issueApiService->commentOnIssue($command);
+        $commentId = $this->issueApiService->commentOnIssue($command);
+
+        $this->logger->info(sprintf('Updated JIRA issue "%s" by commenting (ID "%s")', $issueKey, $commentId));
+
+        return $commentId;
     }
 
     /**
