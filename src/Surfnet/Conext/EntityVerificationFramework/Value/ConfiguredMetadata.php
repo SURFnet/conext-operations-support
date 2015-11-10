@@ -30,9 +30,9 @@ class ConfiguredMetadata
     /** @var Url|null */
     private $publishedMetadataUrl;
     /** @var AssertionConsumerServiceList */
-    private $assertionConsumerServices = [];
+    private $assertionConsumerServices;
     /** @var SingleSignOnServiceList */
-    private $singleSignOnServices = [];
+    private $singleSignOnServices;
     /** @var ContactSet */
     private $contacts;
     /** @var MultiLocaleString */
