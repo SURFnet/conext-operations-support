@@ -27,8 +27,6 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteWhitelist;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
-use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
-use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 
 class Runner implements VerificationRunner
 {
@@ -43,11 +41,6 @@ class Runner implements VerificationRunner
     private $configuredMetadataRepository;
 
     /**
-     * @var PublishedMetadataRepository
-     */
-    private $publishedMetadataRepository;
-
-    /**
      * @var VerificationBlacklist
      */
     private $blacklist;
@@ -57,15 +50,20 @@ class Runner implements VerificationRunner
      */
     private $logger;
 
+    /**
+     * @var ContextFactory
+     */
+    private $contextFactory;
+
     public function __construct(
         ConfiguredMetadataRepository $configuredMetadataRepository,
-        PublishedMetadataRepository $publishedMetadataRepository,
         VerificationBlacklist $blacklist,
+        ContextFactory $contextFactory,
         LoggerInterface $logger
     ) {
         $this->configuredMetadataRepository = $configuredMetadataRepository;
-        $this->publishedMetadataRepository  = $publishedMetadataRepository;
         $this->blacklist                    = $blacklist;
+        $this->contextFactory               = $contextFactory;
         $this->logger                       = $logger;
     }
 
@@ -92,19 +90,10 @@ class Runner implements VerificationRunner
         }
         $this->logger->info(sprintf('Retrieved "%d" entities from Configured Metadata Repository', count($entities)));
 
-        $getRemoteMetadata = function (Entity $entity) {
-            return $this->publishedMetadataRepository->getMetadataFor($entity);
-        };
-
         foreach ($entities as $entity) {
             $this->logger->debug(sprintf('Verifying Entity "%s"', $entity));
 
-            $context = new Context(
-                $entity,
-                $this->configuredMetadataRepository->getMetadataFor($entity),
-                $getRemoteMetadata,
-                $this->logger
-            );
+            $context = $this->contextFactory->create($entity, $this->logger);
 
             foreach ($suitesToRun as $verificationSuite) {
                 $suiteName = NameResolver::resolveToString($verificationSuite);

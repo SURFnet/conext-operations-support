@@ -41,6 +41,11 @@ interface VerificationContext
     public function getConfiguredMetadata();
 
     /**
+     * @return \GuzzleHttp\ClientInterface
+     */
+    public function getHttpClient();
+
+    /**
      * @return \Psr\Log\LoggerInterface
      */
     public function getLogger();

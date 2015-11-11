@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework;
 
 use Closure;
+use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
@@ -49,6 +50,11 @@ class Context implements VerificationContext
     private $remoteMetadata;
 
     /**
+     * @var ClientInterface
+     */
+    private $httpClient;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -57,12 +63,14 @@ class Context implements VerificationContext
         Entity $entity,
         ConfiguredMetadata $configuredMetadata,
         Closure $publishedMetadataCallable,
+        ClientInterface $httpClient,
         LoggerInterface $logger
     ) {
         $this->entity                    = $entity;
         $this->configuredMetadata        = $configuredMetadata;
         $this->publishedMetadataCallable = $publishedMetadataCallable;
         $this->logger                    = $logger;
+        $this->httpClient                = $httpClient;
     }
 
     public function getEntity()
@@ -94,6 +102,14 @@ class Context implements VerificationContext
     public function getConfiguredMetadata()
     {
         return $this->configuredMetadata;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient()
+    {
+        return $this->httpClient;
     }
 
     public function getLogger()
