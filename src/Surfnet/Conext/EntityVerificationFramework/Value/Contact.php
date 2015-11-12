@@ -22,13 +22,13 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 
 final class Contact
 {
-    /** @var ContactType */
+    /** @var ContactType|null */
     private $type;
-    /** @var EmailAddress */
+    /** @var EmailAddress|null */
     private $email;
-    /** @var string */
+    /** @var string|null */
     private $givenName;
-    /** @var string  */
+    /** @var string|null */
     private $surName;
 
     /**
