@@ -26,6 +26,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 use Surfnet\Conext\OperationsSupportBundle\Reporter\CliReporter;
+use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final class CliReporterTest extends TestCase
@@ -39,7 +40,7 @@ final class CliReporterTest extends TestCase
         $output = m::mock(OutputInterface::class);
         $output->shouldReceive('writeln')->atLeast()->once();
 
-        $reporter = new CliReporter($output);
+        $reporter = new CliReporter(new StringInput(''), $output);
         $reporter->reportFailedVerificationFor(
             new Entity(new EntityId('meh'), EntityType::SP()),
             SuiteResult::failedTest(
@@ -59,7 +60,7 @@ final class CliReporterTest extends TestCase
         $output = m::mock(OutputInterface::class);
         $output->shouldNotReceive('writeln');
 
-        $reporter = new CliReporter($output);
+        $reporter = new CliReporter(new StringInput(''), $output);
         $reporter->reportFailedVerificationFor(
             new Entity(new EntityId('meh'), EntityType::SP()),
             SuiteResult::success()

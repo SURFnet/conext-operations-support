@@ -61,7 +61,7 @@ final class RunSuitesCommand extends ContainerAwareCommand
         $suites       = $input->getOption('suites');
 
         try {
-            $reporter  = $this->determineReporter($reporterName, $output);
+            $reporter  = $this->determineReporter($reporterName, $input, $output);
             $whitelist = $this->determineWhitelist($suites);
         } catch (RuntimeException $e) {
             return self::EXIT_CODE_INVALID_ARGUMENT;
@@ -73,14 +73,15 @@ final class RunSuitesCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param string|null $reporterName
+     * @param string|null     $reporterName
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return VerificationReporter
      */
-    private function determineReporter($reporterName, OutputInterface $output)
+    private function determineReporter($reporterName, InputInterface $input, OutputInterface $output)
     {
         if ($reporterName === null) {
-            return new CliReporter($output);
+            return new CliReporter($input, $output);
         }
 
         $reporterServiceId = 'surfnet_conext_operations_support.reporter.' . $reporterName;
