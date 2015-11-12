@@ -22,6 +22,7 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  */
 class ConfiguredMetadata
 {
@@ -37,6 +38,8 @@ class ConfiguredMetadata
     private $contacts;
     /** @var MultiLocaleString|null */
     private $name;
+    /** @var MultiLocaleString|null */
+    private $description;
     /** @var ImageList */
     private $logos;
     /** @var boolean|null */
@@ -65,6 +68,7 @@ class ConfiguredMetadata
      * @param MultiLocaleString              $keywords
      * @param ImageList                      $logos
      * @param null|MultiLocaleString         $name
+     * @param null|MultiLocaleString         $description
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
      * @param null|NameIdFormat              $defaultNameIdFormat
@@ -84,6 +88,7 @@ class ConfiguredMetadata
         MultiLocaleString $keywords,
         ImageList $logos,
         MultiLocaleString $name = null,
+        MultiLocaleString $description = null,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
         NameIdFormat $defaultNameIdFormat = null,
@@ -106,6 +111,7 @@ class ConfiguredMetadata
         $this->singleSignOnServices      = $singleSignOnServices;
         $this->contacts                  = $contacts;
         $this->name                      = $name;
+        $this->description               = $description;
         $this->logos                     = $logos;
         $this->signRedirects             = $signRedirects;
         $this->url                       = $url;

@@ -57,6 +57,11 @@ final class ConfiguredMetadataFactory
             $name = new MultiLocaleString($metadataData['name']);
         }
 
+        $description = null;
+        if (isset($metadataData['description'])) {
+            $description = new MultiLocaleString($metadataData['description']);
+        }
+
         if (isset($metadataData['logo'])) {
             $logoData = $metadataData['logo'];
             Assert::isArray($logoData, 'SP metadata\'s "logo" key must contain an array', 'metadata.logo');
@@ -191,6 +196,7 @@ final class ConfiguredMetadataFactory
             $keywords,
             $logos,
             $name,
+            $description,
             $publishedMetadataUrl,
             $certData,
             $defaultNameIdFormat,
