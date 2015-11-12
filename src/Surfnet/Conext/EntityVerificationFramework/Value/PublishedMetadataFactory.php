@@ -40,7 +40,7 @@ final class PublishedMetadataFactory
 
         $metadatas = new PublishedMetadataList();
 
-        $entityDescriptorXmls = $xml->xpath('/md:EntityDescriptors/md:EntityDescriptor | /md:EntityDescriptor');
+        $entityDescriptorXmls = $xml->xpath('/md:EntitiesDescriptor/md:EntityDescriptor | /md:EntityDescriptor');
         foreach ($entityDescriptorXmls as $entityDescriptorXml) {
             $metadatas = $metadatas->add(self::fromEntityDescriptorXml($entityDescriptorXml));
         }

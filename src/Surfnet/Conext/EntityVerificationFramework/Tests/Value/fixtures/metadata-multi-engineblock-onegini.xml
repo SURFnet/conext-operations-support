@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<md:EntityDescriptors xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
+<md:EntitiesDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata">
     <md:EntityDescriptor xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui"
                          validUntil="2015-10-16T11:27:54Z"
                          entityID="https://engine.surfconext.nl/authentication/sp/metadata"
@@ -157,4 +157,4 @@
             <md:EmailAddress>support@onegini.me</md:EmailAddress>
         </md:ContactPerson>
     </md:EntityDescriptor>
-</md:EntityDescriptors>
+</md:EntitiesDescriptor>
