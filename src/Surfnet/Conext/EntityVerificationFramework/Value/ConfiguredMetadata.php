@@ -97,10 +97,6 @@ class ConfiguredMetadata
         GuestQualifier $guestQualifier = null,
         array $freeformProperties = []
     ) {
-        if ($publishedMetadataUrl !== null) {
-            Assert::string($publishedMetadataUrl, null, 'publishedMetadataUrl');
-        }
-
         if ($signRedirects !== null) {
             Assert::boolean($signRedirects, null, 'signRedirects');
         }
