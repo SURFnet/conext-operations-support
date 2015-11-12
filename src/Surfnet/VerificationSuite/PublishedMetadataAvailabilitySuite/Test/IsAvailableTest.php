@@ -28,6 +28,14 @@ final class IsAvailableTest implements VerificationTest
 {
     public function verify(VerificationContext $verificationContext)
     {
+        if (!$verificationContext->getConfiguredMetadata()->hasPublishedMetadataUrl()) {
+            return TestResult::failed(
+                'Published metadata URL is not configured',
+                'The URL where the entity\'s metadata is published is not configured',
+                VerificationTestResult::SEVERITY_MEDIUM
+            );
+        }
+
         if (!$verificationContext->hasRemoteMetadata()) {
             return TestResult::failed(
                 'Published metadata is not available',
