@@ -72,15 +72,36 @@ final class Url
         return $url;
     }
 
+    private function __construct()
+    {
+    }
+
     /**
      * @param string $scheme
      * @return bool
      */
     public function isScheme($scheme)
     {
+        if (!$this->isValid()) {
+            throw new LogicException('Cannot check whether URL has a certain scheme; the URL is not valid');
+        }
+
         Assert::string($scheme);
 
         return strtolower($this->parts['scheme']) === strtolower($scheme);
+    }
+
+    /**
+     * @param string $pattern Regular expression pattern suited for `preg_match()`.
+     * @return bool
+     */
+    public function matches($pattern)
+    {
+        if (!$this->isValid()) {
+            throw new LogicException('Cannot match URL; it is not valid');
+        }
+
+        return preg_match($pattern, $this->url) === 1;
     }
 
     /**

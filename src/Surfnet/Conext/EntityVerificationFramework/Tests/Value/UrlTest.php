@@ -66,4 +66,30 @@ class UrlTest extends TestCase
     {
         $this->assertTrue(Url::fromString('https://sp.invalid')->isScheme('https'));
     }
+
+    /**
+     * @test
+     * @group value
+     * @dataProvider urlsToMatchUsingRegexes
+     *
+     * @param string $url
+     * @param string $regex
+     * @param bool $matches
+     */
+    public function its_url_can_match_a_regular_expression($url, $regex, $matches)
+    {
+        $this->assertSame(
+            $matches,
+            Url::fromString($url)->matches($regex),
+            $matches ? 'URL should match regular expression' : 'URL should not match regular expression'
+        );
+    }
+
+    public function urlsToMatchUsingRegexes()
+    {
+        return [
+            'Gewgle must match g..gle'       => ['https://gewgle.invalid', '~g..gle~', true],
+            'Gewgle must not match f.cebook' => ['https://gewgle.invalid', '~f.cebook~', false],
+        ];
+    }
 }

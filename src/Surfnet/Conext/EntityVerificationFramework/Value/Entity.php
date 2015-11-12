@@ -57,6 +57,33 @@ final class Entity
     }
 
     /**
+     * @param EntityId $entityId
+     * @return bool
+     */
+    public function hasEntityId(EntityId $entityId)
+    {
+        return $this->entityId->equals($entityId);
+    }
+
+    // @codingStandardsIgnoreStart
+    /**
+     * @return bool
+     */
+    public function isSP()
+    {
+        return $this->entityType->isSP();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIdP()
+    {
+        return $this->entityType->isIdP();
+    }
+    // @codingStandardsIgnoreEnd
+
+    /**
      * @return EntityId
      */
     public function getEntityId()

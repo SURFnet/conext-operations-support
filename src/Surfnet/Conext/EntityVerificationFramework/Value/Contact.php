@@ -20,6 +20,9 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
+/**
+ * @SuppressWarnings(PHPMD.TooManyPublicMethods) -- Methods are relevant, not complex.
+ */
 final class Contact
 {
     /** @var ContactType|null */
@@ -86,6 +89,70 @@ final class Contact
         $this->email     = $email;
         $this->givenName = $givenName;
         $this->surName   = $surName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasContactType()
+    {
+        return $this->type !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasValidContactType()
+    {
+        return $this->type && $this->type->isValid();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSurName()
+    {
+        return $this->surName !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFilledSurName()
+    {
+        return $this->surName !== '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasGivenName()
+    {
+        return $this->givenName !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFilledGivenName()
+    {
+        return $this->givenName !== '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasEmailAddress()
+    {
+        return $this->email !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasValidEmailAddress()
+    {
+        return $this->email && $this->email->isValid();
     }
 
     /**

@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
 final class Image
 {
@@ -72,7 +73,7 @@ final class Image
     /**
      * @return bool
      */
-    private function isWidthValid()
+    public function isWidthValid()
     {
         return ((string) (int) $this->width) === $this->width && $this->width > 0;
     }
@@ -80,9 +81,29 @@ final class Image
     /**
      * @return bool
      */
-    private function isHeightValid()
+    public function isHeightValid()
     {
         return ((string) (int) $this->height) === $this->height && $this->height > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasUrl()
+    {
+        return $this->url !== null;
+    }
+
+    /**
+     * @return Url
+     */
+    public function getUrl()
+    {
+        if ($this->url === null) {
+            throw new LogicException('Image has no URL');
+        }
+
+        return $this->url;
     }
 
     public function __toString()
