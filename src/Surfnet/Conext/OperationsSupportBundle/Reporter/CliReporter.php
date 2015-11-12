@@ -35,7 +35,7 @@ final class CliReporter implements VerificationReporter
 <comment>%8s</comment> <info>%s</info> failed for entity <info>%s</info>
     Reason: %s
 
-    %s
+%s
 
 REPORT;
 
@@ -64,7 +64,9 @@ REPORT;
         $severityName   = $this->getSeverityName($result->getSeverity());
         $failedTestName = $result->getFailedTestName();
         $reason         = $result->getReason();
-        $explanation    = $result->getExplanation();
+
+        // Indent explanation
+        $explanation    = preg_replace('~^~m', '    ', $result->getExplanation());
 
         $this->output->writeln(sprintf(self::REPORT, $severityName, $failedTestName, $entity, $reason, $explanation));
 
