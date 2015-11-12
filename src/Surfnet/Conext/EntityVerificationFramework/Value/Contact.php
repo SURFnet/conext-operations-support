@@ -96,19 +96,12 @@ final class Contact
      */
     public function equals(Contact $other)
     {
-        if ($this->type === null || $other->type === null) {
-            $valid = $this->type === $other->type;
-        } else {
-            $valid = $this->type->equals($other->type);
-        }
-
-        if ($this->email === null || $other->email === null) {
-            $valid = $valid && $this->email === $other->email;
-        } else {
-            $valid = $valid && $this->email->equals($other->email);
-        }
-
-        return $valid && $this->givenName === $other->givenName && $this->surName === $other->surName;
+        return ($this->type === $other->type
+                || $this->type && $other->type && $this->type->equals($other->type))
+            && ($this->email === $other->email
+                || $this->email && $other->email && $this->email->equals($other->email))
+            && $this->givenName === $other->givenName
+            && $this->surName === $other->surName;
     }
 
     public function __toString()
