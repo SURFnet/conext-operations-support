@@ -182,7 +182,7 @@ final class ConfiguredMetadataFactory
             }
 
             if (isset($scopeData[$i]['regexp'])) {
-                Assert::string($scopeData[$i]['regexp'], null, sprintf('metadata.shibmd.scope[%d].regexp', $i));
+                Assert::boolean($scopeData[$i]['regexp'], null, sprintf('metadata.shibmd.scope[%d].regexp', $i));
                 $freeformProperties[sprintf('shibmd:scope:%d:regexp', $i)] = $scopeData[$i]['regexp'];
             }
         }
