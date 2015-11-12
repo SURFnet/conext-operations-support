@@ -57,7 +57,7 @@ final class PublishedMetadataList implements IteratorAggregate, Countable
     public function findByEntity(Entity $entity)
     {
         return $this->filter(function (PublishedMetadata $metadata) use ($entity) {
-            return $metadata->getEntity()->equals($entity);
+            return $metadata->isPublishedFor($entity);
         });
     }
 

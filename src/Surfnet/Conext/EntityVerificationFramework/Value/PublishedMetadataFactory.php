@@ -65,22 +65,6 @@ final class PublishedMetadataFactory
         $entityDescriptorXml->registerXPathNamespace('mdui', 'urn:oasis:names:tc:SAML:metadata:ui');
 
         $entityId = new EntityId((string) $entityDescriptorXml['entityID']);
-        $spSsoDescriptorCount = count($entityDescriptorXml->xpath('md:SPSSODescriptor'));
-        $idpSsoDescriptorCount = count($entityDescriptorXml->xpath('md:IDPSSODescriptor'));
-
-        if ($spSsoDescriptorCount + $idpSsoDescriptorCount !== 1) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'Can only handle one of the %d SP and %s IDP SSO descriptors',
-                    $spSsoDescriptorCount,
-                    $idpSsoDescriptorCount
-                )
-            );
-        } elseif ($spSsoDescriptorCount === 1) {
-            $entity = new Entity($entityId, EntityType::SP());
-        } else {
-            $entity = new Entity($entityId, EntityType::IdP());
-        }
 
         $certificateXmls = $entityDescriptorXml->xpath('ds:Signature/ds:KeyInfo/ds:X509Data/ds:X509Certificate');
         $certificates = new PemEncodedX509CertificateList(
@@ -185,7 +169,7 @@ final class PublishedMetadataFactory
         }
 
         return new PublishedMetadata(
-            $entity,
+            $entityId,
             $certificates,
             $entityDisplayName,
             $entityDescription,

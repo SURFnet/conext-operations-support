@@ -20,8 +20,8 @@ namespace Surfnet\Conext\EntityVerificationFramework\Value;
 
 class PublishedMetadata
 {
-    /** @var Entity */
-    private $entity;
+    /** @var EntityId */
+    private $entityId;
     /** @var PemEncodedX509CertificateList */
     private $certificates;
     /** @var MultiLocaleString */
@@ -40,7 +40,7 @@ class PublishedMetadata
     private $contacts;
 
     /**
-     * @param Entity                        $entity
+     * @param EntityId                      $entityId
      * @param PemEncodedX509CertificateList $certificates
      * @param MultiLocaleString             $entityDisplayName
      * @param MultiLocaleString             $entityDescription
@@ -51,7 +51,7 @@ class PublishedMetadata
      * @param ContactSet                    $contacts
      */
     public function __construct(
-        Entity $entity,
+        EntityId $entityId,
         PemEncodedX509CertificateList $certificates,
         MultiLocaleString $entityDisplayName,
         MultiLocaleString $entityDescription,
@@ -61,7 +61,7 @@ class PublishedMetadata
         Organisation $organisation,
         ContactSet $contacts
     ) {
-        $this->entity                    = $entity;
+        $this->entityId                  = $entityId;
         $this->certificates              = $certificates;
         $this->entityDisplayName         = $entityDisplayName;
         $this->entityDescription         = $entityDescription;
@@ -73,10 +73,14 @@ class PublishedMetadata
     }
 
     /**
-     * @return Entity
+     * @param Entity $entity
+     * @return bool
      */
-    public function getEntity()
+    public function isPublishedFor(Entity $entity)
     {
-        return $this->entity;
+        $hasAcss = count($this->assertionConsumerServices) > 0;
+        $hasSsos = count($this->singleSignOnServices) > 0;
+
+        return $entity->hasEntityId($this->entityId) && ($entity->isSP() && $hasAcss || $entity->isIdP() && $hasSsos);
     }
 }

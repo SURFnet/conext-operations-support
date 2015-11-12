@@ -72,7 +72,10 @@ class GuzzlePublishedMetadataRepositoryTest extends TestCase
         $xmlHelper->shouldReceive('loadXml')->with($xml, $logger)->andReturn($xmlElement);
 
         $expectedPublishedMetadata = m::mock(PublishedMetadata::class);
-        $expectedPublishedMetadata->shouldReceive('getEntity')->andReturn($entity());
+        $expectedPublishedMetadata
+            ->shouldReceive('isPublishedFor')
+            ->with(self::voEquals($entity()))
+            ->andReturn(true);
         $publishedMetadataList = new PublishedMetadataList([$expectedPublishedMetadata]);
         $publishedMetadataFactory = m::mock('alias:' . PublishedMetadataFactory::class);
         $publishedMetadataFactory->shouldReceive('fromMetadataXml')->with($xmlElement)->andReturn($publishedMetadataList);
