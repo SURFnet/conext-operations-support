@@ -28,10 +28,12 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationBlacklist;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuite;
 use Surfnet\Conext\EntityVerificationFramework\ContextFactory;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
+use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Runner;
 use Surfnet\Conext\EntityVerificationFramework\SuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
@@ -46,17 +48,17 @@ class RunnerTest extends UnitTest
     private static $entities;
 
     /**
-     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository mocked
+     * @var ConfiguredMetadataRepository mocked
      */
     private $configuredMetadataRepository;
 
     /**
-     * @var \Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository mocked
+     * @var PublishedMetadataRepository mocked
      */
     private $publishedMetadataRepository;
 
     /**
-     * @var \Surfnet\Conext\EntityVerificationFramework\Runner
+     * @var Runner
      */
     private $runner;
 

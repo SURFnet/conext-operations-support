@@ -145,6 +145,9 @@ class EntitySetTest extends TestCase
      * @test
      * @group value
      * @dataProvider setsThatDontContainAnEntity
+     *
+     * @param EntitySet $set
+     * @param Entity    $entity
      */
     public function sets_can_not_contain_entities(EntitySet $set, Entity $entity)
     {

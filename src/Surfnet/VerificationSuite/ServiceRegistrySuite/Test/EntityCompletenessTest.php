@@ -21,10 +21,10 @@ namespace Surfnet\VerificationSuite\ServiceRegistrySuite\Test;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Image;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
-use Surfnet\Conext\EntityVerificationFramework\Value\Contact;
-use Surfnet\Conext\EntityVerificationFramework\Value\Image;
-use Surfnet\Conext\EntityVerificationFramework\Value\NameIdFormat;
 
 /**
  * @SuppressWarnings(PHPMD.CyclomaticComplexity) -- Not much to do about it. It tests a lot.

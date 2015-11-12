@@ -20,8 +20,8 @@ namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;

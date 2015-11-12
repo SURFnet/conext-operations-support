@@ -24,10 +24,10 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataFactory;
 use Surfnet\Conext\OperationsSupportBundle\Xml\XmlHelper;
 
 final class GuzzlePublishedMetadataRepository implements PublishedMetadataRepository

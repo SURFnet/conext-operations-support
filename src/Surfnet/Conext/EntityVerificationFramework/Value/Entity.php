@@ -52,7 +52,7 @@ final class Entity
 
     public function __construct(EntityId $entityId, EntityType $entityType)
     {
-        $this->entityId = $entityId;
+        $this->entityId   = $entityId;
         $this->entityType = $entityType;
     }
 

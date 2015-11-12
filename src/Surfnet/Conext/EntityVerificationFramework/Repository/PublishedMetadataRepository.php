@@ -18,8 +18,8 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Repository;
 
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
 
 interface PublishedMetadataRepository
 {
