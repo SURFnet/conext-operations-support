@@ -45,7 +45,7 @@ final class XmlHelper
 
         $logger->info(
             sprintf(
-                'Published metadata for entity "%s" contains XML errors: %s',
+                'XML contains errors: %s',
                 self::formatLibXmlErrors($xmlErrors)
             )
         );
