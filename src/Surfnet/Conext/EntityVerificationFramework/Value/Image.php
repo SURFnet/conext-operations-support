@@ -84,4 +84,9 @@ final class Image
     {
         return ((string) (int) $this->height) === $this->height && $this->height > 0;
     }
+
+    public function __toString()
+    {
+        return sprintf('Image(url=%s, width=%s, height=%s)', $this->url, $this->width, $this->height);
+    }
 }
