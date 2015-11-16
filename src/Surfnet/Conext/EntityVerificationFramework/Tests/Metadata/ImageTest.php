@@ -19,7 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Image;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
 class ImageTest extends TestCase
@@ -32,9 +32,9 @@ class ImageTest extends TestCase
      */
     public function it_can_be_deserialised()
     {
-        Image::deserialise(['url' => 'http://.png'], '');
-        Image::deserialise(['width' => '96'], '');
-        Image::deserialise(['height' => '72'], '');
+        Logo::deserialise(['url' => 'http://.png'], '');
+        Logo::deserialise(['width' => '96'], '');
+        Logo::deserialise(['height' => '72'], '');
     }
 
     /**
@@ -47,7 +47,7 @@ class ImageTest extends TestCase
      */
     public function width_must_be_string($nonString)
     {
-        Image::deserialise(['width' => $nonString], '');
+        Logo::deserialise(['width' => $nonString], '');
     }
 
     /**
@@ -60,7 +60,7 @@ class ImageTest extends TestCase
      */
     public function height_must_be_string($nonString)
     {
-        Image::deserialise(['height' => $nonString], '');
+        Logo::deserialise(['height' => $nonString], '');
     }
 
     /**
@@ -72,7 +72,7 @@ class ImageTest extends TestCase
      */
     public function width_can_be_invalid($invalidImageSize)
     {
-        $this->assertFalse(Image::deserialise(['width' => $invalidImageSize], '')->isValid());
+        $this->assertFalse(Logo::deserialise(['width' => $invalidImageSize], '')->isValid());
     }
 
     /**
@@ -84,7 +84,7 @@ class ImageTest extends TestCase
      */
     public function height_can_be_invalid($invalidImageSize)
     {
-        $this->assertFalse(Image::deserialise(['height' => $invalidImageSize], '')->isValid());
+        $this->assertFalse(Logo::deserialise(['height' => $invalidImageSize], '')->isValid());
     }
 
     public function invalidImageSizes()

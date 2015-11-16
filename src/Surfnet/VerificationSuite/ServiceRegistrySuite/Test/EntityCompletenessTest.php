@@ -22,7 +22,7 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Image;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
 
@@ -81,7 +81,7 @@ final class EntityCompletenessTest implements VerificationTest
         }
 
         foreach ($metadata->getLogos() as $logo) {
-            /** @var Image $logo */
+            /** @var Logo $logo */
             if (!$logo->hasUrl()) {
                 $notes[] = sprintf('Logo has no URL');
                 continue;

@@ -43,7 +43,7 @@ class ConfiguredMetadata
     private $name;
     /** @var MultiLocaleString|null */
     private $description;
-    /** @var ImageList */
+    /** @var LogoList */
     private $logos;
     /** @var boolean|null */
     private $signRedirects;
@@ -69,7 +69,7 @@ class ConfiguredMetadata
      * @param NameIdFormatList               $acceptableNameIdFormats
      * @param ContactSet                     $contacts
      * @param MultiLocaleString              $keywords
-     * @param ImageList                      $logos
+     * @param LogoList                       $logos
      * @param MultiLocaleString              $name
      * @param MultiLocaleString              $description
      * @param MultiLocaleUrl                 $url
@@ -89,7 +89,7 @@ class ConfiguredMetadata
         NameIdFormatList $acceptableNameIdFormats,
         ContactSet $contacts,
         MultiLocaleString $keywords,
-        ImageList $logos,
+        LogoList $logos,
         MultiLocaleString $name,
         MultiLocaleString $description,
         MultiLocaleUrl $url,

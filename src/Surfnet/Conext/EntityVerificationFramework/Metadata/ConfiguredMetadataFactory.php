@@ -67,9 +67,9 @@ final class ConfiguredMetadataFactory
             $logoData = $metadataData['logo'];
             Assert::isArray($logoData, 'SP metadata\'s "logo" key must contain an array', 'metadata.logo');
 
-            $logos = ImageList::deserialise($metadataData['logo'], 'metadata.logo');
+            $logos = LogoList::deserialise($metadataData['logo'], 'metadata.logo');
         } else {
-            $logos = new ImageList();
+            $logos = new LogoList();
         }
 
         $signRedirects = null;

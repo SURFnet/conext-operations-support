@@ -21,7 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 
-final class Image
+final class Logo
 {
     /** @var Url|null */
     private $url;
@@ -33,29 +33,29 @@ final class Image
     /**
      * @param array  $data
      * @param string $propertyPath
-     * @return Image
+     * @return Logo
      */
     public static function deserialise($data, $propertyPath)
     {
-        $image = new Image();
+        $logo = new Logo();
 
-        Assert::isArray($data, 'Image data must be an array structure');
+        Assert::isArray($data, 'Logo data must be an array structure');
 
         if (array_key_exists('url', $data)) {
-            $image->url = Url::fromString($data['url']);
+            $logo->url = Url::fromString($data['url']);
         }
 
         if (array_key_exists('width', $data)) {
-            Assert::string($data['width'], 'Image width must be string', sprintf('%s.width', $propertyPath));
-            $image->width = $data['width'];
+            Assert::string($data['width'], 'Logo width must be string', sprintf('%s.width', $propertyPath));
+            $logo->width = $data['width'];
         }
 
         if (array_key_exists('height', $data)) {
-            Assert::string($data['height'], 'Image height must be string', sprintf('%s.height', $propertyPath));
-            $image->height = $data['height'];
+            Assert::string($data['height'], 'Logo height must be string', sprintf('%s.height', $propertyPath));
+            $logo->height = $data['height'];
         }
 
-        return $image;
+        return $logo;
     }
 
     private function __construct()
@@ -100,7 +100,7 @@ final class Image
     public function getUrl()
     {
         if ($this->url === null) {
-            throw new LogicException('Image has no URL');
+            throw new LogicException('Logo has no URL');
         }
 
         return $this->url;
@@ -108,6 +108,6 @@ final class Image
 
     public function __toString()
     {
-        return sprintf('Image(url=%s, width=%s, height=%s)', $this->url, $this->width, $this->height);
+        return sprintf('Logo(url=%s, width=%s, height=%s)', $this->url, $this->width, $this->height);
     }
 }

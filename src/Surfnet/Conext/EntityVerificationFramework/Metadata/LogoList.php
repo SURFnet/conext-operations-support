@@ -20,24 +20,24 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class ImageList
+final class LogoList
 {
     /**
-     * @var Image[]
+     * @var Logo[]
      */
-    private $images;
+    private $logos;
 
     /**
      * @param mixed  $data
      * @param string $propertyPath
-     * @return ImageList
+     * @return LogoList
      */
     public static function deserialise($data, $propertyPath)
     {
         $list = new self();
-        $list->images = array_map(
+        $list->logos = array_map(
             function ($data) use ($propertyPath) {
-                return Image::deserialise($data, $propertyPath . '[]');
+                return Logo::deserialise($data, $propertyPath . '[]');
             },
             $data
         );
@@ -46,12 +46,12 @@ final class ImageList
     }
 
     /**
-     * @param Image[] $images
+     * @param Logo[] $logos
      */
-    public function __construct(array $images = [])
+    public function __construct(array $logos = [])
     {
-        Assert::allIsInstanceOf($images, Image::class);
+        Assert::allIsInstanceOf($logos, Logo::class);
 
-        $this->images = $images;
+        $this->logos = $logos;
     }
 }
