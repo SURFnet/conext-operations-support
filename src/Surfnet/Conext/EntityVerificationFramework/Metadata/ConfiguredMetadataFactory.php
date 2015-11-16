@@ -53,12 +53,12 @@ final class ConfiguredMetadataFactory
             $contacts = new ContactSet();
         }
 
-        $name = null;
+        $name = new MultiLocaleString();
         if (isset($metadataData['name'])) {
             $name = new MultiLocaleString($metadataData['name']);
         }
 
-        $description = null;
+        $description = new MultiLocaleString();
         if (isset($metadataData['description'])) {
             $description = new MultiLocaleString($metadataData['description']);
         }
@@ -109,7 +109,7 @@ final class ConfiguredMetadataFactory
             $assertionConsumerServices = new AssertionConsumerServiceList();
         }
 
-        $url = null;
+        $url = new MultiLocaleUrl();
         if (isset($metadataData['url'])) {
             $url = MultiLocaleUrl::deserialise($metadataData['url'], 'metadata.url');
         }
@@ -123,10 +123,9 @@ final class ConfiguredMetadataFactory
             $singleSignOnServices = new SingleSignOnServiceList();
         }
 
+        $keywords = new MultiLocaleString();
         if (isset($metadataData['keywords'])) {
             $keywords = new MultiLocaleString($metadataData['keywords']);
-        } else {
-            $keywords = new MultiLocaleString();
         }
 
         $certData = null;
@@ -198,10 +197,10 @@ final class ConfiguredMetadataFactory
             $logos,
             $name,
             $description,
+            $url,
             $publishedMetadataUrl,
             $certData,
             $defaultNameIdFormat,
-            $url,
             $signRedirects,
             $guestQualifier,
             $freeformProperties

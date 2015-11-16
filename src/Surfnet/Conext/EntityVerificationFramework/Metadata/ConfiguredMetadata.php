@@ -70,12 +70,12 @@ class ConfiguredMetadata
      * @param ContactSet                     $contacts
      * @param MultiLocaleString              $keywords
      * @param ImageList                      $logos
-     * @param null|MultiLocaleString         $name
-     * @param null|MultiLocaleString         $description
+     * @param MultiLocaleString              $name
+     * @param MultiLocaleString              $description
+     * @param MultiLocaleUrl                 $url
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
      * @param null|NameIdFormat              $defaultNameIdFormat
-     * @param null|MultiLocaleUrl            $url
      * @param bool|null                      $signRedirects
      * @param GuestQualifier|null            $guestQualifier
      * @param mixed[]                        $freeformProperties
@@ -90,12 +90,12 @@ class ConfiguredMetadata
         ContactSet $contacts,
         MultiLocaleString $keywords,
         ImageList $logos,
-        MultiLocaleString $name = null,
-        MultiLocaleString $description = null,
+        MultiLocaleString $name,
+        MultiLocaleString $description,
+        MultiLocaleUrl $url,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
         NameIdFormat $defaultNameIdFormat = null,
-        MultiLocaleUrl $url = null,
         $signRedirects = null,
         GuestQualifier $guestQualifier = null,
         array $freeformProperties = []
