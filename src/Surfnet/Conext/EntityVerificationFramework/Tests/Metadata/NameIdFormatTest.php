@@ -32,7 +32,7 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_be_created()
     {
-        new NameIdFormat('urn:mad:bro');
+        NameIdFormat::fromUrn('urn:mad:bro');
     }
 
     /**
@@ -45,7 +45,7 @@ class NameIdFormatTest extends TestCase
      */
     public function it_only_accepts_strings($nonString)
     {
-        new NameIdFormat($nonString);
+        NameIdFormat::fromUrn($nonString);
     }
 
     /**
@@ -54,8 +54,8 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_equal_other_formats()
     {
-        $format0 = new NameIdFormat('urn:mad:bro');
-        $format1 = new NameIdFormat('urn:mad:bro');
+        $format0 = NameIdFormat::fromUrn('urn:mad:bro');
+        $format1 = NameIdFormat::fromUrn('urn:mad:bro');
 
         $this->assertTrue($format0->equals($format1));
     }
@@ -66,22 +66,9 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_not_equal_other_formats()
     {
-        $format0 = new NameIdFormat('urn:mad:bro');
-        $format1 = new NameIdFormat('urn:mad:bra');
+        $format0 = NameIdFormat::fromUrn('urn:mad:bro');
+        $format1 = NameIdFormat::fromUrn('urn:mad:bra');
 
         $this->assertFalse($format0->equals($format1));
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function its_format_can_be_validated()
-    {
-        $this->assertFalse((new NameIdFormat('urn:mad:bro'))->isValidFormat());
-        $this->assertFalse((new NameIdFormat('urn:oasis:names:tc:SAML:2.0:nameid-format:hoedje-van-hoedje-van'))->isValidFormat());
-
-        $this->assertTrue((new NameIdFormat(NameIdFormat::FORMAT_SAML_20_PERSISTENT))->isValidFormat());
-        $this->assertTrue((new NameIdFormat(NameIdFormat::FORMAT_SAML_20_TRANSIENT))->isValidFormat());
     }
 }

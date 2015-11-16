@@ -22,37 +22,45 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 
 final class NameIdFormat
 {
-    const FORMAT_SAML_11_UNSPECIFIED = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified';
-    const FORMAT_SAML_20_TRANSIENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient';
-    const FORMAT_SAML_20_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
+    const URN_SAML_11_UNSPECIFIED = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified';
+    const URN_SAML_20_TRANSIENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient';
+    const URN_SAML_20_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent';
 
-    const VALID_FORMATS = [
-        self::FORMAT_SAML_11_UNSPECIFIED,
-        self::FORMAT_SAML_20_TRANSIENT,
-        self::FORMAT_SAML_20_PERSISTENT,
+    const VALID_URNS = [
+        self::URN_SAML_11_UNSPECIFIED,
+        self::URN_SAML_20_TRANSIENT,
+        self::URN_SAML_20_PERSISTENT,
     ];
 
     /**
      * @var string
      */
-    private $format;
+    private $urn;
 
     /**
-     * @param string $format
+     * @return NameIdFormat
      */
-    public function __construct($format)
+    public static function unknown()
     {
-        Assert::string($format, 'NameIDFormat must be string');
-
-        $this->format = $format;
+        return new NameIdFormat();
     }
 
     /**
-     * @return bool
+     * @param string $urn
+     * @return NameIdFormat
      */
-    public function isValidFormat()
+    public static function fromUrn($urn)
     {
-        return in_array($this->format, self::VALID_FORMATS, true);
+        Assert::string($urn, 'NameIDFormat URN must be string');
+
+        $format = new NameIdFormat();
+        $format->urn = $urn;
+
+        return $format;
+    }
+
+    private function __construct()
+    {
     }
 
     /**
@@ -66,6 +74,6 @@ final class NameIdFormat
 
     public function __toString()
     {
-        return $this->format;
+        return $this->urn;
     }
 }

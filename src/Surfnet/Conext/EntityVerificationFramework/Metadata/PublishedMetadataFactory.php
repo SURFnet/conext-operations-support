@@ -100,7 +100,7 @@ final class PublishedMetadataFactory
         $nameIdFormatXmls = $entityDescriptorXml->xpath('(md:SPSSODescriptor|md:IDPSSODescriptor)/md:NameIDFormat');
         $nameIdFormats = new NameIdFormatList();
         foreach ($nameIdFormatXmls as $nameIdFormatXml) {
-            $nameIdFormat = new NameIdFormat((string) $nameIdFormatXml);
+            $nameIdFormat = NameIdFormat::fromUrn((string) $nameIdFormatXml);
             $nameIdFormats = $nameIdFormats->add($nameIdFormat);
         }
 

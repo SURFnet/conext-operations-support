@@ -78,9 +78,9 @@ final class ConfiguredMetadataFactory
             $signRedirects = $metadataData['redirect']['sign'];
         }
 
-        $defaultNameIdFormat = null;
+        $defaultNameIdFormat = NameIdFormat::unknown();
         if (isset($metadataData['NameIDFormat'])) {
-            $defaultNameIdFormat = new NameIdFormat($metadataData['NameIDFormat']);
+            $defaultNameIdFormat = NameIdFormat::fromUrn($metadataData['NameIDFormat']);
         }
 
         $acceptableNameIdFormats = new NameIdFormatList();
@@ -93,7 +93,7 @@ final class ConfiguredMetadataFactory
             $acceptableNameIdFormats = new NameIdFormatList(
                 array_map(
                     function ($data) {
-                        return new NameIdFormat($data);
+                        return NameIdFormat::fromUrn($data);
                     },
                     $metadataData['NameIDFormats']
                 )
@@ -191,6 +191,7 @@ final class ConfiguredMetadataFactory
             $entityType,
             $assertionConsumerServices,
             $singleSignOnServices,
+            $defaultNameIdFormat,
             $acceptableNameIdFormats,
             $contacts,
             $keywords,
@@ -200,7 +201,6 @@ final class ConfiguredMetadataFactory
             $url,
             $publishedMetadataUrl,
             $certData,
-            $defaultNameIdFormat,
             $signRedirects,
             $guestQualifier,
             $freeformProperties

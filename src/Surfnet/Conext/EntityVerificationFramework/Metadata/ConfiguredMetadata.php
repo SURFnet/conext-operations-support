@@ -66,6 +66,7 @@ class ConfiguredMetadata
      * @param EntityType                     $entityType
      * @param AssertionConsumerServiceList   $assertionConsumerServices
      * @param SingleSignOnServiceList        $singleSignOnServices
+     * @param NameIdFormat                   $defaultNameIdFormat
      * @param NameIdFormatList               $acceptableNameIdFormats
      * @param ContactSet                     $contacts
      * @param MultiLocaleString              $keywords
@@ -75,7 +76,6 @@ class ConfiguredMetadata
      * @param MultiLocaleUrl                 $url
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
-     * @param null|NameIdFormat              $defaultNameIdFormat
      * @param bool|null                      $signRedirects
      * @param GuestQualifier|null            $guestQualifier
      * @param mixed[]                        $freeformProperties
@@ -86,6 +86,7 @@ class ConfiguredMetadata
         EntityType $entityType,
         AssertionConsumerServiceList $assertionConsumerServices,
         SingleSignOnServiceList $singleSignOnServices,
+        NameIdFormat $defaultNameIdFormat,
         NameIdFormatList $acceptableNameIdFormats,
         ContactSet $contacts,
         MultiLocaleString $keywords,
@@ -95,7 +96,6 @@ class ConfiguredMetadata
         MultiLocaleUrl $url,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
-        NameIdFormat $defaultNameIdFormat = null,
         $signRedirects = null,
         GuestQualifier $guestQualifier = null,
         array $freeformProperties = []
