@@ -43,7 +43,7 @@ final class XmlHelper
             return $xmlElement;
         }
 
-        $logger->info(
+        $logger->error(
             sprintf(
                 'XML contains errors: %s',
                 self::formatLibXmlErrors($xmlErrors)

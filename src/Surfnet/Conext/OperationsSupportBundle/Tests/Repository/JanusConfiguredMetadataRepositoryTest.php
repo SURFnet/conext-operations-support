@@ -314,7 +314,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
      * @test
      * @group metadata
      * @expectedException \Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException
-     * @expectedExceptionMessage No connection ID is known for entity "https://hu.invalid[saml20-sp]"
+     * @expectedExceptionMessage No connection ID is known for entity "https://hu.invalid (saml20-sp)"
      * @runInSeparateProcess
      */
     public function throws_an_exception_when_fetching_metadata_for_an_entity_that_cannot_be_mapped_to_a_connection_id()

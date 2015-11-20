@@ -74,12 +74,12 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
      */
     private function unsafelyGetMetadataFor(Entity $entity)
     {
-        $this->logger->info(sprintf('Attempting to fetch published metadata for entity "%s"', $entity));
+        $this->logger->debug(sprintf('Attempting to fetch published metadata for entity "%s"', $entity));
 
         $publishedMetadataUrl = $this->publishedMetadataUrlRepository->getPublishedMetadataUrlFor($entity);
 
         if ($publishedMetadataUrl === null) {
-            $this->logger->info(
+            $this->logger->debug(
                 sprintf(
                     'Configured metadata for entity "%s" has no published metadata URL configured, returning NULL',
                     $entity
@@ -114,7 +114,7 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
         }
 
         if ($response->getStatusCode() !== 200) {
-            $this->logger->info(
+            $this->logger->debug(
                 sprintf('Published metadata HTTP response code was %d, returning NULL', $response->getStatusCode())
             );
 
@@ -129,10 +129,10 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
         }
 
         $metadatas = PublishedMetadataFactory::fromMetadataXml($xml);
-        $this->logger->info(sprintf('Published metadata contains %d entities', count($metadatas)));
+        $this->logger->debug(sprintf('Published metadata contains %d entities', count($metadatas)));
 
         $metadatas = $metadatas->findByEntity($entity);
-        $this->logger->info(
+        $this->logger->debug(
             sprintf('Published metadata contains %d entries for entity "%s"', count($metadatas), $entity)
         );
 

@@ -110,6 +110,6 @@ final class Entity
 
     public function __toString()
     {
-        return $this->entityId . '[' . $this->entityType . ']';
+        return $this->entityId . ' (' . $this->entityType . ')';
     }
 }
