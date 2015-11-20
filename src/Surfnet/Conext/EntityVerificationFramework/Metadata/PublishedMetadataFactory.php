@@ -144,8 +144,6 @@ final class PublishedMetadataFactory
 
         $contacts = new ContactSet();
         foreach ($entityDescriptorXml->xpath('md:ContactPerson') as $contactPersonXml) {
-            $contactType = null;
-            $emailAddress = null;
             $givenName = null;
             $surName = null;
 
