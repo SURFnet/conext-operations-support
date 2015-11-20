@@ -66,7 +66,7 @@ class PublishedMetadataFactoryTest extends TestCase
         $metadataXmlString = file_get_contents(__DIR__ . '/fixtures/metadata-multi-engineblock-onegini.xml');
         $metadataXml = simplexml_load_string($metadataXmlString);
 
-        $onegini = new \Surfnet\Conext\EntityVerificationFramework\Value\Entity(new EntityId('https://www.onegini.me'), EntityType::IdP());
+        $onegini = new Entity(new EntityId('https://www.onegini.me'), EntityType::IdP());
 
         $list = PublishedMetadataFactory::fromMetadataXml($metadataXml);
         $this->assertCount(2, $list);
