@@ -97,8 +97,11 @@ final class EmailAddressTest extends TestCase
     {
         $url0 = EmailAddress::fromString('renee.dupree@datrijmtook.invalid');
         $url1 = EmailAddress::fromString('renee.dupree@datrijmtook.invalid');
+        $this->assertTrue($url0->equals($url1), 'Two identical emails should equal each other');
 
-        $this->assertTrue($url0->equals($url1));
+        $url0 = EmailAddress::unknown();
+        $url1 = EmailAddress::unknown();
+        $this->assertTrue($url0->equals($url1), 'Two unknown email should be equal to each other');
     }
 
     /**
@@ -109,7 +112,26 @@ final class EmailAddressTest extends TestCase
     {
         $url0 = EmailAddress::fromString('renee.boulanger@vara.invalid');
         $url1 = EmailAddress::fromString('francois.boulanger@vara.invalid');
+        $this->assertFalse($url0->equals($url1), 'Two different emails should not equal each other');
 
-        $this->assertFalse($url0->equals($url1));
+        $url0 = EmailAddress::fromString('renee.boulanger@vara.invalid');
+        $url1 = EmailAddress::unknown();
+        $this->assertFalse($url0->equals($url1), 'An email should not equal an unknown email');
+    }
+
+    public function an_empty_email_and_an_unknown_email_are_not_equal()
+    {
+        $url0 = EmailAddress::fromString('');
+        $url1 = EmailAddress::unknown();
+        $this->assertFalse($url0->equals($url1), 'An empty email should not be equal to an unknown email');
+    }
+
+    /**
+     * @test
+     * @group value
+     */
+    public function an_email_address_can_be_unknown()
+    {
+        EmailAddress::unknown();
     }
 }
