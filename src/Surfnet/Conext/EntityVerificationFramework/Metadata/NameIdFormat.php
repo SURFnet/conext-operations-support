@@ -71,7 +71,7 @@ final class NameIdFormat implements ConfiguredMetadataValidatable
         ConfiguredMetadataValidationContext $context
     ) {
         if ($this->urn === null) {
-            $validator->addViolation('NameIDFormat is unknown');
+            $validator->addViolation('NameIDFormat is not configured');
         }
 
         if (!in_array($this->urn, self::VALID_URNS, true)) {
