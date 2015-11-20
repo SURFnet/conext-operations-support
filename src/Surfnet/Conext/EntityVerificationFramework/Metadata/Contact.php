@@ -115,12 +115,10 @@ final class Contact implements Validatable
      */
     public function equals(Contact $other)
     {
-        return ($this->type === $other->type
-            || $this->type && $other->type && $this->type->equals($other->type))
-        && ($this->email === $other->email
-            || $this->email && $other->email && $this->email->equals($other->email))
-        && $this->givenName === $other->givenName
-        && $this->surName === $other->surName;
+        return $this->type->equals($other->type)
+            && $this->email->equals($other->email)
+            && $this->givenName === $other->givenName
+            && $this->surName === $other->surName;
     }
 
     public function __toString()
