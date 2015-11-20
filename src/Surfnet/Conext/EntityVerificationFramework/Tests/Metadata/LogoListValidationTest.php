@@ -18,17 +18,13 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery as m;
 use Mockery\MockInterface;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactSet;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
+use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoList;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
 class LogoListValidationTest extends TestCase
 {
@@ -41,10 +37,10 @@ class LogoListValidationTest extends TestCase
         $logo0 = Logo::deserialise([], 'propPath');
         $logo1 = Logo::deserialise([], 'propPath');
 
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate')->with($logo0, $context)->once();
         $validator->shouldReceive('validate')->with($logo1, $context)->once();
         $validator->shouldReceive('addViolation')->never();

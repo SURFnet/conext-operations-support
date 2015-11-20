@@ -19,14 +19,14 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods) -- Methods are relevant, not complex.
  */
-final class Contact implements Validatable
+final class Contact implements ConfiguredMetadataValidatable
 {
     /** @var ContactType */
     private $type;
@@ -94,8 +94,10 @@ final class Contact implements Validatable
         $this->surName   = $surName;
     }
 
-    public function validate(Validator $validator, ValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidationContext $context
+    ) {
         $validator->validate($this->type, $context);
         $validator->validate($this->email, $context);
 

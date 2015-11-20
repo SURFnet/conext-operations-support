@@ -20,11 +20,11 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
-final class Url implements Validatable
+final class Url implements ConfiguredMetadataValidatable
 {
     /**
      * @var string|null
@@ -87,8 +87,10 @@ final class Url implements Validatable
     {
     }
 
-    public function validate(Validator $validator, ValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidationContext $context
+    ) {
         if (!$this->isValid()) {
             $validator->addViolation(sprintf('URL "%s" is not valid', $this->url));
         }

@@ -19,14 +19,14 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
 use GuzzleHttp\ClientInterface;
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery as m;
 use Mockery\MockInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogoValidationTest extends TestCase
@@ -47,10 +47,10 @@ class LogoValidationTest extends TestCase
         /** @var MockInterface|ClientInterface $httpClient */
         $httpClient = m::mock(ClientInterface::class);
         $httpClient->shouldReceive('request')->andReturn($response200);
-        $context = new ValidationContext($httpClient);
+        $context = new ConfiguredMetadataValidationContext($httpClient);
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
         $validator
             ->shouldReceive('addViolation')
@@ -94,10 +94,10 @@ class LogoValidationTest extends TestCase
     {
         $url = '###';
 
-        /** @var MockInterface|ValidationContext $context */
-        $context = m::mock(ValidationContext::class);
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var MockInterface|\Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator
             ->shouldReceive('validate')
             ->with(
@@ -126,10 +126,10 @@ class LogoValidationTest extends TestCase
         /** @var MockInterface|ClientInterface $httpClient */
         $httpClient = m::mock(ClientInterface::class);
         $httpClient->shouldReceive('request')->with('GET', $url)->once()->andReturn($response);
-        $context = new ValidationContext($httpClient);
+        $context = new ConfiguredMetadataValidationContext($httpClient);
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
         $validator
             ->shouldReceive('addViolation')

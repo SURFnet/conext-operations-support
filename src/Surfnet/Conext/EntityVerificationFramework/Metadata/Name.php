@@ -18,14 +18,16 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
-final class Name extends MultiLocaleString implements Validatable
+final class Name extends MultiLocaleString implements ConfiguredMetadataValidatable
 {
-    public function validate(Validator $validator, ValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidationContext $context
+    ) {
         if (!$this->hasFilledTranslationForLocale('en')) {
             $validator->addViolation('No English name configured');
         }

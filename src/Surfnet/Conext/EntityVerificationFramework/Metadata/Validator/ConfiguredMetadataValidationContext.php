@@ -16,14 +16,30 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
+namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator;
 
-interface Validatable
+use GuzzleHttp\ClientInterface;
+
+class ConfiguredMetadataValidationContext
 {
     /**
-     * @param Validator         $validator
-     * @param ValidationContext $context
-     * @return void
+     * @var ClientInterface
      */
-    public function validate(Validator $validator, ValidationContext $context);
+    private $httpClient;
+
+    /**
+     * @param ClientInterface $httpClient
+     */
+    public function __construct(ClientInterface $httpClient)
+    {
+        $this->httpClient = $httpClient;
+    }
+
+    /**
+     * @return ClientInterface
+     */
+    public function getHttpClient()
+    {
+        return $this->httpClient;
+    }
 }

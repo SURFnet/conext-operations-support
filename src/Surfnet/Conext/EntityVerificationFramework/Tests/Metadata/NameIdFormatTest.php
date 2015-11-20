@@ -23,8 +23,8 @@ use Mockery\Matcher\Closure as ClosureMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
 class NameIdFormatTest extends TestCase
@@ -92,11 +92,11 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_be_invalid()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator
             ->shouldReceive('addViolation')
             ->with(self::containsMatcher('"invalid" is not a valid NameIDFormat, must be one of "'))
@@ -112,11 +112,11 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_be_valid()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('addViolation')->never();
 
         $nameIdFormat = NameIdFormat::fromUrn(NameIdFormat::URN_SAML_20_PERSISTENT);

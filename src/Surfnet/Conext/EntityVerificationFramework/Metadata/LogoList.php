@@ -19,12 +19,12 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\SubpathConfiguredMetadataValidator;
 
-final class LogoList implements Validatable
+final class LogoList implements ConfiguredMetadataValidatable
 {
     /**
      * @var Logo[]
@@ -59,10 +59,12 @@ final class LogoList implements Validatable
         $this->logos = $logos;
     }
 
-    public function validate(Validator $validator, ValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidationContext $context
+    ) {
         foreach ($this->logos as $i => $logo) {
-            $subpathValidator = new SubpathValidator($validator, 'Logo #' . $i);
+            $subpathValidator = new SubpathConfiguredMetadataValidator($validator, 'Logo #' . $i);
             $subpathValidator->validate($logo, $context);
         }
     }

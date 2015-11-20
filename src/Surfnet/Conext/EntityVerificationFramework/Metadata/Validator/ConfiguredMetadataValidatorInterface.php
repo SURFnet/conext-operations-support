@@ -16,16 +16,16 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
+namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator;
 
-interface Validator
+interface ConfiguredMetadataValidatorInterface
 {
     /**
-     * @param Validatable       $validatable
-     * @param ValidationContext $context
+     * @param ConfiguredMetadataValidatable       $validatable
+     * @param ConfiguredMetadataValidationContext $context
      * @return void
      */
-    public function validate(Validatable $validatable, ValidationContext $context);
+    public function validate(ConfiguredMetadataValidatable $validatable, ConfiguredMetadataValidationContext $context);
 
     /**
      * @param string $violation

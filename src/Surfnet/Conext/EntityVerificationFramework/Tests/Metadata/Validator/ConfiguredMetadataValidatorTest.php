@@ -21,11 +21,12 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata\Validator;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\RootValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
-class RootValidatorTest extends TestCase
+class ConfiguredMetadataValidatorTest extends TestCase
 {
     /**
      * @test
@@ -33,11 +34,11 @@ class RootValidatorTest extends TestCase
      */
     public function it_delegates_validation_to_the_validatable()
     {
-        /** @var MockInterface|ValidationContext $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var MockInterface|ConfiguredMetadataValidationContext $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var MockInterface|Validatable $validatable */
-        $validatable = m::mock(Validatable::class);
+        /** @var MockInterface|ConfiguredMetadataValidatable $validatable */
+        $validatable = m::mock(ConfiguredMetadataValidatable::class);
         $validatable
             ->shouldReceive('validate')
             ->with(
@@ -48,7 +49,7 @@ class RootValidatorTest extends TestCase
             )
             ->once();
 
-        $validator = new RootValidator();
+        $validator = new ConfiguredMetadataValidator();
         $validator->validate($validatable, $context);
     }
 }

@@ -24,8 +24,8 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
 class ContactValidationTest extends TestCase
 {
@@ -38,10 +38,10 @@ class ContactValidationTest extends TestCase
         $contactType  = ContactType::unknown();
         $emailAddress = EmailAddress::unknown();
 
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate')->with($contactType, $context)->once();
         $validator->shouldReceive('validate')->with($emailAddress, $context)->once();
         $validator->shouldReceive('addViolation')->never();
@@ -56,10 +56,10 @@ class ContactValidationTest extends TestCase
      */
     public function it_validates_its_given_name_and_surname()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate');
         $validator->shouldReceive('addViolation')->with('Contact given name is not configured or empty')->once();
         $validator->shouldReceive('addViolation')->with('Contact surname is not configured or empty')->once();

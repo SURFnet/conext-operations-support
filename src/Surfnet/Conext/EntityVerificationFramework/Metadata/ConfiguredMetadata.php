@@ -20,10 +20,10 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\SubpathConfiguredMetadataValidator;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 /**
@@ -31,7 +31,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-class ConfiguredMetadata implements Validatable
+class ConfiguredMetadata implements ConfiguredMetadataValidatable
 {
     /** @var EntityType */
     private $entityType;
@@ -126,17 +126,15 @@ class ConfiguredMetadata implements Validatable
         $this->freeformProperties        = $freeformProperties;
     }
 
-    /**
-     * @param Validator         $validator
-     * @param ValidationContext $context
-     */
-    public function validate(Validator $validator, ValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidationContext $context
+    ) {
         $validator->validate($this->name, $context);
         $validator->validate($this->description, $context);
         $validator->validate($this->contacts, $context);
         $validator->validate($this->logos, $context);
-        (new SubpathValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
+        (new SubpathConfiguredMetadataValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
 
         if ($this->signRedirects === null) {
             $validator->addViolation('The sign redirects option is not configured to be enabled or disabled');

@@ -32,8 +32,8 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Name;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormatList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnServiceList;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 class ConfiguredMetadataValidationTest extends TestCase
@@ -64,10 +64,10 @@ class ConfiguredMetadataValidationTest extends TestCase
             new MultiLocaleUrl()
         );
 
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate')->with($name, $context)->once();
         $validator->shouldReceive('validate')->with($description, $context)->once();
         $validator->shouldReceive('validate')->with($contacts, $context)->once();
@@ -98,16 +98,16 @@ class ConfiguredMetadataValidationTest extends TestCase
             new MultiLocaleUrl()
         );
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate');
         $validator
             ->shouldReceive('addViolation')
             ->with('The sign redirects option is not configured to be enabled or disabled')
             ->once();
 
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
         $metadata->validate($validator, $context);
     }
@@ -135,13 +135,13 @@ class ConfiguredMetadataValidationTest extends TestCase
             true
         );
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('validate');
         $validator->shouldReceive('addViolation')->never();
 
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
         $metadata->validate($validator, $context);
     }

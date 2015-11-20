@@ -22,8 +22,8 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
 final class EmailAddressTest extends TestCase
@@ -58,11 +58,11 @@ final class EmailAddressTest extends TestCase
      */
     public function it_can_be_invalid()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator
             ->shouldReceive('addViolation')
             ->with('Contact e-mail address is not valid')
@@ -78,11 +78,11 @@ final class EmailAddressTest extends TestCase
      */
     public function it_can_be_valid()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('addViolation')->never();
 
         $emailAddress = EmailAddress::fromString('valid@valid.invalid');

@@ -18,12 +18,12 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery as m;
 use Mockery\MockInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
 class UrlValidationTest extends TestCase
 {
@@ -33,10 +33,10 @@ class UrlValidationTest extends TestCase
      */
     public function a_violation_is_reported_when_the_url_is_invalid()
     {
-        /** @var MockInterface|ValidationContext $context */
-        $context = m::mock(ValidationContext::class);
-        /** @var MockInterface|Validator $validator */
-        $validator = m::mock(Validator::class);
+        /** @var MockInterface|ConfiguredMetadataValidationContext $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var MockInterface|ConfiguredMetadataValidatorInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('addViolation')->with('URL "###" is not valid')->once();
 
         $url = Url::fromString('###');
@@ -49,10 +49,10 @@ class UrlValidationTest extends TestCase
      */
     public function no_violations_are_reported_when_the_url_is_valid()
     {
-        /** @var MockInterface|ValidationContext $context */
-        $context = m::mock(ValidationContext::class);
-        /** @var MockInterface|Validator $validator */
-        $validator = m::mock(Validator::class);
+        /** @var MockInterface|ConfiguredMetadataValidationContext $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var MockInterface|ConfiguredMetadataValidatorInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator->shouldReceive('addViolation')->never();
 
         $url = Url::fromString('https://surfc0next.invalid');

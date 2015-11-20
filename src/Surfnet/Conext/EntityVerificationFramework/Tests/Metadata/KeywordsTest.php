@@ -18,12 +18,12 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery as m;
 use Mockery\MockInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Keywords;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
 
 class KeywordsTest extends TestCase
 {
@@ -37,11 +37,11 @@ class KeywordsTest extends TestCase
      */
     public function it_reports_a_violation_when_a_locale_is_not_filled(Keywords $keywords, $violations)
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
+        /** @var \Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
+        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         foreach ($violations as $violation) {
             $validator
                 ->shouldReceive('addViolation')

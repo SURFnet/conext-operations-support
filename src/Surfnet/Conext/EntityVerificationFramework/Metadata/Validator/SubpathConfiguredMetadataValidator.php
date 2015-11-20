@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
+namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class SubpathValidator implements Validator
+final class SubpathConfiguredMetadataValidator implements ConfiguredMetadataValidatorInterface
 {
     /**
-     * @var Validator
+     * @var ConfiguredMetadataValidator
      */
     private $innerValidator;
 
@@ -33,10 +33,10 @@ final class SubpathValidator implements Validator
     private $subpath;
 
     /**
-     * @param Validator $innerValidator
-     * @param string    $subpath
+     * @param ConfiguredMetadataValidatorInterface $innerValidator
+     * @param string                               $subpath
      */
-    public function __construct(Validator $innerValidator, $subpath)
+    public function __construct(ConfiguredMetadataValidatorInterface $innerValidator, $subpath)
     {
         Assert::string($subpath, 'Subpath must be a string');
 
@@ -45,11 +45,11 @@ final class SubpathValidator implements Validator
     }
 
     /**
-     * @param Validatable       $validatable
-     * @param ValidationContext $context
+     * @param ConfiguredMetadataValidatable       $validatable
+     * @param ConfiguredMetadataValidationContext $context
      * @return void
      */
-    public function validate(Validatable $validatable, ValidationContext $context)
+    public function validate(ConfiguredMetadataValidatable $validatable, ConfiguredMetadataValidationContext $context)
     {
         $this->innerValidator->validate($validatable, $context);
     }

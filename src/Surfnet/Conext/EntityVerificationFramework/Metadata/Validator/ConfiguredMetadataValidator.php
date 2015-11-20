@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
+namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class RootValidator implements Validator
+final class ConfiguredMetadataValidator implements ConfiguredMetadataValidatorInterface
 {
     /**
      * @var string[]
@@ -28,11 +28,11 @@ final class RootValidator implements Validator
     private $violations = [];
 
     /**
-     * @param Validatable       $validatable
-     * @param ValidationContext $context
+     * @param ConfiguredMetadataValidatable       $validatable
+     * @param ConfiguredMetadataValidationContext $context
      * @return void
      */
-    public function validate(Validatable $validatable, ValidationContext $context)
+    public function validate(ConfiguredMetadataValidatable $validatable, ConfiguredMetadataValidationContext $context)
     {
         $validatable->validate($this, $context);
     }

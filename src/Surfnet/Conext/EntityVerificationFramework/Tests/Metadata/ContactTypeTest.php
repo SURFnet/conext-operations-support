@@ -18,9 +18,8 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery as m;
-use Mockery\MockInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
 
 class ContactTypeTest extends TestCase
