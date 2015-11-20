@@ -22,6 +22,7 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 final class Logo implements Validatable
 {
@@ -94,7 +95,7 @@ final class Logo implements Validatable
         }
 
         $response = $context->getHttpClient()->request('GET', $this->url->getValidUrl());
-        if ($response->getStatusCode() !== 200) {
+        if ($response->getStatusCode() !== Response::HTTP_OK) {
             $validator->addViolation(sprintf(
                 'Logo "%s" is not available, server returned status code %d',
                 $this->url,

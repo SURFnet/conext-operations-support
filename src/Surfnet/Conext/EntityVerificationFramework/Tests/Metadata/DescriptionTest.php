@@ -30,41 +30,47 @@ class DescriptionTest extends TestCase
     /**
      * @test
      * @group value
+     * @dataProvider descriptionsAndTheirViolations
+     *
+     * @param Description $description
+     * @param string[] $violations
      */
-    public function it_reports_violations_when_locales_en_andor_nl_are_not_filled()
+    public function it_reports_a_violation_when_a_locale_is_not_filled(Description $description, $violations)
     {
         /** @var ValidationContext|MockInterface $context */
         $context = m::mock(ValidationContext::class);
 
         /** @var Validator|MockInterface $validator */
         $validator = m::mock(Validator::class);
-        $validator
-            ->shouldReceive('addViolation')
-            ->with('No English description configured')
-            ->once();
-        $validator
-            ->shouldReceive('addViolation')
-            ->with('No Dutch description configured')
-            ->once();
+        foreach ($violations as $violation) {
+            $validator
+                ->shouldReceive('addViolation')
+                ->with($violation)
+                ->once();
+        }
 
-        $description = new Description();
         $description->validate($validator, $context);
     }
 
-    /**
-     * @test
-     * @group value
-     */
-    public function it_verifies_locales_en_and_nl_are_filled()
+    public function descriptionsAndTheirViolations()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
-
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
-        $validator->shouldReceive('addViolation')->never();
-
-        $description = new Description(['en' => 'English', 'nl' => 'Dutch']);
-        $description->validate($validator, $context);
+        return [
+            'no locales' => [
+                new Description(),
+                ['No English description configured', 'No Dutch description configured']
+            ],
+            'no Dutch locale' => [
+                new Description(['en' => 'Yeah']),
+                ['No Dutch description configured']
+            ],
+            'no English locale' => [
+                new Description(['nl' => 'Yeah']),
+                ['No English description configured']
+            ],
+            'all locales' => [
+                new Description(['nl' => 'Oh', 'en' => 'yeah']),
+                []
+            ],
+        ];
     }
 }

@@ -21,6 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadataList;
+use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 

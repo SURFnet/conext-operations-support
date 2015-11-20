@@ -30,41 +30,47 @@ class KeywordsTest extends TestCase
     /**
      * @test
      * @group value
+     * @dataProvider keywordsesAndTheirViolations
+     *
+     * @param Keywords $keywords
+     * @param string[] $violations
      */
-    public function it_reports_violations_when_locales_en_andor_nl_are_not_filled()
+    public function it_reports_a_violation_when_a_locale_is_not_filled(Keywords $keywords, $violations)
     {
         /** @var ValidationContext|MockInterface $context */
         $context = m::mock(ValidationContext::class);
 
         /** @var Validator|MockInterface $validator */
         $validator = m::mock(Validator::class);
-        $validator
-            ->shouldReceive('addViolation')
-            ->with('No English keywords configured')
-            ->once();
-        $validator
-            ->shouldReceive('addViolation')
-            ->with('No Dutch keywords configured')
-            ->once();
+        foreach ($violations as $violation) {
+            $validator
+                ->shouldReceive('addViolation')
+                ->with($violation)
+                ->once();
+        }
 
-        $keywords = new Keywords();
         $keywords->validate($validator, $context);
     }
 
-    /**
-     * @test
-     * @group value
-     */
-    public function it_verifies_locales_en_and_nl_are_filled()
+    public function keywordsesAndTheirViolations()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
-
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
-        $validator->shouldReceive('addViolation')->never();
-
-        $keywords = new Keywords(['en' => 'English', 'nl' => 'Dutch']);
-        $keywords->validate($validator, $context);
+        return [
+            'no locales' => [
+                new Keywords(),
+                ['No English keywords configured', 'No Dutch keywords configured']
+            ],
+            'no Dutch locale' => [
+                new Keywords(['en' => 'Yeah']),
+                ['No Dutch keywords configured']
+            ],
+            'no English locale' => [
+                new Keywords(['nl' => 'Yeah']),
+                ['No English keywords configured']
+            ],
+            'all locales' => [
+                new Keywords(['nl' => 'Oh', 'en' => 'yeah']),
+                []
+            ],
+        ];
     }
 }

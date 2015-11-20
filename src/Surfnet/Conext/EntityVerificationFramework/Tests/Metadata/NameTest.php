@@ -30,41 +30,47 @@ class NameTest extends TestCase
     /**
      * @test
      * @group value
+     * @dataProvider namesAndTheirViolations
+     *
+     * @param Name $name
+     * @param string[] $violations
      */
-    public function it_reports_violations_when_locales_en_andor_nl_are_not_filled()
+    public function it_reports_a_violation_when_a_locale_is_not_filled(Name $name, $violations)
     {
         /** @var ValidationContext|MockInterface $context */
         $context = m::mock(ValidationContext::class);
 
         /** @var Validator|MockInterface $validator */
         $validator = m::mock(Validator::class);
-        $validator
-            ->shouldReceive('addViolation')
-            ->with('No English name configured')
-            ->once();
-        $validator
-            ->shouldReceive('addViolation')
-            ->with('No Dutch name configured')
-            ->once();
+        foreach ($violations as $violation) {
+            $validator
+                ->shouldReceive('addViolation')
+                ->with($violation)
+                ->once();
+        }
 
-        $name = new Name();
         $name->validate($validator, $context);
     }
 
-    /**
-     * @test
-     * @group value
-     */
-    public function it_verifies_locales_en_and_nl_are_filled()
+    public function namesAndTheirViolations()
     {
-        /** @var ValidationContext|MockInterface $context */
-        $context = m::mock(ValidationContext::class);
-
-        /** @var Validator|MockInterface $validator */
-        $validator = m::mock(Validator::class);
-        $validator->shouldReceive('addViolation')->never();
-
-        $name = new Name(['en' => 'English', 'nl' => 'Dutch']);
-        $name->validate($validator, $context);
+        return [
+            'no locales' => [
+                new Name(),
+                ['No English name configured', 'No Dutch name configured']
+            ],
+            'no Dutch locale' => [
+                new Name(['en' => 'Yeah']),
+                ['No Dutch name configured']
+            ],
+            'no English locale' => [
+                new Name(['nl' => 'Yeah']),
+                ['No English name configured']
+            ],
+            'all locales' => [
+                new Name(['nl' => 'Oh', 'en' => 'yeah']),
+                []
+            ],
+        ];
     }
 }

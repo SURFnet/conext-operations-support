@@ -27,6 +27,7 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogoValidationTest extends TestCase
 {
@@ -42,7 +43,7 @@ class LogoValidationTest extends TestCase
     {
         /** @var MockInterface|ResponseInterface $response200 */
         $response200 = m::mock(ResponseInterface::class);
-        $response200->shouldReceive('getStatusCode')->andReturn(200);
+        $response200->shouldReceive('getStatusCode')->andReturn(Response::HTTP_OK);
         /** @var MockInterface|ClientInterface $httpClient */
         $httpClient = m::mock(ClientInterface::class);
         $httpClient->shouldReceive('request')->andReturn($response200);
@@ -121,7 +122,7 @@ class LogoValidationTest extends TestCase
 
         /** @var MockInterface|ResponseInterface $response */
         $response = m::mock(ResponseInterface::class);
-        $response->shouldReceive('getStatusCode')->andReturn(404);
+        $response->shouldReceive('getStatusCode')->andReturn(Response::HTTP_NOT_FOUND);
         /** @var MockInterface|ClientInterface $httpClient */
         $httpClient = m::mock(ClientInterface::class);
         $httpClient->shouldReceive('request')->with('GET', $url)->once()->andReturn($response);
@@ -132,7 +133,7 @@ class LogoValidationTest extends TestCase
         $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
         $validator
             ->shouldReceive('addViolation')
-            ->with(sprintf('Logo "%s" is not available, server returned status code %d', $url, 404))
+            ->with(sprintf('Logo "%s" is not available, server returned status code %d', $url, Response::HTTP_NOT_FOUND))
             ->once();
 
         $logo = Logo::deserialise(['url' => $url, 'width' => '100', 'height' => '1225'], 'propPath');
