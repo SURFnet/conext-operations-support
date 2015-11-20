@@ -22,7 +22,7 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
-class ImageTest extends TestCase
+class LogoTest extends TestCase
 {
     use DataProvider;
 
@@ -63,37 +63,13 @@ class ImageTest extends TestCase
         Logo::deserialise(['height' => $nonString], '');
     }
 
-    /**
-     * @test
-     * @group value
-     * @dataProvider invalidImageSizes
-     *
-     * @param mixed $invalidImageSize
-     */
-    public function width_can_be_invalid($invalidImageSize)
-    {
-        $this->assertFalse(Logo::deserialise(['width' => $invalidImageSize], '')->isValid());
-    }
-
-    /**
-     * @test
-     * @group value
-     * @dataProvider invalidImageSizes
-     *
-     * @param mixed $invalidImageSize
-     */
-    public function height_can_be_invalid($invalidImageSize)
-    {
-        $this->assertFalse(Logo::deserialise(['height' => $invalidImageSize], '')->isValid());
-    }
-
     public function invalidImageSizes()
     {
         return [
             'empty string' => [''],
             'blank string' => [' '],
-            'floaty string' => ['1.1'],
-            'floaty string' => ['0.0'],
+            'floaty string 1.1' => ['1.1'],
+            'floaty string 0.0' => ['0.0'],
             'negative integer string' => ['-1'],
             'word' => ['word'],
         ];

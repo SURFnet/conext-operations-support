@@ -19,9 +19,11 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
-final class Logo
+final class Logo implements Validatable
 {
     /** @var Url|null */
     private $url;
@@ -41,6 +43,7 @@ final class Logo
 
         Assert::isArray($data, 'Logo data must be an array structure');
 
+        $logo->url = Url::unknown();
         if (array_key_exists('url', $data)) {
             $logo->url = Url::fromString($data['url']);
         }
@@ -62,18 +65,46 @@ final class Logo
     {
     }
 
-    /**
-     * @return bool
-     */
-    public function isValid()
+    public function validate(Validator $validator, ValidationContext $context)
     {
-        return $this->url && $this->url->isValid() && $this->isWidthValid() && $this->isHeightValid();
+        if (!$this->url->isValid()) {
+            $validator->addViolation(
+                sprintf('Logo URL "%s" is invalid', $this->url)
+            );
+        } elseif (!$this->url->matches('~^https://static\.surfconext\.nl/logos/idp/.+\.png$~')) {
+            $validator->addViolation(
+                sprintf(
+                    'Logo URL "%s" does not match https://static.surfconext.nl/logos/idp/<name>.png',
+                    $this->url
+                )
+            );
+        } else {
+            $response = $context->getHttpClient()->request('GET', $this->url->getValidUrl());
+            if ($response->getStatusCode() !== 200) {
+                $validator->addViolation(sprintf(
+                    'Logo "%s" is not available, server returned status code %d',
+                    $this->url,
+                    $response->getStatusCode()
+                ));
+            }
+        }
+
+        if (!$this->isWidthValid()) {
+            $validator->addViolation(
+                sprintf('Logo width "%s" is invalid: must be a number larger than 0', $this->width)
+            );
+        }
+        if (!$this->isHeightValid()) {
+            $validator->addViolation(
+                sprintf('Logo height "%s" is invalid: must be a number larger than 0', $this->height)
+            );
+        }
     }
 
     /**
      * @return bool
      */
-    public function isWidthValid()
+    private function isWidthValid()
     {
         return ((string) (int) $this->width) === $this->width && $this->width > 0;
     }
@@ -81,29 +112,9 @@ final class Logo
     /**
      * @return bool
      */
-    public function isHeightValid()
+    private function isHeightValid()
     {
         return ((string) (int) $this->height) === $this->height && $this->height > 0;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasUrl()
-    {
-        return $this->url !== null;
-    }
-
-    /**
-     * @return Url
-     */
-    public function getUrl()
-    {
-        if ($this->url === null) {
-            throw new LogicException('Logo has no URL');
-        }
-
-        return $this->url;
     }
 
     public function __toString()

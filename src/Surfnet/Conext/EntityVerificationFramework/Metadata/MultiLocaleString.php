@@ -20,7 +20,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class MultiLocaleString
+class MultiLocaleString
 {
     /**
      * @var string[]
@@ -47,7 +47,7 @@ final class MultiLocaleString
         Assert::notBlank($locale, 'Locale may not be blank');
         Assert::string($translation, 'Translation must be string');
 
-        $displayName = clone $this;
+        $displayName                        = clone $this;
         $displayName->translations[$locale] = $translation;
 
         return $displayName;
@@ -62,14 +62,6 @@ final class MultiLocaleString
         Assert::string($locale, 'Locale must be string', 'locale');
 
         return array_key_exists($locale, $this->translations) && trim($this->translations[$locale]) !== '';
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValid()
-    {
-        return true;
     }
 
     /**

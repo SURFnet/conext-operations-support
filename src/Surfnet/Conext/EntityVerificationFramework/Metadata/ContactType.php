@@ -19,8 +19,11 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
-final class ContactType
+final class ContactType implements Validatable
 {
     const TYPE_TECHNICAL = 'technical';
     const TYPE_ADMINISTRATIVE = 'administrative';
@@ -28,25 +31,40 @@ final class ContactType
 
     const VALID_TYPES = [self::TYPE_TECHNICAL, self::TYPE_ADMINISTRATIVE, self::TYPE_SUPPORT];
 
-    /** @var mixed */
+    /** @var string|null */
     private $type;
 
     /**
-     * @param string $type
+     * @return ContactType
      */
-    public function __construct($type)
+    public static function unknown()
     {
-        Assert::string($type, 'Contact type must be string');
-
-        $this->type = $type;
+        return new ContactType();
     }
 
     /**
-     * @return bool
+     * @param string $type
+     * @return ContactType
      */
-    public function isValid()
+    public static function fromString($type)
     {
-        return in_array($this->type, self::VALID_TYPES, true);
+        Assert::string($type, 'Contact type must be string');
+
+        $contactType = new ContactType();
+        $contactType->type = $type;
+
+        return $contactType;
+    }
+
+    private function __construct()
+    {
+    }
+
+    public function validate(Validator $validator, ValidationContext $context)
+    {
+        if (!in_array($this->type, self::VALID_TYPES, true)) {
+            $validator->addViolation('Contact type must be one of "support", "administrative", "technical"');
+        }
     }
 
     /**

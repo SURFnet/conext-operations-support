@@ -24,19 +24,27 @@ use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 final class Url
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $url;
 
     /**
-     * @var bool
+     * @var bool|null
      */
     private $isValid;
 
     /**
-     * @var mixed[]
+     * @var mixed[]|null
      */
     private $parts;
+
+    /**
+     * @return Url
+     */
+    public static function unknown()
+    {
+        return new Url();
+    }
 
     /**
      * @param string $string
@@ -121,7 +129,7 @@ final class Url
      */
     public function isValid()
     {
-        return $this->isValid;
+        return $this->isValid === true;
     }
 
     /**

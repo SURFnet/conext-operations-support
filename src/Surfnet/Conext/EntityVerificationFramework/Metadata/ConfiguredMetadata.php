@@ -20,6 +20,10 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 /**
@@ -27,7 +31,7 @@ use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.TooManyPublicMethods)
  */
-class ConfiguredMetadata
+class ConfiguredMetadata implements Validatable
 {
     /** @var EntityType */
     private $entityType;
@@ -39,19 +43,19 @@ class ConfiguredMetadata
     private $singleSignOnServices = [];
     /** @var ContactSet */
     private $contacts;
-    /** @var MultiLocaleString|null */
+    /** @var Name */
     private $name;
-    /** @var MultiLocaleString|null */
+    /** @var Description */
     private $description;
     /** @var LogoList */
     private $logos;
     /** @var boolean|null */
     private $signRedirects;
-    /** @var MultiLocaleUrl|null */
+    /** @var MultiLocaleUrl */
     private $url;
-    /** @var MultiLocaleString|null */
+    /** @var Keywords */
     private $keywords;
-    /** @var NameIdFormat|null */
+    /** @var NameIdFormat */
     private $defaultNameIdFormat;
     /** @var NameIdFormatList */
     private $acceptableNameIdFormats;
@@ -69,10 +73,10 @@ class ConfiguredMetadata
      * @param NameIdFormat                   $defaultNameIdFormat
      * @param NameIdFormatList               $acceptableNameIdFormats
      * @param ContactSet                     $contacts
-     * @param MultiLocaleString              $keywords
+     * @param Keywords                       $keywords
      * @param LogoList                       $logos
-     * @param MultiLocaleString              $name
-     * @param MultiLocaleString              $description
+     * @param Name                           $name
+     * @param Description                    $description
      * @param MultiLocaleUrl                 $url
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
@@ -89,10 +93,10 @@ class ConfiguredMetadata
         NameIdFormat $defaultNameIdFormat,
         NameIdFormatList $acceptableNameIdFormats,
         ContactSet $contacts,
-        MultiLocaleString $keywords,
+        Keywords $keywords,
         LogoList $logos,
-        MultiLocaleString $name,
-        MultiLocaleString $description,
+        Name $name,
+        Description $description,
         MultiLocaleUrl $url,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
@@ -123,6 +127,23 @@ class ConfiguredMetadata
     }
 
     /**
+     * @param Validator         $validator
+     * @param ValidationContext $context
+     */
+    public function validate(Validator $validator, ValidationContext $context)
+    {
+        $validator->validate($this->name, $context);
+        $validator->validate($this->description, $context);
+        $validator->validate($this->contacts, $context);
+        $validator->validate($this->logos, $context);
+        (new SubpathValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
+
+        if ($this->signRedirects === null) {
+            $validator->addViolation('The sign redirects option is not configured to be enabled or disabled');
+        }
+    }
+
+    /**
      * @return EntityType
      */
     public function getEntityType()
@@ -148,213 +169,5 @@ class ConfiguredMetadata
         }
 
         return $this->publishedMetadataUrl;
-    }
-
-    /**
-     * @return AssertionConsumerServiceList
-     */
-    public function getAssertionConsumerServices()
-    {
-        return $this->assertionConsumerServices;
-    }
-
-    /**
-     * @return SingleSignOnServiceList
-     */
-    public function getSingleSignOnServices()
-    {
-        return $this->singleSignOnServices;
-    }
-
-    /**
-     * @return ContactSet
-     */
-    public function getContacts()
-    {
-        return $this->contacts;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasName()
-    {
-        return $this->name !== null;
-    }
-
-    /**
-     * @return MultiLocaleString
-     */
-    public function getName()
-    {
-        if ($this->name === null) {
-            throw new LogicException('Name is not known');
-        }
-
-        return $this->name;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasDescription()
-    {
-        return $this->description !== null;
-    }
-
-    /**
-     * @return MultiLocaleString
-     */
-    public function getDescription()
-    {
-        if ($this->description === null) {
-            throw new LogicException('Description is not known');
-        }
-
-        return $this->description;
-    }
-
-    /**
-     * @return ImageList
-     */
-    public function getLogos()
-    {
-        return $this->logos;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasSignRedirectsConfigured()
-    {
-        return $this->signRedirects !== null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function mustRedirectResponsesBeSigned()
-    {
-        if ($this->signRedirects === null) {
-            throw new LogicException('It is unknown whether redirect responses must be signed');
-        }
-
-        return $this->signRedirects;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasUrl()
-    {
-        return $this->url !== null;
-    }
-
-    /**
-     * @return MultiLocaleUrl
-     */
-    public function getUrl()
-    {
-        if ($this->url === null) {
-            throw new LogicException('URL is not known');
-        }
-
-        return $this->url;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasKeywords()
-    {
-        return $this->keywords !== null;
-    }
-
-    /**
-     * @return MultiLocaleString
-     */
-    public function getKeywords()
-    {
-        if ($this->keywords === null) {
-            throw new LogicException('Keywords are not available');
-        }
-
-        return $this->keywords;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasDefaultNameIdFormat()
-    {
-        return $this->defaultNameIdFormat !== null;
-    }
-
-    /**
-     * @return NameIdFormat
-     */
-    public function getDefaultNameIdFormat()
-    {
-        if ($this->defaultNameIdFormat === null) {
-            throw new LogicException('Default NameIDFormat is not known');
-        }
-
-        return $this->defaultNameIdFormat;
-    }
-
-    /**
-     * @return NameIdFormatList
-     */
-    public function getAcceptableNameIdFormats()
-    {
-        return $this->acceptableNameIdFormats;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasCertData()
-    {
-        return $this->certData !== null;
-    }
-
-    /**
-     * @return PemEncodedX509Certificate
-     */
-    public function getCertData()
-    {
-        if ($this->certData === null) {
-            throw new LogicException('Certificate data is not known');
-        }
-
-        return $this->certData;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasGuestQualifier()
-    {
-        return $this->guestQualifier !== null;
-    }
-
-    /**
-     * @return GuestQualifier
-     */
-    public function getGuestQualifier()
-    {
-        if ($this->guestQualifier === null) {
-            throw new LogicException('Guest qualifier is not known');
-        }
-
-        return $this->guestQualifier;
-    }
-
-    /**
-     * @return mixed[]
-     */
-    public function getFreeformProperties()
-    {
-        return $this->freeformProperties;
     }
 }

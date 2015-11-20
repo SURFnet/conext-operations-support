@@ -53,14 +53,14 @@ final class ConfiguredMetadataFactory
             $contacts = new ContactSet();
         }
 
-        $name = new MultiLocaleString();
+        $name = new Name();
         if (isset($metadataData['name'])) {
-            $name = new MultiLocaleString($metadataData['name']);
+            $name = new Name($metadataData['name']);
         }
 
-        $description = new MultiLocaleString();
+        $description = new Description();
         if (isset($metadataData['description'])) {
-            $description = new MultiLocaleString($metadataData['description']);
+            $description = new Description($metadataData['description']);
         }
 
         if (isset($metadataData['logo'])) {
@@ -123,9 +123,9 @@ final class ConfiguredMetadataFactory
             $singleSignOnServices = new SingleSignOnServiceList();
         }
 
-        $keywords = new MultiLocaleString();
+        $keywords = new Keywords();
         if (isset($metadataData['keywords'])) {
-            $keywords = new MultiLocaleString($metadataData['keywords']);
+            $keywords = new Keywords($metadataData['keywords']);
         }
 
         $certData = null;

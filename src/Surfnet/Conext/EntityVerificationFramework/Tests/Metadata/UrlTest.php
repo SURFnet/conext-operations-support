@@ -61,15 +61,6 @@ class UrlTest extends TestCase
     /**
      * @test
      * @group value
-     */
-    public function its_scheme_can_be_verified()
-    {
-        $this->assertTrue(Url::fromString('https://sp.invalid')->isScheme('https'));
-    }
-
-    /**
-     * @test
-     * @group value
      * @dataProvider urlsToMatchUsingRegexes
      *
      * @param string $url

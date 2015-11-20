@@ -19,30 +19,48 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
-final class EmailAddress
+final class EmailAddress implements Validatable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $emailAddress;
 
     /**
-     * @param string $emailAddress
+     * @return EmailAddress
      */
-    public function __construct($emailAddress)
+    public static function unknown()
     {
-        Assert::string($emailAddress, 'E-mail address must at least be a string');
-
-        $this->emailAddress = $emailAddress;
+        return new EmailAddress();
     }
 
     /**
-     * @return bool
+     * @param string $emailAddress
+     * @return EmailAddress
      */
-    public function isValid()
+    public static function fromString($emailAddress)
     {
-        return filter_var($this->emailAddress, FILTER_VALIDATE_EMAIL) !== false;
+        Assert::string($emailAddress, 'E-mail address must at least be a string');
+
+        $email = new EmailAddress();
+        $email->emailAddress = $emailAddress;
+
+        return $email;
+    }
+
+    private function __construct()
+    {
+    }
+
+    public function validate(Validator $validator, ValidationContext $context)
+    {
+        if (!filter_var($this->emailAddress, FILTER_VALIDATE_EMAIL) !== false) {
+            $validator->addViolation('Contact e-mail address is not valid');
+        }
     }
 
     /**

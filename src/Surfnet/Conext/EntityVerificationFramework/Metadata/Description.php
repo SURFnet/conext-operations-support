@@ -18,52 +18,19 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
-use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
-final class LogoList implements Validatable
+final class Description extends MultiLocaleString implements Validatable
 {
-    /**
-     * @var Logo[]
-     */
-    private $logos;
-
-    /**
-     * @param mixed  $data
-     * @param string $propertyPath
-     * @return LogoList
-     */
-    public static function deserialise($data, $propertyPath)
-    {
-        $list = new self();
-        $list->logos = array_map(
-            function ($data) use ($propertyPath) {
-                return Logo::deserialise($data, $propertyPath . '[]');
-            },
-            $data
-        );
-
-        return $list;
-    }
-
-    /**
-     * @param Logo[] $logos
-     */
-    public function __construct(array $logos = [])
-    {
-        Assert::allIsInstanceOf($logos, Logo::class);
-
-        $this->logos = $logos;
-    }
-
     public function validate(Validator $validator, ValidationContext $context)
     {
-        foreach ($this->logos as $i => $logo) {
-            $subpathValidator = new SubpathValidator($validator, 'Logo #' . $i);
-            $subpathValidator->validate($logo, $context);
+        if (!$this->hasFilledTranslationForLocale('en')) {
+            $validator->addViolation('No English description configured');
+        }
+        if (!$this->hasFilledTranslationForLocale('nl')) {
+            $validator->addViolation('No Dutch description configured');
         }
     }
 }

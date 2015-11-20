@@ -22,8 +22,12 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
-final class ContactSet implements IteratorAggregate, Countable
+final class ContactSet implements Validatable, IteratorAggregate, Countable
 {
     /**
      * @var Contact[]
@@ -31,8 +35,8 @@ final class ContactSet implements IteratorAggregate, Countable
     private $contacts = [];
 
     /**
-     * @param array[]  $data
-     * @param string $propertyPath
+     * @param array[] $data
+     * @param string  $propertyPath
      * @return ContactSet
      */
     public static function deserialise($data, $propertyPath)
@@ -70,7 +74,7 @@ final class ContactSet implements IteratorAggregate, Countable
         }
 
         $contacts = new ContactSet();
-        $contacts->contacts = $this->contacts;
+        $contacts->contacts   = $this->contacts;
         $contacts->contacts[] = $contact;
 
         return $contacts;
@@ -90,6 +94,14 @@ final class ContactSet implements IteratorAggregate, Countable
         }
 
         return false;
+    }
+
+    public function validate(Validator $validator, ValidationContext $context)
+    {
+        foreach ($this->contacts as $i => $contact) {
+            $subpathValidator = new SubpathValidator($validator, 'Contact #' . ($i + 1));
+            $subpathValidator->validate($contact, $context);
+        }
     }
 
     public function getIterator()

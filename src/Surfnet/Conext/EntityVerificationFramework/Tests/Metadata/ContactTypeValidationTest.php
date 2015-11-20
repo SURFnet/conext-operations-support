@@ -22,70 +22,13 @@ use Mockery as m;
 use Mockery\Matcher\Closure as ClosureMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
-class NameIdFormatTest extends TestCase
+class ContactTypeValidationTest extends TestCase
 {
-    use DataProvider;
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_can_be_created()
-    {
-        NameIdFormat::fromUrn('urn:mad:bro');
-    }
-
-    /**
-     * @test
-     * @group value
-     * @dataProvider nonStringProvider
-     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
-     *
-     * @param mixed $nonString
-     */
-    public function it_only_accepts_strings($nonString)
-    {
-        NameIdFormat::fromUrn($nonString);
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_can_equal_other_formats()
-    {
-        $format0 = NameIdFormat::fromUrn('urn:mad:bro');
-        $format1 = NameIdFormat::fromUrn('urn:mad:bro');
-
-        $this->assertTrue($format0->equals($format1));
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_can_not_equal_other_formats()
-    {
-        $format0 = NameIdFormat::fromUrn('urn:mad:bro');
-        $format1 = NameIdFormat::fromUrn('urn:mad:bra');
-
-        $this->assertFalse($format0->equals($format1));
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_can_be_unknown()
-    {
-        NameIdFormat::unknown();
-    }
-
     /**
      * @test
      * @group value
@@ -99,11 +42,11 @@ class NameIdFormatTest extends TestCase
         $validator = m::mock(Validator::class);
         $validator
             ->shouldReceive('addViolation')
-            ->with(self::containsMatcher('"invalid" is not a valid NameIDFormat, must be one of "'))
+            ->with(self::containsMatcher('Contact type must be one of "support", "administrative", "technical"'))
             ->once();
 
-        $nameIdFormat = NameIdFormat::fromUrn('invalid');
-        $nameIdFormat->validate($validator, $context);
+        $contactType = ContactType::fromString('invalid');
+        $contactType->validate($validator, $context);
     }
 
     /**
@@ -119,8 +62,8 @@ class NameIdFormatTest extends TestCase
         $validator = m::mock(Validator::class);
         $validator->shouldReceive('addViolation')->never();
 
-        $nameIdFormat = NameIdFormat::fromUrn(NameIdFormat::URN_SAML_20_PERSISTENT);
-        $nameIdFormat->validate($validator, $context);
+        $contactType = ContactType::fromString(ContactType::TYPE_SUPPORT);
+        $contactType->validate($validator, $context);
     }
 
     /**

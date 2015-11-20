@@ -18,8 +18,12 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
+use Mockery as m;
+use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
 final class EmailAddressTest extends TestCase
@@ -32,7 +36,7 @@ final class EmailAddressTest extends TestCase
      */
     public function it_deserialises_emails()
     {
-        new EmailAddress('juliette.dupree+spam@that.invalid');
+        EmailAddress::fromString('juliette.dupree+spam@that.invalid');
     }
 
     /**
@@ -45,7 +49,27 @@ final class EmailAddressTest extends TestCase
      */
     public function it_doesnt_accept_non_strings_as_email($nonString)
     {
-        new EmailAddress($nonString);
+        EmailAddress::fromString($nonString);
+    }
+    
+    /**
+     * @test
+     * @group value
+     */
+    public function it_can_be_invalid()
+    {
+        /** @var ValidationContext|MockInterface $context */
+        $context = m::mock(ValidationContext::class);
+
+        /** @var Validator|MockInterface $validator */
+        $validator = m::mock(Validator::class);
+        $validator
+            ->shouldReceive('addViolation')
+            ->with('Contact e-mail address is not valid')
+            ->once();
+
+        $emailAddress = EmailAddress::fromString('invalid');
+        $emailAddress->validate($validator, $context);
     }
 
     /**
@@ -54,18 +78,15 @@ final class EmailAddressTest extends TestCase
      */
     public function it_can_be_valid()
     {
-        $this->assertTrue((new EmailAddress('renee.pompier@datrijmt.invalid'))->isValid());
-        $this->assertTrue((new EmailAddress('renee.pompier+spam@datrijmt.invalid'))->isValid());
-    }
+        /** @var ValidationContext|MockInterface $context */
+        $context = m::mock(ValidationContext::class);
 
-    /**
-     * @test
-     * @group value
-     */
-    public function it_can_be_invalid()
-    {
-        $this->assertFalse((new EmailAddress(''))->isValid());
-        $this->assertFalse((new EmailAddress('@la-france.invalid'))->isValid());
+        /** @var Validator|MockInterface $validator */
+        $validator = m::mock(Validator::class);
+        $validator->shouldReceive('addViolation')->never();
+
+        $emailAddress = EmailAddress::fromString('valid@valid.invalid');
+        $emailAddress->validate($validator, $context);
     }
 
     /**
@@ -74,8 +95,8 @@ final class EmailAddressTest extends TestCase
      */
     public function two_emails_can_equal_each_other()
     {
-        $url0 = new EmailAddress('renee.dupree@datrijmtook.invalid');
-        $url1 = new EmailAddress('renee.dupree@datrijmtook.invalid');
+        $url0 = EmailAddress::fromString('renee.dupree@datrijmtook.invalid');
+        $url1 = EmailAddress::fromString('renee.dupree@datrijmtook.invalid');
 
         $this->assertTrue($url0->equals($url1));
     }
@@ -86,8 +107,8 @@ final class EmailAddressTest extends TestCase
      */
     public function two_emails_can_differ()
     {
-        $url0 = new EmailAddress('renee.boulanger@vara.invalid');
-        $url1 = new EmailAddress('francois.boulanger@vara.invalid');
+        $url0 = EmailAddress::fromString('renee.boulanger@vara.invalid');
+        $url1 = EmailAddress::fromString('francois.boulanger@vara.invalid');
 
         $this->assertFalse($url0->equals($url1));
     }

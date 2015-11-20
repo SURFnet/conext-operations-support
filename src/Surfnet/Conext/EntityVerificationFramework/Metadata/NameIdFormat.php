@@ -19,8 +19,11 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
-final class NameIdFormat
+final class NameIdFormat implements Validatable
 {
     const URN_SAML_11_UNSPECIFIED = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified';
     const URN_SAML_20_TRANSIENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient';
@@ -33,7 +36,7 @@ final class NameIdFormat
     ];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $urn;
 
@@ -61,6 +64,23 @@ final class NameIdFormat
 
     private function __construct()
     {
+    }
+
+    public function validate(Validator $validator, ValidationContext $context)
+    {
+        if ($this->urn === null) {
+            $validator->addViolation('NameIDFormat is unknown');
+        }
+
+        if (!in_array($this->urn, self::VALID_URNS, true)) {
+            $validator->addViolation(
+                sprintf(
+                    '"%s" is not a valid NameIDFormat, must be one of "%s"',
+                    $this->urn,
+                    join('", "', self::VALID_URNS)
+                )
+            );
+        }
     }
 
     /**

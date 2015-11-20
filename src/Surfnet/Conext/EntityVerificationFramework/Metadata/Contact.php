@@ -19,15 +19,18 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods) -- Methods are relevant, not complex.
  */
-final class Contact
+final class Contact implements Validatable
 {
-    /** @var ContactType|null */
+    /** @var ContactType */
     private $type;
-    /** @var EmailAddress|null */
+    /** @var EmailAddress */
     private $email;
     /** @var string|null */
     private $givenName;
@@ -43,14 +46,14 @@ final class Contact
     {
         Assert::isArray($data, 'Contact data must be array structure', $propertyPath);
 
-        $contact = new Contact();
+        $contact = new Contact(ContactType::unknown(), EmailAddress::unknown());
 
         if (isset($data['contactType'])) {
-            $contact->type = new ContactType($data['contactType']);
+            $contact->type = ContactType::fromString($data['contactType']);
         }
 
         if (isset($data['emailAddress'])) {
-            $contact->email = new EmailAddress($data['emailAddress']);
+            $contact->email = EmailAddress::fromString($data['emailAddress']);
         }
 
         if (isset($data['givenName'])) {
@@ -71,14 +74,14 @@ final class Contact
     }
 
     /**
-     * @param ContactType|null  $type
-     * @param EmailAddress|null $email
-     * @param string|null       $givenName
-     * @param string|null       $surName
+     * @param ContactType  $type
+     * @param EmailAddress $email
+     * @param string|null  $givenName
+     * @param string|null  $surName
      */
     public function __construct(
-        ContactType $type = null,
-        EmailAddress $email = null,
+        ContactType $type,
+        EmailAddress $email,
         $givenName = null,
         $surName = null
     ) {
@@ -91,68 +94,17 @@ final class Contact
         $this->surName   = $surName;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasContactType()
+    public function validate(Validator $validator, ValidationContext $context)
     {
-        return $this->type !== null;
-    }
+        $validator->validate($this->type, $context);
+        $validator->validate($this->email, $context);
 
-    /**
-     * @return bool
-     */
-    public function hasValidContactType()
-    {
-        return $this->type && $this->type->isValid();
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasSurName()
-    {
-        return $this->surName !== null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasFilledSurName()
-    {
-        return $this->surName !== '';
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasGivenName()
-    {
-        return $this->givenName !== null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasFilledGivenName()
-    {
-        return $this->givenName !== '';
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasEmailAddress()
-    {
-        return $this->email !== null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasValidEmailAddress()
-    {
-        return $this->email && $this->email->isValid();
+        if (trim($this->givenName) === '') {
+            $validator->addViolation('Contact given name is not configured or empty');
+        }
+        if (trim($this->surName) === '') {
+            $validator->addViolation('Contact surname is not configured or empty');
+        }
     }
 
     /**
@@ -164,11 +116,11 @@ final class Contact
     public function equals(Contact $other)
     {
         return ($this->type === $other->type
-                || $this->type && $other->type && $this->type->equals($other->type))
-            && ($this->email === $other->email
-                || $this->email && $other->email && $this->email->equals($other->email))
-            && $this->givenName === $other->givenName
-            && $this->surName === $other->surName;
+            || $this->type && $other->type && $this->type->equals($other->type))
+        && ($this->email === $other->email
+            || $this->email && $other->email && $this->email->equals($other->email))
+        && $this->givenName === $other->givenName
+        && $this->surName === $other->surName;
     }
 
     public function __toString()
