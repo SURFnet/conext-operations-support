@@ -73,7 +73,7 @@ final class ContactType implements Validatable
      */
     public function equals(ContactType $other)
     {
-        return $this == $other;
+        return $this->type === $other->type;
     }
 
     public function __toString()
