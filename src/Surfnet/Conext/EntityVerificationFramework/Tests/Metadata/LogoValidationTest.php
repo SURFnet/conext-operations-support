@@ -24,6 +24,7 @@ use Mockery as m;
 use Mockery\MockInterface;
 use Psr\Http\Message\ResponseInterface;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
@@ -49,6 +50,7 @@ class LogoValidationTest extends TestCase
 
         /** @var Validator|MockInterface $validator */
         $validator = m::mock(Validator::class);
+        $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
         $validator
             ->shouldReceive('addViolation')
             ->with($violation)
@@ -60,10 +62,6 @@ class LogoValidationTest extends TestCase
     public function logosWithViolations()
     {
         return [
-            'invalid URL' => [
-                Logo::deserialise(['url' => '', 'width' => '100', 'height' => '100'], 'propPath'),
-                'Logo URL "" is invalid'
-            ],
             'logo URL not hosted by SURFconext' => [
                 Logo::deserialise(['url' => 'https://logo.invalid/', 'width' => '100', 'height' => '100'], 'propPath'),
                 'Logo URL "https://logo.invalid/" does not match https://static.surfconext.nl/logos/idp/<name>.png'
@@ -91,6 +89,32 @@ class LogoValidationTest extends TestCase
      * @test
      * @group value
      */
+    public function its_url_can_be_invalid()
+    {
+        $url = '###';
+
+        /** @var MockInterface|ValidationContext $context */
+        $context = m::mock(ValidationContext::class);
+        /** @var Validator|MockInterface $validator */
+        $validator = m::mock(Validator::class);
+        $validator
+            ->shouldReceive('validate')
+            ->with(
+                m::on(function (Url $actualUrl) use ($url) {
+                    return (string) $actualUrl === $url;
+                }),
+                $context
+            )
+            ->once();
+
+        $logo = Logo::deserialise(['url' => $url, 'width' => '100', 'height' => '1225'], 'propPath');
+        $logo->validate($validator, $context);
+    }
+
+    /**
+     * @test
+     * @group value
+     */
     public function its_url_can_be_unavailable()
     {
         $url = 'https://static.surfconext.nl/logos/idp/test.png';
@@ -105,6 +129,7 @@ class LogoValidationTest extends TestCase
 
         /** @var Validator|MockInterface $validator */
         $validator = m::mock(Validator::class);
+        $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
         $validator
             ->shouldReceive('addViolation')
             ->with(sprintf('Logo "%s" is not available, server returned status code %d', $url, 404))
