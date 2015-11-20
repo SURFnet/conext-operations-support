@@ -106,7 +106,7 @@ final class Logo implements Validatable
      */
     private function isWidthValid()
     {
-        return ((string) (int) $this->width) === $this->width && $this->width > 0;
+        return ctype_digit($this->width) && $this->width > 0;
     }
 
     /**
@@ -114,7 +114,7 @@ final class Logo implements Validatable
      */
     private function isHeightValid()
     {
-        return ((string) (int) $this->height) === $this->height && $this->height > 0;
+        return ctype_digit($this->height) && $this->height > 0;
     }
 
     public function __toString()
