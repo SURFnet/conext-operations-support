@@ -37,7 +37,7 @@ final class EntityCompletenessTest implements VerificationTest
 
         $violations = $validator->getViolations();
         if (count($violations) > 0) {
-            $notesString = " * " . join("\n * ", $violations);
+            $notesString = ' * ' . join("\n * ", $violations);
             return TestResult::failed('Entity incomplete', $notesString, TestResult::SEVERITY_MEDIUM);
         }
 
