@@ -65,23 +65,21 @@ final class Entity
         return $this->entityId->equals($entityId);
     }
 
-    // @codingStandardsIgnoreStart
     /**
      * @return bool
      */
-    public function isSP()
+    public function isServiceProvider()
     {
-        return $this->entityType->isSP();
+        return $this->entityType->isServiceProvider();
     }
 
     /**
      * @return bool
      */
-    public function isIdP()
+    public function isIdentityProvider()
     {
-        return $this->entityType->isIdP();
+        return $this->entityType->isIdentityProvider();
     }
-    // @codingStandardsIgnoreEnd
 
     /**
      * @return EntityId

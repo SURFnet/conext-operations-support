@@ -84,6 +84,7 @@ class PublishedMetadata
         $hasAcss = count($this->assertionConsumerServices) > 0;
         $hasSsos = count($this->singleSignOnServices) > 0;
 
-        return $entity->hasEntityId($this->entityId) && ($entity->isSP() && $hasAcss || $entity->isIdP() && $hasSsos);
+        return $entity->hasEntityId($this->entityId)
+            && ($entity->isServiceProvider() && $hasAcss || $entity->isIdentityProvider() && $hasSsos);
     }
 }
