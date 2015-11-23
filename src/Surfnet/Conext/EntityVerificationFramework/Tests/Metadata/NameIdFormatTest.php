@@ -99,7 +99,7 @@ class NameIdFormatTest extends TestCase
         $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator
             ->shouldReceive('addViolation')
-            ->with(self::containsMatcher('"invalid" is not a valid NameIDFormat, must be one of "'))
+            ->with(self::containsString('"invalid" is not a valid NameIDFormat, must be one of "'))
             ->once();
 
         $nameIdFormat = NameIdFormat::fromUrn('invalid');
@@ -127,7 +127,7 @@ class NameIdFormatTest extends TestCase
      * @param string $expectedToContain
      * @return ClosureMatcher
      */
-    private static function containsMatcher($expectedToContain)
+    private static function containsString($expectedToContain)
     {
         return m::on(function ($actual) use ($expectedToContain) {
             return strpos($actual, $expectedToContain) !== false;

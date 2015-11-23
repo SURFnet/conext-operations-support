@@ -41,7 +41,7 @@ class ContactTypeValidationTest extends TestCase
         $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
         $validator
             ->shouldReceive('addViolation')
-            ->with(self::containsMatcher('Contact type must be one of "support", "administrative", "technical"'))
+            ->with(self::containsString('Contact type must be one of "support", "administrative", "technical"'))
             ->once();
 
         $contactType = ContactType::fromString('invalid');
@@ -69,7 +69,7 @@ class ContactTypeValidationTest extends TestCase
      * @param string $expectedToContain
      * @return ClosureMatcher
      */
-    private static function containsMatcher($expectedToContain)
+    private static function containsString($expectedToContain)
     {
         return m::on(function ($actual) use ($expectedToContain) {
             return strpos($actual, $expectedToContain) !== false;
