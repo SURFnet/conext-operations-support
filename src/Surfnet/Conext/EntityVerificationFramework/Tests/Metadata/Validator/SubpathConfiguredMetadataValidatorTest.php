@@ -21,8 +21,8 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata\Validator;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\SubpathConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 
 class SubpathConfiguredMetadataValidatorTest extends TestCase
 {
@@ -32,11 +32,11 @@ class SubpathConfiguredMetadataValidatorTest extends TestCase
      */
     public function it_prepends_the_subpath_to_added_violations()
     {
-        /** @var MockInterface|ConfiguredMetadataValidatorInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var MockInterface|ConfiguredMetadataValidator $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('addViolation')->with("Prepended: but it's wrong!")->once();
 
-        $subpathValidator = new SubpathConfiguredMetadataValidator($validator, 'Prepended');
+        $subpathValidator = new SubpathValidator($validator, 'Prepended');
         $subpathValidator->addViolation("but it's wrong!");
     }
 }

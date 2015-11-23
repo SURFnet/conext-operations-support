@@ -23,8 +23,8 @@ use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoList;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
 class LogoListValidationTest extends TestCase
 {
@@ -39,8 +39,8 @@ class LogoListValidationTest extends TestCase
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate')->with($logo0, $context)->once();
         $validator->shouldReceive('validate')->with($logo1, $context)->once();
         $validator->shouldReceive('addViolation')->never();

@@ -20,10 +20,10 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\SubpathConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 /**
@@ -127,14 +127,14 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidator $validator,
         ConfiguredMetadataValidationContext $context
     ) {
         $validator->validate($this->name, $context);
         $validator->validate($this->description, $context);
         $validator->validate($this->contacts, $context);
         $validator->validate($this->logos, $context);
-        (new SubpathConfiguredMetadataValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
+        (new SubpathValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
 
         if ($this->signRedirects === null) {
             $validator->addViolation('The sign redirects option is not configured to be enabled or disabled');

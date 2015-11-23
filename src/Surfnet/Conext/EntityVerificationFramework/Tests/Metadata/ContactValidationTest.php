@@ -24,8 +24,8 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
 class ContactValidationTest extends TestCase
 {
@@ -40,8 +40,8 @@ class ContactValidationTest extends TestCase
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate')->with($contactType, $context)->once();
         $validator->shouldReceive('validate')->with($emailAddress, $context)->once();
         $validator->shouldReceive('addViolation')->never();
@@ -58,8 +58,8 @@ class ContactValidationTest extends TestCase
     {
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate');
         $validator->shouldReceive('addViolation')->with('Contact given name is not configured or empty')->once();
         $validator->shouldReceive('addViolation')->with('Contact surname is not configured or empty')->once();

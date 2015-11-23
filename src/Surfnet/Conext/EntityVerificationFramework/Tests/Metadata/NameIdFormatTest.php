@@ -23,8 +23,8 @@ use Mockery\Matcher\Closure as ClosureMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
 class NameIdFormatTest extends TestCase
@@ -95,8 +95,8 @@ class NameIdFormatTest extends TestCase
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator
             ->shouldReceive('addViolation')
             ->with(self::containsString('"invalid" is not a valid NameIDFormat, must be one of "'))
@@ -115,8 +115,8 @@ class NameIdFormatTest extends TestCase
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('addViolation')->never();
 
         $nameIdFormat = NameIdFormat::fromUrn(NameIdFormat::URN_SAML_20_PERSISTENT);

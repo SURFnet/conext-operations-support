@@ -21,15 +21,15 @@ namespace Surfnet\VerificationSuite\ServiceRegistrySuite\Test;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTest;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
 
 final class EntityCompletenessTest implements VerificationTest
 {
     public function verify(VerificationContext $verificationContext)
     {
-        $validator = new ConfiguredMetadataValidator();
+        $validator = new Validator();
         $context   = new ConfiguredMetadataValidationContext($verificationContext->getHttpClient());
 
         $metadata = $verificationContext->getConfiguredMetadata();

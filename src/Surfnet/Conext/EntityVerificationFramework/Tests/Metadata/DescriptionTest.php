@@ -22,8 +22,8 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Description;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
 class DescriptionTest extends TestCase
 {
@@ -37,11 +37,11 @@ class DescriptionTest extends TestCase
      */
     public function it_reports_a_violation_when_a_locale_is_not_filled(Description $description, $violations)
     {
-        /** @var \Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext|MockInterface $context */
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         foreach ($violations as $violation) {
             $validator
                 ->shouldReceive('addViolation')

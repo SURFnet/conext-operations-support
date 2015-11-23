@@ -16,16 +16,33 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator;
+namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class ConfiguredMetadataValidator implements ConfiguredMetadataValidatorInterface
+final class SubpathValidator implements ConfiguredMetadataValidator
 {
     /**
-     * @var string[]
+     * @var Validator
      */
-    private $violations = [];
+    private $innerValidator;
+
+    /**
+     * @var string
+     */
+    private $subpath;
+
+    /**
+     * @param ConfiguredMetadataValidator $innerValidator
+     * @param string                      $subpath
+     */
+    public function __construct(ConfiguredMetadataValidator $innerValidator, $subpath)
+    {
+        Assert::string($subpath, 'Subpath must be a string');
+
+        $this->innerValidator = $innerValidator;
+        $this->subpath        = $subpath;
+    }
 
     /**
      * @param ConfiguredMetadataValidatable       $validatable
@@ -34,18 +51,16 @@ final class ConfiguredMetadataValidator implements ConfiguredMetadataValidatorIn
      */
     public function validate(ConfiguredMetadataValidatable $validatable, ConfiguredMetadataValidationContext $context)
     {
-        $validatable->validate($this, $context);
+        $this->innerValidator->validate($validatable, $context);
     }
 
     public function addViolation($violation)
     {
-        Assert::string($violation, 'Constraint violation message must be a string');
-
-        $this->violations[] = $violation;
+        $this->innerValidator->addViolation($this->subpath . ': ' . $violation);
     }
 
     public function getViolations()
     {
-        return $this->violations;
+        return $this->innerValidator->getViolations();
     }
 }

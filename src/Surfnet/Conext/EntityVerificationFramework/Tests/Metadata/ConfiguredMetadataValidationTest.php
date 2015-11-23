@@ -32,8 +32,8 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Name;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormatList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnServiceList;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 class ConfiguredMetadataValidationTest extends TestCase
@@ -66,8 +66,8 @@ class ConfiguredMetadataValidationTest extends TestCase
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate')->with($name, $context)->once();
         $validator->shouldReceive('validate')->with($description, $context)->once();
         $validator->shouldReceive('validate')->with($contacts, $context)->once();
@@ -98,8 +98,8 @@ class ConfiguredMetadataValidationTest extends TestCase
             new MultiLocaleUrl()
         );
 
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate');
         $validator
             ->shouldReceive('addViolation')
@@ -135,8 +135,8 @@ class ConfiguredMetadataValidationTest extends TestCase
             true
         );
 
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate');
         $validator->shouldReceive('addViolation')->never();
 

@@ -25,8 +25,8 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactSet;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
 class ContactSetValidationTest extends TestCase
 {
@@ -39,10 +39,10 @@ class ContactSetValidationTest extends TestCase
         $contact0 = new Contact(ContactType::unknown(), EmailAddress::unknown());
         $contact1 = new Contact(ContactType::fromString(ContactType::TYPE_SUPPORT), EmailAddress::unknown());
 
-        /** @var \Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext|MockInterface $context */
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidatorInterface|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidatorInterface::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate')->with($contact0, $context)->once();
         $validator->shouldReceive('validate')->with($contact1, $context)->once();
         $validator->shouldReceive('addViolation')->never();

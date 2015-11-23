@@ -21,10 +21,9 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata\Validator;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\Validator;
 
 class ConfiguredMetadataValidatorTest extends TestCase
 {
@@ -49,7 +48,7 @@ class ConfiguredMetadataValidatorTest extends TestCase
             )
             ->once();
 
-        $validator = new ConfiguredMetadataValidator();
+        $validator = new Validator();
         $validator->validate($validatable, $context);
     }
 }

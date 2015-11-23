@@ -19,9 +19,9 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
 final class ContactType implements ConfiguredMetadataValidatable
 {
@@ -61,7 +61,7 @@ final class ContactType implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidator $validator,
         ConfiguredMetadataValidationContext $context
     ) {
         if (!in_array($this->type, self::VALID_TYPES, true)) {

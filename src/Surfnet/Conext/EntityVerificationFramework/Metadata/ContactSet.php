@@ -22,10 +22,10 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadataValidatorInterface;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\SubpathConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 
 final class ContactSet implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
@@ -97,11 +97,11 @@ final class ContactSet implements ConfiguredMetadataValidatable, IteratorAggrega
     }
 
     public function validate(
-        ConfiguredMetadataValidatorInterface $validator,
+        ConfiguredMetadataValidator $validator,
         ConfiguredMetadataValidationContext $context
     ) {
         foreach ($this->contacts as $i => $contact) {
-            $subpathValidator = new SubpathConfiguredMetadataValidator($validator, 'Contact #' . ($i + 1));
+            $subpathValidator = new SubpathValidator($validator, 'Contact #' . ($i + 1));
             $subpathValidator->validate($contact, $context);
         }
     }
