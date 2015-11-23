@@ -39,7 +39,7 @@ class LogoValidationTest extends TestCase
      * @param Logo   $logo
      * @param string $violation
      */
-    public function it_can_be_invalid(Logo $logo, $violation)
+    public function logo_can_be_invalid(Logo $logo, $violation)
     {
         /** @var MockInterface|ResponseInterface $response200 */
         $response200 = m::mock(ResponseInterface::class);
@@ -90,7 +90,7 @@ class LogoValidationTest extends TestCase
      * @test
      * @group value
      */
-    public function its_url_can_be_invalid()
+    public function logos_url_can_be_invalid()
     {
         $url = '###';
 
@@ -116,7 +116,7 @@ class LogoValidationTest extends TestCase
      * @test
      * @group value
      */
-    public function its_url_can_be_unavailable()
+    public function logos_url_can_be_unavailable()
     {
         $url = 'https://static.surfconext.nl/logos/idp/test.png';
 
