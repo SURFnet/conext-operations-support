@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class Logo implements ConfiguredMetadataValidatable
 {
-    /** @var Url|null */
+    /** @var Url */
     private $url;
     /** @var mixed */
     private $width;
