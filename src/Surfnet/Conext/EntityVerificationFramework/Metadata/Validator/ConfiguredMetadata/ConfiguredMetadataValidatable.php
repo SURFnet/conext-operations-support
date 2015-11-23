@@ -23,7 +23,7 @@ interface ConfiguredMetadataValidatable
     /**
      * @param Validator|ConfiguredMetadataValidator $validator
      * @param ConfiguredMetadataValidationContext   $context
-     * @return
+     * @return void
      */
     public function validate(
         ConfiguredMetadataValidator $validator,
