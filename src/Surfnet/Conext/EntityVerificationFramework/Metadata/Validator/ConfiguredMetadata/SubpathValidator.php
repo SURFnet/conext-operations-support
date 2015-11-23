@@ -23,7 +23,7 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 final class SubpathValidator implements ConfiguredMetadataValidator
 {
     /**
-     * @var Validator
+     * @var ConfiguredMetadataValidator
      */
     private $innerValidator;
 
