@@ -23,24 +23,22 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 use Symfony\Component\HttpFoundation\Response;
 
-class LogoValidationTest extends TestCase
+class LogoUrlValidationTest extends TestCase
 {
     /**
      * @test
      * @group value
-     * @dataProvider logosWithViolations
-     *
-     * @param Logo   $logo
-     * @param string $violation
      */
-    public function logo_can_be_invalid(Logo $logo, $violation)
+    public function logo_url_must_be_hosted_on_static_dot_surfconext_dot_nl()
     {
+        $url = 'https://cdn.invalid/logo.bmp';
+
         /** @var MockInterface|ResponseInterface $response200 */
         $response200 = m::mock(ResponseInterface::class);
         $response200->shouldReceive('getStatusCode')->andReturn(Response::HTTP_OK);
@@ -51,38 +49,40 @@ class LogoValidationTest extends TestCase
 
         /** @var ConfiguredMetadataValidator|MockInterface $validator */
         $validator = m::mock(ConfiguredMetadataValidator::class);
+        $validator
+            ->shouldReceive('addViolation')
+            ->with(sprintf('Logo URL "%s" does not match https://static.surfconext.nl/logos/idp/<name>.png', $url))
+            ->once();
+
+        $logoUrl = LogoUrl::fromString($url);
+        $logoUrl->validate($validator, $context);
+    }
+
+    /**
+     * @test
+     * @group value
+     */
+    public function logo_url_can_be_unavailable()
+    {
+        $url = 'https://static.surfconext.nl/logos/idp/test.png';
+
+        /** @var MockInterface|ResponseInterface $response */
+        $response = m::mock(ResponseInterface::class);
+        $response->shouldReceive('getStatusCode')->andReturn(Response::HTTP_NOT_FOUND);
+        /** @var MockInterface|ClientInterface $httpClient */
+        $httpClient = m::mock(ClientInterface::class);
+        $httpClient->shouldReceive('request')->with('GET', $url)->once()->andReturn($response);
+        $context = new ConfiguredMetadataValidationContext($httpClient);
+
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
         $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
         $validator
             ->shouldReceive('addViolation')
-            ->with($violation)
+            ->with(sprintf('Logo "%s" is not available, server returned status code %d', $url, Response::HTTP_NOT_FOUND))
             ->once();
 
-        $logo->validate($validator, $context);
-    }
-
-    public function logosWithViolations()
-    {
-        return [
-            'logo URL not hosted by SURFconext' => [
-                Logo::deserialise(['url' => 'https://logo.invalid/', 'width' => '100', 'height' => '100'], 'propPath'),
-                'Logo URL "https://logo.invalid/" does not match https://static.surfconext.nl/logos/idp/<name>.png'
-            ],
-            'logo width not a stringy number' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => 'dd', 'height' => '100'], 'propPath'),
-                'Logo width "dd" is invalid: must be a number larger than 0'
-            ],
-            'logo width lower than 1' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '0', 'height' => '100'], 'propPath'),
-                'Logo width "0" is invalid: must be a number larger than 0'
-            ],
-            'logo height not a stringy number' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => 'dd'], 'propPath'),
-                'Logo height "dd" is invalid: must be a number larger than 0'
-            ],
-            'logo height lower than 1' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => '0'], 'propPath'),
-                'Logo height "0" is invalid: must be a number larger than 0'
-            ],
-        ];
+        $logoUrl = LogoUrl::fromString($url);
+        $logoUrl->validate($validator, $context);
     }
 }

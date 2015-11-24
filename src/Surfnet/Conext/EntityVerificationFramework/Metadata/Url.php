@@ -24,7 +24,7 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMeta
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
-final class Url implements ConfiguredMetadataValidatable
+class Url implements ConfiguredMetadataValidatable
 {
     /**
      * @var string|null
@@ -42,22 +42,22 @@ final class Url implements ConfiguredMetadataValidatable
     private $parts;
 
     /**
-     * @return Url
+     * @return static
      */
     public static function unknown()
     {
-        return new Url();
+        return new static();
     }
 
     /**
      * @param string $string
-     * @return Url
+     * @return static
      */
     public static function fromString($string)
     {
         Assert::string($string, 'URL must be string');
 
-        $url = new self();
+        $url = new static();
 
         if (filter_var($string, FILTER_VALIDATE_URL) === false) {
             $parts = false;
@@ -83,14 +83,12 @@ final class Url implements ConfiguredMetadataValidatable
         return $url;
     }
 
-    private function __construct()
+    final private function __construct()
     {
     }
 
-    public function validate(
-        ConfiguredMetadataValidator $validator,
-        ConfiguredMetadataValidationContext $context
-    ) {
+    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
+    {
         if (!$this->isValid()) {
             $validator->addViolation(sprintf('URL "%s" is not valid', $this->url));
         }

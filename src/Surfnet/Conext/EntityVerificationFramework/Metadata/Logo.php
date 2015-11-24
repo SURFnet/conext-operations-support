@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class Logo implements ConfiguredMetadataValidatable
 {
-    /** @var Url */
+    /** @var LogoUrl */
     private $url;
     /** @var mixed */
     private $width;
@@ -44,9 +44,9 @@ final class Logo implements ConfiguredMetadataValidatable
 
         Assert::isArray($data, 'Logo data must be an array structure');
 
-        $logo->url = Url::unknown();
+        $logo->url = LogoUrl::unknown();
         if (array_key_exists('url', $data)) {
-            $logo->url = Url::fromString($data['url']);
+            $logo->url = LogoUrl::fromString($data['url']);
         }
 
         if (array_key_exists('width', $data)) {
