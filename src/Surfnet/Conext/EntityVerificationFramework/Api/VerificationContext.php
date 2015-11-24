@@ -31,12 +31,12 @@ interface VerificationContext
     public function hasRemoteMetadata();
 
     /**
-     * @return \Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata
+     * @return \Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadata
      */
     public function getRemoteMetadata();
 
     /**
-     * @return \Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata
+     * @return \Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata
      */
     public function getConfiguredMetadata();
 

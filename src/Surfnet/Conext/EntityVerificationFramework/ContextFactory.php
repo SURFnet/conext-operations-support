@@ -43,11 +43,6 @@ final class ContextFactory
      */
     private $testHttpClient;
 
-    /**
-     * @param ConfiguredMetadataRepository $configuredMetadataRepository
-     * @param PublishedMetadataRepository  $publishedMetadataRepository
-     * @param ClientInterface              $testHttpClient
-     */
     public function __construct(
         ConfiguredMetadataRepository $configuredMetadataRepository,
         PublishedMetadataRepository $publishedMetadataRepository,

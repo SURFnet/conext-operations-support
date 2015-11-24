@@ -90,6 +90,7 @@ class Runner implements VerificationRunner
         }
         $this->logger->info(sprintf('Retrieved "%d" entities from Configured Metadata Repository', count($entities)));
 
+        $reportCount = 0;
         foreach ($entities as $entity) {
             $this->logger->debug(sprintf('Verifying Entity "%s"', $entity));
 
@@ -133,6 +134,7 @@ class Runner implements VerificationRunner
                     $this->logger->debug(sprintf('Verification suite "%s" failed for "%s', $suiteName, $entity));
 
                     $reporter->reportFailedVerificationFor($entity, $suiteResult);
+                    $reportCount++;
                     continue;
                 }
 
@@ -143,9 +145,11 @@ class Runner implements VerificationRunner
         }
 
         $this->logger->info(sprintf(
-            'Completed Run of Entity Verification Framework, "%d" Entities Verified with "%d" suites.',
+            'Completed Run of Entity Verification Framework, ' .
+            'verification of "%d" Entities with "%d" suites resulted in "%d" reports',
             count($entities),
-            count($this->verificationSuites)
+            count($this->verificationSuites),
+            $reportCount
         ));
     }
 

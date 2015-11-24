@@ -23,9 +23,9 @@ use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
 
 class Context implements VerificationContext
 {

@@ -26,12 +26,12 @@ use Psr\Http\Message\ResponseInterface as HttpResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\NullLogger;
 use SimpleXMLElement;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadataFactory;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadataList;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataFactory;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataList;
 use Surfnet\Conext\OperationsSupportBundle\Repository\GuzzlePublishedMetadataRepository;
 use Surfnet\Conext\OperationsSupportBundle\Repository\PublishedMetadataUrlRepository;
 use Surfnet\Conext\OperationsSupportBundle\Xml\XmlHelper;
@@ -72,7 +72,10 @@ class GuzzlePublishedMetadataRepositoryTest extends TestCase
         $xmlHelper->shouldReceive('loadXml')->with($xml, $logger)->andReturn($xmlElement);
 
         $expectedPublishedMetadata = m::mock(PublishedMetadata::class);
-        $expectedPublishedMetadata->shouldReceive('getEntity')->andReturn($entity());
+        $expectedPublishedMetadata
+            ->shouldReceive('isPublishedFor')
+            ->with(self::voEquals($entity()))
+            ->andReturn(true);
         $publishedMetadataList = new PublishedMetadataList([$expectedPublishedMetadata]);
         $publishedMetadataFactory = m::mock('alias:' . PublishedMetadataFactory::class);
         $publishedMetadataFactory->shouldReceive('fromMetadataXml')->with($xmlElement)->andReturn($publishedMetadataList);
