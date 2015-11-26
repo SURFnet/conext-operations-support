@@ -2,5 +2,8 @@
 VERSION 0  WORKING ENTITY VERIFICATION FRAMEWORK AND CLI AND JIRA REPORTERS
 ===========================================================================
 
+   Version 0.2 - EntityCompletenessTest added
+      26/11/2015 10:16  0.2.0  initial release
+
    Version 0.1 - Working entity verification framework and CLI and JIRA reporters
       28/10/2015 15:52  0.1.0  initial release
