@@ -3,9 +3,21 @@ services:
         class: Surfnet\Conext\EntityVerificationFramework\Runner
         arguments:
             - @surfnet_conext_operations_support.repository.configured_metadata.janus
-            - @surfnet_conext_operations_support.repository.published_metadata.guzzle
             - @surfnet_conext_operations_support.verification_blacklist
+            - @surfnet_conext_operations_support.context_factory
             - @logger
+
+    surfnet_conext_operations_support.context_factory:
+        public: false
+        class: Surfnet\Conext\EntityVerificationFramework\ContextFactory
+        arguments:
+            - @surfnet_conext_operations_support.repository.configured_metadata
+            - @surfnet_conext_operations_support.repository.published_metadata
+            - @surfnet_conext_operations_support.guzzle.test_client
+
+    surfnet_conext_operations_support.repository.configured_metadata:
+        public: false
+        alias: surfnet_conext_operations_support.repository.configured_metadata.janus
 
     surfnet_conext_operations_support.repository.configured_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyConfiguredMetadataRepository
@@ -15,6 +27,10 @@ services:
         arguments:
             - @surfnet_janus_api_client.service.api
             - @logger
+
+    surfnet_conext_operations_support.repository.published_metadata:
+        public: false
+        alias: surfnet_conext_operations_support.repository.published_metadata.guzzle
 
     surfnet_conext_operations_support.repository.published_metadata.dummy:
         class: Surfnet\Conext\OperationsSupportBundle\Repository\DummyPublishedMetadataRepository
@@ -101,3 +117,25 @@ services:
 
     surfnet_conext_operations_support.factory.ramsey_uuid:
         class: Ramsey\Uuid\UuidFactory
+
+    surfnet_conext_operations_support.guzzle.test_client:
+        public: false
+        class: GuzzleHttp\Client
+        arguments:
+            - handler: @surfnet_conext_operations_support.guzzle.test_client.handler_stack
+              exceptions: false
+              connect_timeout: 2
+              timeout: 2
+
+    surfnet_conext_operations_support.guzzle.test_client.handler_stack:
+        public: false
+        class: GuzzleHttp\HandlerStack
+        factory: [GuzzleHttp\HandlerStack, 'create']
+        calls:
+            - [ push, [@surfnet_conext_operations_support.guzzle.test_client.middleware.logging] ]
+
+    surfnet_conext_operations_support.guzzle.test_client.middleware.logging:
+        public: false
+        class: Surfnet\Conext\OperationsSupportBundle\Guzzle\Middleware\LoggingMiddleware
+        arguments:
+            - @logger

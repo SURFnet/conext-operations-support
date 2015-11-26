@@ -63,11 +63,12 @@ final class EntityType
     {
         return new EntityType(self::TYPE_IDP);
     }
+    // @codingStandardsIgnoreEnd
 
     /**
      * @return bool
      */
-    public function isSP()
+    public function isServiceProvider()
     {
         return $this->type === self::TYPE_SP;
     }
@@ -75,11 +76,10 @@ final class EntityType
     /**
      * @return bool
      */
-    public function isIdP()
+    public function isIdentityProvider()
     {
         return $this->type === self::TYPE_IDP;
     }
-    // @codingStandardsIgnoreEnd
 
     /**
      * @param EntityType $other

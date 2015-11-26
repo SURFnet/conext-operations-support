@@ -1,0 +1,8 @@
+surfnet_conext_operations_support:
+    suites:
+        published_metadata_availability_suite:
+            - is_available_test
+        service_registry_suite:
+            - entity_completeness_test
+    blacklist:
+        # foo: []

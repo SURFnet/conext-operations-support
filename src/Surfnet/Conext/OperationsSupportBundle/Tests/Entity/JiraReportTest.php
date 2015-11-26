@@ -48,7 +48,7 @@ class JiraReportTest extends TestCase
     }
 
     /**
-     * @return Entity
+     * @return \Surfnet\Conext\EntityVerificationFramework\Value\Entity
      */
     private function entity()
     {
