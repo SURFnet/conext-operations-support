@@ -22,8 +22,8 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\NullLogger;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadata;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadataFactory;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
@@ -314,7 +314,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
      * @test
      * @group metadata
      * @expectedException \Surfnet\Conext\OperationsSupportBundle\Exception\RuntimeException
-     * @expectedExceptionMessage No connection ID is known for entity "https://hu.invalid[saml20-sp]"
+     * @expectedExceptionMessage No connection ID is known for entity "https://hu.invalid (saml20-sp)"
      * @runInSeparateProcess
      */
     public function throws_an_exception_when_fetching_metadata_for_an_entity_that_cannot_be_mapped_to_a_connection_id()

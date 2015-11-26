@@ -23,7 +23,11 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationSuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationTestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\OperationsSupportBundle\Exception\LogicException;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 final class CliReporter implements VerificationReporter
 {
@@ -31,17 +35,23 @@ final class CliReporter implements VerificationReporter
 <comment>%8s</comment> <info>%s</info> failed for entity <info>%s</info>
     Reason: %s
 
-    %s
+%s
 
 REPORT;
+
+    /**
+     * @var InputInterface
+     */
+    private $input;
 
     /**
      * @var OutputInterface
      */
     private $output;
 
-    public function __construct(OutputInterface $output)
+    public function __construct(InputInterface $input, OutputInterface $output)
     {
+        $this->input = $input;
         $this->output = $output;
     }
 
@@ -54,9 +64,16 @@ REPORT;
         $severityName   = $this->getSeverityName($result->getSeverity());
         $failedTestName = $result->getFailedTestName();
         $reason         = $result->getReason();
-        $explanation    = $result->getExplanation();
+
+        // Indent explanation
+        $explanation    = preg_replace('~^~m', '    ', $result->getExplanation());
 
         $this->output->writeln(sprintf(self::REPORT, $severityName, $failedTestName, $entity, $reason, $explanation));
+
+        if ($this->output instanceof Output && $this->output->isDebug()) {
+            $questionHelper = new QuestionHelper();
+            $questionHelper->ask($this->input, $this->output, new Question('Press RETURN to continue...'));
+        }
     }
 
     /**

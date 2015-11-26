@@ -52,8 +52,33 @@ final class Entity
 
     public function __construct(EntityId $entityId, EntityType $entityType)
     {
-        $this->entityId = $entityId;
+        $this->entityId   = $entityId;
         $this->entityType = $entityType;
+    }
+
+    /**
+     * @param EntityId $entityId
+     * @return bool
+     */
+    public function hasEntityId(EntityId $entityId)
+    {
+        return $this->entityId->equals($entityId);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isServiceProvider()
+    {
+        return $this->entityType->isServiceProvider();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIdentityProvider()
+    {
+        return $this->entityType->isIdentityProvider();
     }
 
     /**
@@ -83,6 +108,6 @@ final class Entity
 
     public function __toString()
     {
-        return $this->entityId . '[' . $this->entityType . ']';
+        return $this->entityId . ' (' . $this->entityType . ')';
     }
 }

@@ -3,24 +3,71 @@
 
 # Conext Operations Support
 
-# Adding new verifications
+## Environment
+
+ * PHP CLI ^5.6 with cURL, mcrypt, GMP, PDO MySQL extensions
+ * MariaDB ^10
+
+## Building
+
+Required: PHP CLI ^5.6
+
+ * Checkout a tag from GitHub: `git clone https://github.com/SURFnet/conext-operations-support conops-0.1.0 && cd conops-0.1.0 && git checkout 0.1.0`
+ * Install the PHP dependencies `SYMFONY_ENV=prod composer install --prefer-dist --ignore-platform-reqs --no-dev --no-interaction --optimize-autoloader`
+ * Configure application parameters by copying parameters.yml.dist to parameters.yml and modifying the values
+   according to the instructions in the file.
+ * Run `SYMFONY_ENV=prod app/console cache:clear`
+ * Create a tarball by running `tar -czf conops-0.1.0.tgz conops-0.1.0/`
+ * Attach the tarball to the GitHub release
+
+## Running suites
+
+```console
+$ # Run all suites using the JIRA reporter
+$ app/console operations-support:suites:run -vvv --reporter=jira
+$ # Run specific suites using the CLI reporter
+$ app/console operations-support:suites:run -vvv --suites=foo_suite,bar_suite
+```
+
+## Blacklisting entities for certain or all tests
+
+```yml
+# app/config/suites.yml
+surfnet_conext_operations_support:
+    blacklist:
+        '*':
+            - ['https://ministerievandefensie.invalid/saml/metadata', 'idp']
+        foo_suite:
+            - ['https://onegini.invalid/saml/metadata', 'idp']
+        foo_suite.bar_test:
+            - ['https://docs.invalid', 'sp']
+```
+
+## Test suite development
 
 The verification suites should all reside in the `Surfnet\VerificationSuite` namespace, this is located in the
  `src/Surfnet/VerificationSuite` folder.
 
-## Creating a new Suite
+### Creating a new Suite
 
 1. Create a new Suite namespace in the `Surfnet\VerificationSuite` namespace, e.g. `Surfnet\VerificationSuite\ExampleSuite`
-2. Create a new Suite class, e.g. `Surfnet\VerificationSuite\ExampleSuite\ExampleSuite`. It is required to name the Suite 
+2. Create a new Suite class, e.g. `Surfnet\VerificationSuite\ExampleSuite\ExampleSuite`. It is required to name the Suite
 class the same as the suite namespace. The Suite will be identified by its namespace
  in the logs.
 3. Have your new Suite extend the `Surfnet\Conext\EntityVerificationFramework\Suite`. This takes care of all the heavy
  lifting. All you have to do is implement two methods:
     - `shouldBeSkipped(VerificationContext $verificationContext) : bool`: to determine if the suite can run.
     - `getReasonToSkip() : string`: if the suite is skipped, the returned string is logged as the reason why.
-4. **@TODO** DOCUMENT CONFIGURATION!
+4. Add the suite to the suites configuration file:
 
-## Creating a new Test
+```diff
+ # app/config/suites.yml
+ surfnet_conext_operations_support:
+     suites:
++        your_suite: []
+```
+
+### Creating a new Test
 
 1. Create a new Test in the correct namespace, e.g. `Surfnet\VerificationSuite\ExampleSuite\Test\ExampleTest`. All tests
  within a suite must be placed in the `Test` folder within the suite namespace
@@ -34,8 +81,17 @@ class the same as the suite namespace. The Suite will be identified by its names
      methods: `success()` for when the test passed successfully and `failed($reason, $explanation, $severity)`. The
      `$reason` is a short, descriptive, single sentence reason as to why the test failed. The `$explanation` is what
      actually caused the test to fail. This can be as in detail as required to fix the issue. The `$severity` should be
-     one of five levels, available as constants on the `TestResult` class. 
-4. **@TODO** DOCUMENT CONFIGURATION!
+     one of five levels, available as constants on the `TestResult` class.
+4. Add the test to the suites configuration file:
+
+```diff
+ # app/config/suites.yml
+ surfnet_conext_operations_support:
+     suites:
+-        foo_suite: []
++        foo_suite:
++             - bar_test
+```
 
 ## Development
 

@@ -6,7 +6,7 @@ services:
     public: false
 
   surfnet_janus_api_client.service.api:
-    public: false
+    public: false4
     class: Surfnet\JanusApiClientBundle\Service\ApiService
     arguments:
       - @surfnet_janus_api_client.guzzle

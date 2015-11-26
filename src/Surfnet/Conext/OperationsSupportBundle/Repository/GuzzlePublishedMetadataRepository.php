@@ -19,12 +19,15 @@
 namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Exception\InvalidArgumentException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadata;
-use Surfnet\Conext\EntityVerificationFramework\Value\PublishedMetadataFactory;
 use Surfnet\Conext\OperationsSupportBundle\Xml\XmlHelper;
 
 final class GuzzlePublishedMetadataRepository implements PublishedMetadataRepository
@@ -71,12 +74,12 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
      */
     private function unsafelyGetMetadataFor(Entity $entity)
     {
-        $this->logger->info(sprintf('Attempting to fetch published metadata for entity "%s"', $entity));
+        $this->logger->debug(sprintf('Attempting to fetch published metadata for entity "%s"', $entity));
 
         $publishedMetadataUrl = $this->publishedMetadataUrlRepository->getPublishedMetadataUrlFor($entity);
 
         if ($publishedMetadataUrl === null) {
-            $this->logger->info(
+            $this->logger->debug(
                 sprintf(
                     'Configured metadata for entity "%s" has no published metadata URL configured, returning NULL',
                     $entity
@@ -86,10 +89,32 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
             return null;
         }
 
-        $response = $this->httpClient->request('GET', $publishedMetadataUrl, ['http_error' => false]);
+        $this->logger->info(sprintf('Published metadata URL is "%s"', $publishedMetadataUrl));
+
+        try {
+            $response = $this->httpClient->request(
+                'GET',
+                $publishedMetadataUrl,
+                [RequestOptions::HTTP_ERRORS => false]
+            );
+        } catch (ConnectException $e) {
+            $this->logger->info(
+                sprintf('There was an error connecting to the metadata server: "%s"', $e->getMessage()),
+                ['exception' => $e]
+            );
+
+            return null;
+        } catch (RequestException $e) {
+            $this->logger->info(
+                sprintf('There was an error while communicating with the metadata server: "%s"', $e->getMessage()),
+                ['exception' => $e]
+            );
+
+            return null;
+        }
 
         if ($response->getStatusCode() !== 200) {
-            $this->logger->info(
+            $this->logger->debug(
                 sprintf('Published metadata HTTP response code was %d, returning NULL', $response->getStatusCode())
             );
 
@@ -104,10 +129,10 @@ final class GuzzlePublishedMetadataRepository implements PublishedMetadataReposi
         }
 
         $metadatas = PublishedMetadataFactory::fromMetadataXml($xml);
-        $this->logger->info(sprintf('Published metadata contains %d entities', count($metadatas)));
+        $this->logger->debug(sprintf('Published metadata contains %d entities', count($metadatas)));
 
         $metadatas = $metadatas->findByEntity($entity);
-        $this->logger->info(
+        $this->logger->debug(
             sprintf('Published metadata contains %d entries for entity "%s"', count($metadatas), $entity)
         );
 

@@ -20,8 +20,8 @@ namespace Surfnet\Conext\OperationsSupportBundle\Repository;
 
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
-use Surfnet\Conext\EntityVerificationFramework\Value\ConfiguredMetadataFactory;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityId;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntitySet;
@@ -74,13 +74,14 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
     {
         $this->logger->debug(sprintf('Fetching published metadata URL for entity "%s" from Janus', $entity));
 
-        $url = $this->getMetadataFor($entity)->getPublishedMetadataUrl();
-        if (!$url) {
+        $configuredMetadata = $this->getMetadataFor($entity);
+        if (!$configuredMetadata->hasPublishedMetadataUrl()) {
             $this->logger->debug(sprintf('No published metadata URL is known for entity "%s"', $entity));
 
             return null;
         }
 
+        $url = $configuredMetadata->getPublishedMetadataUrl();
         if (!$url->isValid()) {
             $this->logger->debug(sprintf('Published metadata URL "%s" is not valid, returning NULL', $url));
 
