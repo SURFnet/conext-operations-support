@@ -19,7 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Error\ErrorMessageCollectingExecutor;
+use Surfnet\Conext\EntityVerificationFramework\Error\ErrorMessageCollector;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
@@ -44,10 +44,10 @@ final class RegularExpression implements ConfiguredMetadataValidatable
 
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
-        $errorHandler = new ErrorMessageCollectingExecutor();
+        $collector = new ErrorMessageCollector();
 
         $pattern = $this->pattern;
-        $errorMessages = $errorHandler->collectDuring(function () use ($pattern) {
+        $errorMessages = $collector->collectDuring(function () use ($pattern) {
             preg_match($pattern, 'test');
         });
 

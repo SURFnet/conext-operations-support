@@ -21,9 +21,9 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Error;
 use PHPUnit_Framework_TestCase as TestCase;
 use Mockery as m;
 use Mockery\MockInterface;
-use Surfnet\Conext\EntityVerificationFramework\Error\ErrorMessageCollectingExecutor;
+use Surfnet\Conext\EntityVerificationFramework\Error\ErrorMessageCollector;
 
-class ErrorMessageCollectingExecutorTest extends TestCase
+class ErrorMessageCollectorTest extends TestCase
 {
     /**
      * @test
@@ -34,8 +34,8 @@ class ErrorMessageCollectingExecutorTest extends TestCase
      */
     public function it_collects_error_messages(array $errors)
     {
-        $executor = new ErrorMessageCollectingExecutor();
-        $messages = $executor->collectDuring(function () use ($errors) {
+        $collector = new ErrorMessageCollector();
+        $messages = $collector->collectDuring(function () use ($errors) {
             foreach ($errors as $error) {
                 trigger_error($error, E_USER_ERROR);
             }

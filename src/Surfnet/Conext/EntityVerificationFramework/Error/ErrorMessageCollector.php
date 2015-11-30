@@ -18,7 +18,7 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Error;
 
-final class ErrorMessageCollectingExecutor
+final class ErrorMessageCollector
 {
     /**
      * @var string[]
