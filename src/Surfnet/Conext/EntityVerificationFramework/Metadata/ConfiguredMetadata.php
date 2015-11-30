@@ -59,6 +59,8 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     private $defaultNameIdFormat;
     /** @var NameIdFormatList */
     private $acceptableNameIdFormats;
+    /** @var ShibmdScopeList */
+    private $scopes;
     /** @var PemEncodedX509Certificate|null */
     private $certData;
     /** @var GuestQualifier|null */
@@ -78,6 +80,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
      * @param Name                           $name
      * @param Description                    $description
      * @param MultiLocaleUrl                 $url
+     * @param ShibmdScopeList                $scopes
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
      * @param bool|null                      $signRedirects
@@ -98,6 +101,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         Name $name,
         Description $description,
         MultiLocaleUrl $url,
+        ShibmdScopeList $scopes,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
         $signRedirects = null,
@@ -118,6 +122,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         $this->logos                     = $logos;
         $this->signRedirects             = $signRedirects;
         $this->url                       = $url;
+        $this->scopes                    = $scopes;
         $this->keywords                  = $keywords;
         $this->defaultNameIdFormat       = $defaultNameIdFormat;
         $this->acceptableNameIdFormats   = $acceptableNameIdFormats;
@@ -135,6 +140,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         $validator->validate($this->contacts, $context);
         $validator->validate($this->logos, $context);
         (new SubpathValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
+        $validator->validate($this->scopes, $context);
 
         if ($this->signRedirects === null) {
             $validator->addViolation('The sign redirects option is not configured to be enabled or disabled');

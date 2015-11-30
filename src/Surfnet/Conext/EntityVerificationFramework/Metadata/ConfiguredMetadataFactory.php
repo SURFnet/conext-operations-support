@@ -175,17 +175,7 @@ final class ConfiguredMetadataFactory
         }
 
         $scopeData = isset($metadataData['shibmd']['scope']) ? $metadataData['shibmd']['scope'] : [];
-        for ($i = 0; $i <= 5; ++$i) {
-            if (isset($scopeData[$i]['allowed'])) {
-                Assert::string($scopeData[$i]['allowed'], null, sprintf('metadata.shibmd.scope[%d].allowed', $i));
-                $freeformProperties[sprintf('shibmd:scope:%d:allowed', $i)] = $scopeData[$i]['allowed'];
-            }
-
-            if (isset($scopeData[$i]['regexp'])) {
-                Assert::boolean($scopeData[$i]['regexp'], null, sprintf('metadata.shibmd.scope[%d].regexp', $i));
-                $freeformProperties[sprintf('shibmd:scope:%d:regexp', $i)] = $scopeData[$i]['regexp'];
-            }
-        }
+        $scopes = ShibmdScopeList::deserialise($scopeData, 'metadata.shibmd.scope');
 
         return new ConfiguredMetadata(
             $entityType,
@@ -199,6 +189,7 @@ final class ConfiguredMetadataFactory
             $name,
             $description,
             $url,
+            $scopes,
             $publishedMetadataUrl,
             $certData,
             $signRedirects,

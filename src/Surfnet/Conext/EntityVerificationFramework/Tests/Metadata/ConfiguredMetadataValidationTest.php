@@ -31,6 +31,7 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\MultiLocaleUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Name;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormatList;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibmdScopeList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnServiceList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
@@ -49,6 +50,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $contacts            = new ContactSet();
         $logos               = new LogoList();
         $defaultNameIdFormat = NameIdFormat::unknown();
+        $shibmdScopeList     = new ShibmdScopeList();
 
         $metadata = new ConfiguredMetadata(
             EntityType::SP(),
@@ -61,7 +63,8 @@ class ConfiguredMetadataValidationTest extends TestCase
             $logos,
             $name,
             $description,
-            new MultiLocaleUrl()
+            new MultiLocaleUrl(),
+            $shibmdScopeList
         );
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
@@ -73,6 +76,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $validator->shouldReceive('validate')->with($contacts, $context)->once();
         $validator->shouldReceive('validate')->with($logos, $context)->once();
         $validator->shouldReceive('validate')->with($defaultNameIdFormat, $context)->once();
+        $validator->shouldReceive('validate')->with($shibmdScopeList, $context)->once();
         $validator->shouldReceive('addViolation');
 
         $metadata->validate($validator, $context);
@@ -95,7 +99,8 @@ class ConfiguredMetadataValidationTest extends TestCase
             new LogoList(),
             new Name(),
             new Description(),
-            new MultiLocaleUrl()
+            new MultiLocaleUrl(),
+            new ShibmdScopeList()
         );
 
         /** @var ConfiguredMetadataValidator|MockInterface $validator */
@@ -130,6 +135,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             new Name(),
             new Description(),
             new MultiLocaleUrl(),
+            new ShibmdScopeList(),
             null,
             null,
             true
