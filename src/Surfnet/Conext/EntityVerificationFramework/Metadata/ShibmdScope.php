@@ -68,8 +68,8 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
      */
     public static function deserialise($data, $propertyPath)
     {
-        Assert::keyExists($data, 'allowed', 'Shibmd scope doesn\'t contain key "%s"', $propertyPath . '.allowed');
-        Assert::keyExists($data, 'regexp', 'Shibmd scope doesn\'t contain key "%s"', $propertyPath . '.regexp');
+        Assert::keyExists($data, 'allowed', 'Shibmd scope doesn\'t contain key "%s"', $propertyPath);
+        Assert::keyExists($data, 'regexp', 'Shibmd scope doesn\'t contain key "%s"', $propertyPath);
         Assert::string($data['allowed'], null, $propertyPath . '.allowed');
         Assert::boolean($data['regexp'], null, $propertyPath . '.regexp');
 
