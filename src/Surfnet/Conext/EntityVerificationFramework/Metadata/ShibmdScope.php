@@ -74,9 +74,9 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
         Assert::boolean($data['regexp'], null, $propertyPath . '.regexp');
 
         if ($data['regexp']) {
-            return ShibmdScope::regexp(new RegularExpression('~' . $data['allowed'] . '~'));
+            return self::regexp(new RegularExpression('~' . $data['allowed'] . '~'));
         } else {
-            return ShibmdScope::literal($data['allowed']);
+            return self::literal($data['allowed']);
         }
     }
 
