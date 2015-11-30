@@ -63,19 +63,19 @@ final class ShibmdScopeList implements ConfiguredMetadataValidatable, IteratorAg
 
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
-        foreach ($this->scopes as $i => $contact) {
+        foreach ($this->scopes as $i => $scope) {
             $subpathValidator = new SubpathValidator($validator, 'ShibmdScope #' . ($i + 1));
-            $subpathValidator->validate($contact, $context);
+            $subpathValidator->validate($scope, $context);
         }
     }
 
     /**
-     * @param ShibmdScope $service
+     * @param ShibmdScope $scope
      * @return ShibmdScopeList
      */
-    public function add(ShibmdScope $service)
+    public function add(ShibmdScope $scope)
     {
-        return new ShibmdScopeList(array_merge($this->scopes, [$service]));
+        return new ShibmdScopeList(array_merge($this->scopes, [$scope]));
     }
 
     public function getIterator()
