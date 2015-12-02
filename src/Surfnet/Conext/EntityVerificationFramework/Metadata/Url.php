@@ -148,7 +148,7 @@ class Url implements ConfiguredMetadataValidatable
      */
     public function equals(Url $other)
     {
-        return $this == $other;
+        return $this->url === $other->url;
     }
 
     public function __toString()

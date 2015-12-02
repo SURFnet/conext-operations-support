@@ -19,9 +19,9 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Binding;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnService;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Binding;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\BindingLocation;
 
 final class SingleSignOnServiceTest extends TestCase
 {
@@ -31,54 +31,20 @@ final class SingleSignOnServiceTest extends TestCase
      */
     public function it_can_be_deserialized()
     {
-        SingleSignOnService::deserialize([
+        $bindingLocation = 'samba://media.invalid';
+        $sso = SingleSignOnService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
-        ]);
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_has_a_binding()
-    {
-        $acs = SingleSignOnService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
+            'Location' => $bindingLocation,
         ]);
 
-        $this->assertTrue($acs->hasBinding());
-        $this->assertInstanceOf(Binding::class, $acs->getBinding());
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_has_a_location()
-    {
-        $acs = SingleSignOnService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
-        ]);
-
-        $this->assertTrue($acs->hasLocation());
-        $this->assertInstanceOf(Url::class, $acs->getLocation());
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_is_valid()
-    {
-        $acs = SingleSignOnService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
-        ]);
-
-        $this->assertTrue($acs->isValid());
+        $this->assertTrue(
+            $sso->equals(
+                new SingleSignOnService(
+                    Binding::create(Binding::BINDING_HTTP_POST),
+                    BindingLocation::fromString($bindingLocation)
+                )
+            )
+        );
     }
 
     /**
@@ -87,26 +53,19 @@ final class SingleSignOnServiceTest extends TestCase
      */
     public function the_binding_can_be_omitted()
     {
-        $acs = SingleSignOnService::deserialize([
-            'Location' => 'samba://media.invalid'
+        $bindingLocation = 'samba://media.invalid';
+        $sso = SingleSignOnService::deserialize([
+            'Location' => $bindingLocation
         ]);
 
-        $this->assertFalse($acs->hasBinding());
-        $this->assertFalse($acs->isBindingValid());
-        $this->assertFalse($acs->isValid());
-    }
-
-    /**
-     * @test
-     * @group value
-     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\LogicException
-     */
-    public function when_the_binding_is_omitted_the_binding_is_not_available()
-    {
-        $acs = SingleSignOnService::deserialize([
-            'Location' => 'samba://media.invalid'
-        ]);
-        $acs->getBinding();
+        $this->assertTrue(
+            $sso->equals(
+                new SingleSignOnService(
+                    Binding::unknown(),
+                    BindingLocation::fromString($bindingLocation)
+                )
+            )
+        );
     }
 
     /**
@@ -115,43 +74,35 @@ final class SingleSignOnServiceTest extends TestCase
      */
     public function the_location_can_be_omitted()
     {
-        $acs = SingleSignOnService::deserialize([
+        $sso = SingleSignOnService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
         ]);
 
-        $this->assertFalse($acs->hasLocation());
-        $this->assertFalse($acs->isLocationValid());
-        $this->assertFalse($acs->isValid());
-    }
-
-    /**
-     * @test
-     * @group value
-     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\LogicException
-     */
-    public function when_the_location_is_omitted_the_location_is_not_available()
-    {
-        $acs = SingleSignOnService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-        ]);
-        $acs->getLocation();
+        $this->assertTrue(
+            $sso->equals(
+                new SingleSignOnService(
+                    Binding::create(Binding::BINDING_HTTP_POST),
+                    BindingLocation::unknown()
+                )
+            )
+        );
     }
 
     /**
      * @test
      * @group value
      */
-    public function two_acss_can_be_equals()
+    public function two_ssos_can_be_equals()
     {
-        $acs0 = SingleSignOnService::deserialize([
+        $sso0 = SingleSignOnService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
             'Location' => 'samba://media.invalid',
         ]);
-        $acs1 = SingleSignOnService::deserialize([
+        $sso1 = SingleSignOnService::deserialize([
             'Location' => 'samba://media.invalid',
             'Binding' => Binding::BINDING_HTTP_POST,
         ]);
 
-        $this->assertTrue($acs0->equals($acs1));
+        $this->assertTrue($sso0->equals($sso1));
     }
 }

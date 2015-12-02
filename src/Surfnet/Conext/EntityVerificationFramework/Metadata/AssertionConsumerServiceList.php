@@ -22,8 +22,12 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 
-final class AssertionConsumerServiceList implements IteratorAggregate, Countable
+final class AssertionConsumerServiceList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
     /**
      * @var AssertionConsumerService[]
@@ -54,6 +58,9 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
         return $list;
     }
 
+    /**
+     * @param AssertionConsumerService[] $acss
+     */
     public function __construct(array $acss = [])
     {
         Assert::allIsInstanceOf($acss, AssertionConsumerService::class);
@@ -68,6 +75,14 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
     public function add(AssertionConsumerService $service)
     {
         return new AssertionConsumerServiceList(array_merge($this->acss, [$service]));
+    }
+
+    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
+    {
+        foreach ($this->acss as $i => $acs) {
+            $subpathValidator = new SubpathValidator($validator, 'AssertionConsumerService #' . ($i + 1));
+            $subpathValidator->validate($acs, $context);
+        }
     }
 
     public function getIterator()

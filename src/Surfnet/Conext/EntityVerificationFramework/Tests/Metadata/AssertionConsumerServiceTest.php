@@ -21,7 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\AssertionConsumerService;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Binding;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\BindingLocation;
 
 final class AssertionConsumerServiceTest extends TestCase
 {
@@ -31,54 +31,20 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function it_can_be_deserialized()
     {
-        AssertionConsumerService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
-        ]);
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_has_a_binding()
-    {
+        $bindingLocation = 'samba://media.invalid';
         $acs = AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
+            'Location' => $bindingLocation,
         ]);
 
-        $this->assertTrue($acs->hasBinding());
-        $this->assertInstanceOf(Binding::class, $acs->getBinding());
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_has_a_location()
-    {
-        $acs = AssertionConsumerService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
-        ]);
-
-        $this->assertTrue($acs->hasLocation());
-        $this->assertInstanceOf(Url::class, $acs->getLocation());
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_is_valid()
-    {
-        $acs = AssertionConsumerService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-            'Location' => 'samba://media.invalid'
-        ]);
-
-        $this->assertTrue($acs->isValid());
+        $this->assertTrue(
+            $acs->equals(
+                new AssertionConsumerService(
+                    Binding::create(Binding::BINDING_HTTP_POST),
+                    BindingLocation::fromString($bindingLocation)
+                )
+            )
+        );
     }
 
     /**
@@ -87,26 +53,19 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function the_binding_can_be_omitted()
     {
+        $bindingLocation = 'samba://media.invalid';
         $acs = AssertionConsumerService::deserialize([
-            'Location' => 'samba://media.invalid'
+            'Location' => $bindingLocation
         ]);
 
-        $this->assertFalse($acs->hasBinding());
-        $this->assertFalse($acs->isBindingValid());
-        $this->assertFalse($acs->isValid());
-    }
-
-    /**
-     * @test
-     * @group value
-     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\LogicException
-     */
-    public function when_the_binding_is_omitted_the_binding_is_not_available()
-    {
-        $acs = AssertionConsumerService::deserialize([
-            'Location' => 'samba://media.invalid'
-        ]);
-        $acs->getBinding();
+        $this->assertTrue(
+            $acs->equals(
+                new AssertionConsumerService(
+                    Binding::unknown(),
+                    BindingLocation::fromString($bindingLocation)
+                )
+            )
+        );
     }
 
     /**
@@ -119,22 +78,14 @@ final class AssertionConsumerServiceTest extends TestCase
             'Binding' => Binding::BINDING_HTTP_POST,
         ]);
 
-        $this->assertFalse($acs->hasLocation());
-        $this->assertFalse($acs->isLocationValid());
-        $this->assertFalse($acs->isValid());
-    }
-
-    /**
-     * @test
-     * @group value
-     * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\LogicException
-     */
-    public function when_the_location_is_omitted_the_location_is_not_available()
-    {
-        $acs = AssertionConsumerService::deserialize([
-            'Binding' => Binding::BINDING_HTTP_POST,
-        ]);
-        $acs->getLocation();
+        $this->assertTrue(
+            $acs->equals(
+                new AssertionConsumerService(
+                    Binding::create(Binding::BINDING_HTTP_POST),
+                    BindingLocation::unknown()
+                )
+            )
+        );
     }
 
     /**
