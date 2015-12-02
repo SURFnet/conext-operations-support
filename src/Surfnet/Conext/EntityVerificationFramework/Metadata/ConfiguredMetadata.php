@@ -59,7 +59,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     private $defaultNameIdFormat;
     /** @var NameIdFormatList */
     private $acceptableNameIdFormats;
-    /** @var ShibmdScopeList */
+    /** @var ShibbolethMetadataScopeList */
     private $scopes;
     /** @var PemEncodedX509Certificate|null */
     private $certData;
@@ -80,7 +80,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
      * @param Name                           $name
      * @param Description                    $description
      * @param MultiLocaleUrl                 $url
-     * @param ShibmdScopeList                $scopes
+     * @param ShibbolethMetadataScopeList    $scopes
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
      * @param bool|null                      $signRedirects
@@ -101,7 +101,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         Name $name,
         Description $description,
         MultiLocaleUrl $url,
-        ShibmdScopeList $scopes,
+        ShibbolethMetadataScopeList $scopes,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
         $signRedirects = null,

@@ -27,36 +27,36 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMeta
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 
-final class ShibmdScopeList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
+final class ShibbolethMetadataScopeList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
     /**
-     * @var ShibmdScope[]
+     * @var ShibbolethMetadataScope[]
      */
     private $scopes = [];
 
     /**
-     * @param mixed $data An array of Shibmd scope array structures
+     * @param mixed $data An array of ShibbolethMetadataScope array structures
      * @param string $propertyPath
-     * @return ShibmdScopeList
+     * @return ShibbolethMetadataScopeList
      */
     public static function deserialise($data, $propertyPath)
     {
-        Assert::isArray($data, 'List of Shibmd scopes must be array, got "%s"');
+        Assert::isArray($data, 'List of ShibbolethMetadataScopes must be array, got "%s"');
 
-        $list = new ShibmdScopeList();
+        $list = new ShibbolethMetadataScopeList();
         foreach (array_values($data) as $i => $scopeData) {
-            $list->scopes[] = ShibmdScope::deserialise($scopeData, sprintf('%s[%d]', $propertyPath, $i));
+            $list->scopes[] = ShibbolethMetadataScope::deserialise($scopeData, sprintf('%s[%d]', $propertyPath, $i));
         }
 
         return $list;
     }
 
     /**
-     * @param ShibmdScope[] $scopes
+     * @param ShibbolethMetadataScope[] $scopes
      */
     public function __construct(array $scopes = [])
     {
-        Assert::allIsInstanceOf($scopes, ShibmdScope::class);
+        Assert::allIsInstanceOf($scopes, ShibbolethMetadataScope::class);
 
         $this->scopes = $scopes;
     }
@@ -64,18 +64,18 @@ final class ShibmdScopeList implements ConfiguredMetadataValidatable, IteratorAg
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
         foreach ($this->scopes as $i => $scope) {
-            $subpathValidator = new SubpathValidator($validator, 'ShibmdScope #' . ($i + 1));
+            $subpathValidator = new SubpathValidator($validator, 'ShibbolethMetadataScope #' . ($i + 1));
             $subpathValidator->validate($scope, $context);
         }
     }
 
     /**
-     * @param ShibmdScope $scope
-     * @return ShibmdScopeList
+     * @param ShibbolethMetadataScope $scope
+     * @return ShibbolethMetadataScopeList
      */
-    public function add(ShibmdScope $scope)
+    public function add(ShibbolethMetadataScope $scope)
     {
-        return new ShibmdScopeList(array_merge($this->scopes, [$scope]));
+        return new ShibbolethMetadataScopeList(array_merge($this->scopes, [$scope]));
     }
 
     public function getIterator()
@@ -90,6 +90,6 @@ final class ShibmdScopeList implements ConfiguredMetadataValidatable, IteratorAg
 
     public function __toString()
     {
-        return sprintf('ShibmdScopeList(%s)', join(', ', array_map('strval', $this->scopes)));
+        return sprintf('ShibbolethMetadataScopeList(%s)', join(', ', array_map('strval', $this->scopes)));
     }
 }

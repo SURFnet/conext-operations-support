@@ -21,22 +21,27 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 use Mockery as m;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\RegularExpression;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibmdScope;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibmdScopeList;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibbolethMetadataScope;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibbolethMetadataScopeList;
 
-class ShibmdScopeListTest extends TestCase
+class ShibbolethMetadataScopeListTest extends TestCase
 {
     /**
      * @test
      * @group Value
      * @dataProvider scopeLists
      *
-     * @param array           $scopeListData
-     * @param ShibmdScopeList $expectedScopeList
+     * @param array                       $scopeListData
+     * @param ShibbolethMetadataScopeList $expectedScopeList
      */
-    public function scope_lists_can_be_deserialised(array $scopeListData, ShibmdScopeList $expectedScopeList)
-    {
-        $this->assertEquals($expectedScopeList, ShibmdScopeList::deserialise($scopeListData, 'shibmd.scope'));
+    public function scope_lists_can_be_deserialised(
+        array $scopeListData,
+        ShibbolethMetadataScopeList $expectedScopeList
+    ) {
+        $this->assertEquals(
+            $expectedScopeList,
+            ShibbolethMetadataScopeList::deserialise($scopeListData, 'shibmd.scope')
+        );
     }
 
     public function scopeLists()
@@ -45,20 +50,20 @@ class ShibmdScopeListTest extends TestCase
         $endsInGroningen  = 'Groningen$';
 
         return [
-            'No scopes'  => [[], new ShibmdScopeList()],
+            'No scopes'  => [[], new ShibbolethMetadataScopeList()],
             'One scope'  => [
                 [['allowed' => $schacHomeLiteral, 'regexp' => false]],
-                new ShibmdScopeList([ShibmdScope::literal($schacHomeLiteral)]),
+                new ShibbolethMetadataScopeList([ShibbolethMetadataScope::literal($schacHomeLiteral)]),
             ],
             'Two scopes' => [
                 [
                     ['allowed' => $schacHomeLiteral, 'regexp' => false],
                     ['allowed' => $endsInGroningen, 'regexp' => true],
                 ],
-                new ShibmdScopeList(
+                new ShibbolethMetadataScopeList(
                     [
-                        ShibmdScope::literal($schacHomeLiteral),
-                        ShibmdScope::regexp(new RegularExpression('~' . $endsInGroningen . '~')),
+                        ShibbolethMetadataScope::literal($schacHomeLiteral),
+                        ShibbolethMetadataScope::regexp(new RegularExpression('~' . $endsInGroningen . '~')),
                     ]
                 ),
             ],

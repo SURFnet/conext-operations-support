@@ -31,7 +31,7 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\MultiLocaleUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Name;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormatList;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibmdScopeList;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibbolethMetadataScopeList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnServiceList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
@@ -50,7 +50,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $contacts            = new ContactSet();
         $logos               = new LogoList();
         $defaultNameIdFormat = NameIdFormat::unknown();
-        $shibmdScopeList     = new ShibmdScopeList();
+        $shibmdScopeList     = new ShibbolethMetadataScopeList();
 
         $metadata = new ConfiguredMetadata(
             EntityType::SP(),
@@ -100,7 +100,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             new Name(),
             new Description(),
             new MultiLocaleUrl(),
-            new ShibmdScopeList()
+            new ShibbolethMetadataScopeList()
         );
 
         /** @var ConfiguredMetadataValidator|MockInterface $validator */
@@ -135,7 +135,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             new Name(),
             new Description(),
             new MultiLocaleUrl(),
-            new ShibmdScopeList(),
+            new ShibbolethMetadataScopeList(),
             null,
             null,
             true

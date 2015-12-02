@@ -175,7 +175,7 @@ final class ConfiguredMetadataFactory
         }
 
         $scopeData = isset($metadataData['shibmd']['scope']) ? $metadataData['shibmd']['scope'] : [];
-        $scopes = ShibmdScopeList::deserialise($scopeData, 'metadata.shibmd.scope');
+        $scopes = ShibbolethMetadataScopeList::deserialise($scopeData, 'metadata.shibmd.scope');
 
         return new ConfiguredMetadata(
             $entityType,

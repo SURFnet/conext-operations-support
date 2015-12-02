@@ -23,7 +23,7 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMeta
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
-final class ShibmdScope implements ConfiguredMetadataValidatable
+final class ShibbolethMetadataScope implements ConfiguredMetadataValidatable
 {
     /**
      * @var string|null
@@ -37,13 +37,13 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
 
     /**
      * @param string $literal
-     * @return ShibmdScope
+     * @return ShibbolethMetadataScope
      */
     public static function literal($literal)
     {
         Assert::string($literal, 'Scope value "%s" must be a string, got "%s"');
 
-        $scope = new ShibmdScope();
+        $scope = new ShibbolethMetadataScope();
         $scope->literal = $literal;
 
         return $scope;
@@ -51,24 +51,24 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
 
     /**
      * @param RegularExpression $regexp
-     * @return ShibmdScope
+     * @return ShibbolethMetadataScope
      */
     public static function regexp(RegularExpression $regexp)
     {
-        $scope = new ShibmdScope();
+        $scope = new ShibbolethMetadataScope();
         $scope->regexp = $regexp;
 
         return $scope;
     }
 
     /**
-     * @param mixed $data Array structure representing Shibmd scope
+     * @param mixed $data Array structure representing ShibbolethMetadataScope
      * @param string $propertyPath
-     * @return ShibmdScope
+     * @return ShibbolethMetadataScope
      */
     public static function deserialise($data, $propertyPath)
     {
-        Assert::keyExists($data, 'allowed', 'Shibmd scope doesn\'t contain key "%s"', $propertyPath);
+        Assert::keyExists($data, 'allowed', 'ShibbolethMetadataScope doesn\'t contain key "%s"', $propertyPath);
         Assert::string($data['allowed'], null, $propertyPath . '.allowed');
 
         $regexp = false;
@@ -92,7 +92,7 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
     {
         if ($this->literal !== null) {
             if (trim($this->literal) === '') {
-                $validator->addViolation('Literal Shibmd scope may not be blank');
+                $validator->addViolation('Literal ShibbolethMetadataScope may not be blank');
             }
 
             return;
@@ -102,10 +102,10 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
     }
 
     /**
-     * @param ShibmdScope $other
+     * @param ShibbolethMetadataScope $other
      * @return bool
      */
-    public function equals(ShibmdScope $other)
+    public function equals(ShibbolethMetadataScope $other)
     {
         return ($this->literal && $this->literal === $other->literal)
             || ($this->regexp && $other->regexp && $this->regexp->equals($other->regexp));
@@ -114,9 +114,9 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
     public function __toString()
     {
         if ($this->literal !== null) {
-            return sprintf('ShibmdScope(literal=%s)', $this->literal);
+            return sprintf('ShibbolethMetadataScope(literal=%s)', $this->literal);
         } else {
-            return sprintf('ShibmdScope(regexp=%s)', $this->regexp);
+            return sprintf('ShibbolethMetadataScope(regexp=%s)', $this->regexp);
         }
     }
 }

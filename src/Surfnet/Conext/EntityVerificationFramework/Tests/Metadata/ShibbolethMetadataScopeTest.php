@@ -21,21 +21,21 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 use Mockery as m;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\RegularExpression;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibmdScope;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibbolethMetadataScope;
 
-class ShibmdScopeTest extends TestCase
+class ShibbolethMetadataScopeTest extends TestCase
 {
     /**
      * @test
      * @group Metadata
      * @dataProvider validArrayStructuresToDeserialise
      *
-     * @param array       $arrayStructure
-     * @param ShibmdScope $expected
+     * @param array                   $arrayStructure
+     * @param ShibbolethMetadataScope $expected
      */
-    public function shibmd_scope_can_be_deserialised(array $arrayStructure, ShibmdScope $expected)
+    public function shibmd_scope_can_be_deserialised(array $arrayStructure, ShibbolethMetadataScope $expected)
     {
-        $actual = ShibmdScope::deserialise($arrayStructure, 'prop.path');
+        $actual = ShibbolethMetadataScope::deserialise($arrayStructure, 'prop.path');
 
         $this->assertTrue(
             $expected->equals($actual),
@@ -51,17 +51,17 @@ class ShibmdScopeTest extends TestCase
     public function validArrayStructuresToDeserialise()
     {
         return [
-            'Literal' => [
+            'Literal'                 => [
                 ['allowed' => 'schacRemoteClub', 'regexp' => false],
-                ShibmdScope::literal('schacRemoteClub'),
+                ShibbolethMetadataScope::literal('schacRemoteClub'),
             ],
-            'Regexp' => [
+            'Regexp'                  => [
                 ['allowed' => 'schacRemoteClub', 'regexp' => true],
-                ShibmdScope::regexp(new RegularExpression('~schacRemoteClub~')),
+                ShibbolethMetadataScope::regexp(new RegularExpression('~schacRemoteClub~')),
             ],
             'No explicit regexp flag' => [
                 ['allowed' => 'schacRemoteClub'],
-                ShibmdScope::literal('schacRemoteClub'),
+                ShibbolethMetadataScope::literal('schacRemoteClub'),
             ],
         ];
     }
