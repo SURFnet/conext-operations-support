@@ -42,20 +42,24 @@ final class RegularExpression implements ConfiguredMetadataValidatable
         $this->pattern = $pattern;
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
-        $collector = new ErrorMessageCollector();
-
-        $pattern = $this->pattern;
-        $errorMessages = $collector->collectDuring(function () use ($pattern) {
-            preg_match($pattern, 'test');
+        set_error_handler(function ($level, $message) use ($validator) {
+            $validator->addViolation(sprintf(
+                'An error would occur during execution of regular expression "%s": "%s"',
+                $this->pattern,
+                $message
+            ));
         });
+        preg_match($this->pattern, 'test');
+        restore_error_handler();
 
-        foreach ($errorMessages as $errorMessage) {
-            $validator->addViolation($errorMessage);
-        }
-
-        $message = $this->getLastPregErrorMessage($pattern);
+        $message = $this->getLastPregErrorMessage($this->pattern);
         if (!$message) {
             return;
         }

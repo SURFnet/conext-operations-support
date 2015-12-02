@@ -55,15 +55,15 @@ final class RegularExpressionTest extends TestCase
         return [
             "Delimiters don't match"   => [
                 '|pattern/',
-                ["preg_match(): No ending delimiter '|' found"],
+                ['An error would occur during execution of regular expression "|pattern/": "preg_match(): No ending delimiter \'|\' found"'],
             ],
             'Missing ending delimiter' => [
                 '|pattern',
-                ["preg_match(): No ending delimiter '|' found"],
+                ['An error would occur during execution of regular expression "|pattern": "preg_match(): No ending delimiter \'|\' found"'],
             ],
             'No delimiters'            => [
                 'z',
-                ['preg_match(): Delimiter must not be alphanumeric or backslash'],
+                ['An error would occur during execution of regular expression "z": "preg_match(): Delimiter must not be alphanumeric or backslash"'],
             ],
         ];
     }
