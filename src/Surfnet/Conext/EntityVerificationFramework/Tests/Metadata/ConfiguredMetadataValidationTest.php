@@ -21,6 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ApplicationUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\AssertionConsumerServiceList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactSet;
@@ -52,6 +53,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $defaultNameIdFormat = NameIdFormat::unknown();
         $shibmdScopeList     = new ShibbolethMetadataScopeList();
         $supportUrl          = new SupportUrl();
+        $applicationUrl      = ApplicationUrl::fromString('https://app.invalid');
 
         $metadata = new ConfiguredMetadata(
             EntityType::SP(),
@@ -65,6 +67,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             $name,
             $description,
             $supportUrl,
+            $applicationUrl,
             $shibmdScopeList
         );
 
@@ -79,6 +82,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $validator->shouldReceive('validate')->with($defaultNameIdFormat, $context)->once();
         $validator->shouldReceive('validate')->with($shibmdScopeList, $context)->once();
         $validator->shouldReceive('validate')->with($supportUrl, $context)->once();
+        $validator->shouldReceive('validate')->with($applicationUrl, $context)->once();
         $validator->shouldReceive('addViolation');
 
         $metadata->validate($validator, $context);
@@ -102,6 +106,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             new Name(),
             new Description(),
             new SupportUrl(),
+            ApplicationUrl::fromString(''),
             new ShibbolethMetadataScopeList()
         );
 
@@ -137,6 +142,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             new Name(),
             new Description(),
             new SupportUrl(),
+            ApplicationUrl::fromString(''),
             new ShibbolethMetadataScopeList(),
             null,
             null,

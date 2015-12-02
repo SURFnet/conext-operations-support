@@ -139,6 +139,11 @@ final class ConfiguredMetadataFactory
             $guestQualifier = new GuestQualifier($coinData['guest_qualifier']);
         }
 
+        $applicationUrl = ApplicationUrl::unknown();
+        if (isset($coinData['application_url'])) {
+            $applicationUrl = ApplicationUrl::fromString($coinData['application_url']);
+        }
+
         $freeformProperties = [];
         $multiLocaleFreeformProperties = [
             'OrganizationDisplayName', 'OrganizationName', 'OrganizationURL', 'displayName', 'keywords'
@@ -189,6 +194,7 @@ final class ConfiguredMetadataFactory
             $name,
             $description,
             $url,
+            $applicationUrl,
             $scopes,
             $publishedMetadataUrl,
             $certData,

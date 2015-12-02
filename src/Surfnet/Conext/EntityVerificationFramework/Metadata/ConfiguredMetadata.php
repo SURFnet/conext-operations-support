@@ -53,6 +53,8 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     private $signRedirects;
     /** @var SupportUrl */
     private $supportUrl;
+    /** @var ApplicationUrl */
+    private $applicationUrl;
     /** @var Keywords */
     private $keywords;
     /** @var NameIdFormat */
@@ -80,6 +82,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
      * @param Name                           $name
      * @param Description                    $description
      * @param SupportUrl                     $supportUrl
+     * @param ApplicationUrl                 $applicationUrl
      * @param ShibbolethMetadataScopeList    $scopes
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
@@ -101,6 +104,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         Name $name,
         Description $description,
         SupportUrl $supportUrl,
+        ApplicationUrl $applicationUrl,
         ShibbolethMetadataScopeList $scopes,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
@@ -122,6 +126,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         $this->logos                     = $logos;
         $this->signRedirects             = $signRedirects;
         $this->supportUrl                = $supportUrl;
+        $this->applicationUrl            = $applicationUrl;
         $this->scopes                    = $scopes;
         $this->keywords                  = $keywords;
         $this->defaultNameIdFormat       = $defaultNameIdFormat;
@@ -148,6 +153,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
 
         if ($this->entityType->isServiceProvider()) {
             $validator->validate($this->supportUrl, $context);
+            $validator->validate($this->applicationUrl, $context);
         }
     }
 
