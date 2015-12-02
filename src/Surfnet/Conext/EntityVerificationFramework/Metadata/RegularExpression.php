@@ -55,15 +55,14 @@ final class RegularExpression implements ConfiguredMetadataValidatable
                 $message
             ));
         });
-        preg_match($this->pattern, 'test');
+        $result = preg_match($this->pattern, 'test');
         restore_error_handler();
 
-        $message = $this->getLastPregErrorMessage($this->pattern);
-        if (!$message) {
+        if ($result !== false) {
             return;
         }
 
-        $validator->addViolation($message);
+        $validator->addViolation('Regular expression would not execute: it is somehow invalid');
     }
 
     /**
@@ -78,37 +77,5 @@ final class RegularExpression implements ConfiguredMetadataValidatable
     public function __toString()
     {
         return $this->pattern;
-    }
-
-    /**
-     * @param string $pattern The pattern that may have caused an error.
-     * @return null|string
-     */
-    private function getLastPregErrorMessage($pattern)
-    {
-        $error = preg_last_error();
-
-        switch ($error) {
-            case PREG_NO_ERROR:
-                return null;
-            case PREG_INTERNAL_ERROR:
-                return sprintf('Regular expression "%s" would cause an internal preg error', $pattern);
-            case PREG_BACKTRACK_LIMIT_ERROR:
-                return sprintf('Regular expression "%s" would cause a backtrack limit error', $pattern);
-            case PREG_RECURSION_LIMIT_ERROR:
-                return sprintf('Regular expression "%s" would cause a recursion limit error', $pattern);
-            case PREG_BAD_UTF8_ERROR:
-                return sprintf('Regular expression "%s" would cause a bad UTF-8 error', $pattern);
-            case PREG_BAD_UTF8_OFFSET_ERROR:
-                return sprintf('Regular expression "%s" would cause a bad UTF-8 offset error', $pattern);
-        }
-
-        if (defined('PREG_JIT_STACKLIMIT_ERROR') && $error === PREG_JIT_STACKLIMIT_ERROR) {
-            return sprintf('Regular expression "%s" would cause a JIT stack limit error', $pattern);
-        }
-
-        throw new LogicException(
-            sprintf('An unknown error occurred (%d) during execution of a Perl-compatible regular expression', $error)
-        );
     }
 }
