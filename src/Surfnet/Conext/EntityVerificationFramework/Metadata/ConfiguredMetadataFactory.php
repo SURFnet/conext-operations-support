@@ -109,9 +109,9 @@ final class ConfiguredMetadataFactory
             $assertionConsumerServices = new AssertionConsumerServiceList();
         }
 
-        $url = new MultiLocaleUrl();
+        $url = new SupportUrl();
         if (isset($metadataData['url'])) {
-            $url = MultiLocaleUrl::deserialize($metadataData['url'], 'metadata.url');
+            $url = SupportUrl::deserialize($metadataData['url'], 'metadata.url');
         }
 
         if (isset($metadataData['SingleSignOnService'])) {

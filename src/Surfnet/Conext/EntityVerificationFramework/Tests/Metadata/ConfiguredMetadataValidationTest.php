@@ -27,12 +27,12 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactSet;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Description;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Keywords;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoList;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\MultiLocaleUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Name;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormatList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibbolethMetadataScopeList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnServiceList;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\SupportUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
@@ -51,6 +51,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $logos               = new LogoList();
         $defaultNameIdFormat = NameIdFormat::unknown();
         $shibmdScopeList     = new ShibbolethMetadataScopeList();
+        $supportUrl          = new SupportUrl();
 
         $metadata = new ConfiguredMetadata(
             EntityType::SP(),
@@ -63,7 +64,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             $logos,
             $name,
             $description,
-            new MultiLocaleUrl(),
+            $supportUrl,
             $shibmdScopeList
         );
 
@@ -77,6 +78,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $validator->shouldReceive('validate')->with($logos, $context)->once();
         $validator->shouldReceive('validate')->with($defaultNameIdFormat, $context)->once();
         $validator->shouldReceive('validate')->with($shibmdScopeList, $context)->once();
+        $validator->shouldReceive('validate')->with($supportUrl, $context)->once();
         $validator->shouldReceive('addViolation');
 
         $metadata->validate($validator, $context);
@@ -99,7 +101,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             new LogoList(),
             new Name(),
             new Description(),
-            new MultiLocaleUrl(),
+            new SupportUrl(),
             new ShibbolethMetadataScopeList()
         );
 
@@ -134,7 +136,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             new LogoList(),
             new Name(),
             new Description(),
-            new MultiLocaleUrl(),
+            new SupportUrl(),
             new ShibbolethMetadataScopeList(),
             null,
             null,
