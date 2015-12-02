@@ -44,7 +44,7 @@ class ConfiguredMetadataValidationTest extends TestCase
      * @test
      * @group Metadata
      */
-    public function it_validates_its_metadata_objects()
+    public function sp_metadata_can_be_validated()
     {
         $name                = new Name();
         $description         = new Description();
@@ -83,6 +83,51 @@ class ConfiguredMetadataValidationTest extends TestCase
         $validator->shouldReceive('validate')->with($shibmdScopeList, $context)->once();
         $validator->shouldReceive('validate')->with($supportUrl, $context)->once();
         $validator->shouldReceive('validate')->with($applicationUrl, $context)->once();
+        $validator->shouldReceive('addViolation');
+
+        $metadata->validate($validator, $context);
+    }
+    /**
+     * @test
+     * @group Metadata
+     */
+    public function idp_metadata_can_be_validated()
+    {
+        $name                = new Name();
+        $description         = new Description();
+        $contacts            = new ContactSet();
+        $logos               = new LogoList();
+        $defaultNameIdFormat = NameIdFormat::unknown();
+        $shibmdScopeList     = new ShibbolethMetadataScopeList();
+        $supportUrl          = new SupportUrl();
+        $applicationUrl      = ApplicationUrl::fromString('https://app.invalid');
+
+        $metadata   = new ConfiguredMetadata(
+            EntityType::IdP(),
+            new AssertionConsumerServiceList(),
+            new SingleSignOnServiceList(),
+            $defaultNameIdFormat,
+            new NameIdFormatList(),
+            $contacts,
+            new Keywords(),
+            $logos,
+            $name,
+            $description,
+            $supportUrl,
+            $applicationUrl,
+            $shibmdScopeList
+        );
+
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var ConfiguredMetadataValidator|MockInterface $validator */
+        $validator = m::mock(ConfiguredMetadataValidator::class);
+        $validator->shouldReceive('validate')->with($name, $context)->once();
+        $validator->shouldReceive('validate')->with($description, $context)->once();
+        $validator->shouldReceive('validate')->with($contacts, $context)->once();
+        $validator->shouldReceive('validate')->with($logos, $context)->once();
+        $validator->shouldReceive('validate')->with($defaultNameIdFormat, $context)->once();
+        $validator->shouldReceive('validate')->with($shibmdScopeList, $context)->once();
         $validator->shouldReceive('addViolation');
 
         $metadata->validate($validator, $context);
