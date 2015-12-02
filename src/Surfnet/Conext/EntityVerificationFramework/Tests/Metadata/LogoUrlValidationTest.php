@@ -33,7 +33,7 @@ class LogoUrlValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function logo_url_must_be_hosted_on_static_dot_surfconext_dot_nl()
     {
@@ -60,7 +60,7 @@ class LogoUrlValidationTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function logo_url_can_be_unavailable()
     {

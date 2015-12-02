@@ -41,7 +41,7 @@ class ConfiguredMetadataValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_metadata_objects()
     {
@@ -86,7 +86,7 @@ class ConfiguredMetadataValidationTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_requires_the_redirect_signing_option_to_be_configured()
     {
@@ -121,7 +121,7 @@ class ConfiguredMetadataValidationTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_recognizes_the_redirect_signing_option_is_configured()
     {

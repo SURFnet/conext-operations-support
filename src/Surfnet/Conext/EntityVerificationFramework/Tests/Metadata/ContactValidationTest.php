@@ -31,7 +31,7 @@ class ContactValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_type_and_email()
     {
@@ -52,7 +52,7 @@ class ContactValidationTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_given_name_and_surname()
     {

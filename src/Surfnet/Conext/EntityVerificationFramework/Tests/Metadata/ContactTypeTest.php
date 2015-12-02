@@ -26,7 +26,7 @@ class ContactTypeTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function contact_types_can_equal_each_other()
     {
@@ -43,7 +43,7 @@ class ContactTypeTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function contact_types_can_not_equal_each_other()
     {

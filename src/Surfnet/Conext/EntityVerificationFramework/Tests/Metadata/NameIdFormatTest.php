@@ -33,7 +33,7 @@ class NameIdFormatTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_created()
     {
@@ -42,7 +42,7 @@ class NameIdFormatTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider nonStringProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *
@@ -55,7 +55,7 @@ class NameIdFormatTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_equal_other_formats()
     {
@@ -67,7 +67,7 @@ class NameIdFormatTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_not_equal_other_formats()
     {
@@ -79,7 +79,7 @@ class NameIdFormatTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_unknown()
     {
@@ -88,7 +88,7 @@ class NameIdFormatTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_invalid()
     {
@@ -108,7 +108,7 @@ class NameIdFormatTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_valid()
     {

@@ -32,7 +32,7 @@ final class EmailAddressTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_deserializes_emails()
     {
@@ -41,7 +41,7 @@ final class EmailAddressTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider nonStringProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *
@@ -54,7 +54,7 @@ final class EmailAddressTest extends TestCase
     
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_invalid()
     {
@@ -74,7 +74,7 @@ final class EmailAddressTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_valid()
     {
@@ -91,7 +91,7 @@ final class EmailAddressTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_emails_can_equal_each_other()
     {
@@ -106,7 +106,7 @@ final class EmailAddressTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_emails_can_differ()
     {
@@ -128,7 +128,7 @@ final class EmailAddressTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function an_email_address_can_be_unknown()
     {

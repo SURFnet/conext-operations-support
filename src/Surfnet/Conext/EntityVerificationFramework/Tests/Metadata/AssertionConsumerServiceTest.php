@@ -27,7 +27,7 @@ final class AssertionConsumerServiceTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_deserialized()
     {
@@ -49,7 +49,7 @@ final class AssertionConsumerServiceTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function the_binding_can_be_omitted()
     {
@@ -70,7 +70,7 @@ final class AssertionConsumerServiceTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function the_location_can_be_omitted()
     {
@@ -90,7 +90,7 @@ final class AssertionConsumerServiceTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_acss_can_be_equals()
     {

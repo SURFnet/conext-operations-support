@@ -29,7 +29,7 @@ class DescriptionTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider descriptionsAndTheirViolations
      *
      * @param Description $description

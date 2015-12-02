@@ -29,7 +29,7 @@ class NameTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider namesAndTheirViolations
      *
      * @param Name $name

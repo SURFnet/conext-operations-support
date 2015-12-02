@@ -25,7 +25,7 @@ final class ContactTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_deserialized()
     {
@@ -40,7 +40,7 @@ final class ContactTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_contacts_can_equal_each_other()
     {
@@ -58,7 +58,7 @@ final class ContactTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_contacts_can_not_be_equal()
     {

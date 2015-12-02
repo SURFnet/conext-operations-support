@@ -32,7 +32,7 @@ class ContactSetValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_contacts()
     {

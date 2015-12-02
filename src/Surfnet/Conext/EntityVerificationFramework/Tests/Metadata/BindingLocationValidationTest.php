@@ -33,7 +33,7 @@ class BindingLocationValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function logo_url_can_be_unavailable()
     {

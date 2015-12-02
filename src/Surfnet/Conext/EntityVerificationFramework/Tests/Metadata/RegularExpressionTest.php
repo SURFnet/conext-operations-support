@@ -29,7 +29,7 @@ final class RegularExpressionTest extends TestCase
 {
     /**
      * @test
-     * @group Value
+     * @group Metadata
      * @dataProvider invalidRegularExpressions
      *
      * @param string $pattern

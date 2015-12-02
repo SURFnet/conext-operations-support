@@ -28,7 +28,7 @@ class ShibbolethMetadataScopeListTest extends TestCase
 {
     /**
      * @test
-     * @group Value
+     * @group Metadata
      * @dataProvider scopeLists
      *
      * @param array                       $scopeListData
