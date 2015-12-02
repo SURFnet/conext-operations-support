@@ -67,4 +67,40 @@ final class RegularExpressionTest extends TestCase
             ],
         ];
     }
+
+    /**
+     * @test
+     * @group Metadata
+     */
+    public function regular_expressions_can_be_equal()
+    {
+        $this->assertTrue(
+            (new RegularExpression('~33~'))->equals(new RegularExpression('~33~')),
+            'Expected regular expressions to equal each other'
+        );
+        $this->assertTrue(
+            (new RegularExpression(''))->equals(new RegularExpression('')),
+            'Expected regular expressions to equal each other'
+        );
+    }
+
+    /**
+     * @test
+     * @group Metadata
+     */
+    public function regular_expressions_can_be_unequal()
+    {
+        $this->assertFalse(
+            (new RegularExpression('~abc~'))->equals(new RegularExpression('~33~')),
+            'Expected regular expressions to not equal each other'
+        );
+        $this->assertFalse(
+            (new RegularExpression('~abc~'))->equals(new RegularExpression('/abc/')),
+            'Expected regular expressions to not equal each other'
+        );
+        $this->assertFalse(
+            (new RegularExpression(''))->equals(new RegularExpression('/abc/')),
+            'Expected regular expressions to not equal each other'
+        );
+    }
 }

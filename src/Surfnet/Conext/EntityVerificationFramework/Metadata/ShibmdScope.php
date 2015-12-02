@@ -26,12 +26,12 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMeta
 final class ShibmdScope implements ConfiguredMetadataValidatable
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $literal;
 
     /**
-     * @var RegularExpression
+     * @var RegularExpression|null
      */
     private $regexp;
 
@@ -69,11 +69,15 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
     public static function deserialise($data, $propertyPath)
     {
         Assert::keyExists($data, 'allowed', 'Shibmd scope doesn\'t contain key "%s"', $propertyPath);
-        Assert::keyExists($data, 'regexp', 'Shibmd scope doesn\'t contain key "%s"', $propertyPath);
         Assert::string($data['allowed'], null, $propertyPath . '.allowed');
-        Assert::boolean($data['regexp'], null, $propertyPath . '.regexp');
 
-        if ($data['regexp']) {
+        $regexp = false;
+        if (array_key_exists('regexp', $data)) {
+            Assert::boolean($data['regexp'], null, $propertyPath . '.regexp');
+            $regexp = $data['regexp'];
+        }
+
+        if ($regexp) {
             return self::regexp(new RegularExpression('~' . $data['allowed'] . '~'));
         } else {
             return self::literal($data['allowed']);
@@ -95,6 +99,16 @@ final class ShibmdScope implements ConfiguredMetadataValidatable
         }
 
         $validator->validate($this->regexp, $context);
+    }
+
+    /**
+     * @param ShibmdScope $other
+     * @return bool
+     */
+    public function equals(ShibmdScope $other)
+    {
+        return ($this->literal && $this->literal === $other->literal)
+            || ($this->regexp && $other->regexp && $this->regexp->equals($other->regexp));
     }
 
     public function __toString()

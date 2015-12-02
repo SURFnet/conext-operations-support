@@ -66,6 +66,15 @@ final class RegularExpression implements ConfiguredMetadataValidatable
         $validator->addViolation($message);
     }
 
+    /**
+     * @param RegularExpression $other
+     * @return bool
+     */
+    public function equals(RegularExpression $other)
+    {
+        return $this->pattern === $other->pattern;
+    }
+
     public function __toString()
     {
         return $this->pattern;
