@@ -58,11 +58,9 @@ final class RegularExpression implements ConfiguredMetadataValidatable
         $result = preg_match($this->pattern, 'test');
         restore_error_handler();
 
-        if ($result !== false) {
-            return;
+        if ($result === false) {
+            $validator->addViolation('Regular expression would not execute: it is somehow invalid');
         }
-
-        $validator->addViolation('Regular expression would not execute: it is somehow invalid');
     }
 
     /**
