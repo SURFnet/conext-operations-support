@@ -39,14 +39,14 @@ final class ContactSet implements ConfiguredMetadataValidatable, IteratorAggrega
      * @param string  $propertyPath
      * @return ContactSet
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
-        Assert::isArray($data, 'Data to deserialise must be an array', $propertyPath);
+        Assert::isArray($data, 'Data to deserialize must be an array', $propertyPath);
 
         return new ContactSet(
             array_map(
                 function ($data) use ($propertyPath) {
-                    return Contact::deserialise($data, $propertyPath . '[]');
+                    return Contact::deserialize($data, $propertyPath . '[]');
                 },
                 $data
             )

@@ -34,11 +34,11 @@ final class SingleSignOnService
      * @param array $data
      * @return SingleSignOnService
      */
-    public static function deserialise($data)
+    public static function deserialize($data)
     {
         $binding = null;
         if (isset($data['Binding'])) {
-            $binding = Binding::deserialise($data['Binding']);
+            $binding = Binding::deserialize($data['Binding']);
         }
 
         $location = null;
@@ -55,7 +55,7 @@ final class SingleSignOnService
 
         $binding = null;
         if ($ssoXml['Binding'] !== null) {
-            $binding = Binding::deserialise((string) $ssoXml['Binding']);
+            $binding = Binding::deserialize((string) $ssoXml['Binding']);
         }
 
         $location = null;

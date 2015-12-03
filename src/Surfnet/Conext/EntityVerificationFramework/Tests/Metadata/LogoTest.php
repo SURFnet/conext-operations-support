@@ -30,11 +30,11 @@ class LogoTest extends TestCase
      * @test
      * @group value
      */
-    public function it_can_be_deserialised()
+    public function it_can_be_deserialized()
     {
-        Logo::deserialise(['url' => 'http://.png'], '');
-        Logo::deserialise(['width' => '96'], '');
-        Logo::deserialise(['height' => '72'], '');
+        Logo::deserialize(['url' => 'http://.png'], '');
+        Logo::deserialize(['width' => '96'], '');
+        Logo::deserialize(['height' => '72'], '');
     }
 
     /**
@@ -47,7 +47,7 @@ class LogoTest extends TestCase
      */
     public function width_must_be_string($nonString)
     {
-        Logo::deserialise(['width' => $nonString], '');
+        Logo::deserialize(['width' => $nonString], '');
     }
 
     /**
@@ -60,7 +60,7 @@ class LogoTest extends TestCase
      */
     public function height_must_be_string($nonString)
     {
-        Logo::deserialise(['height' => $nonString], '');
+        Logo::deserialize(['height' => $nonString], '');
     }
 
     public function invalidImageSizes()

@@ -39,13 +39,13 @@ final class ShibbolethMetadataScopeList implements ConfiguredMetadataValidatable
      * @param string $propertyPath
      * @return ShibbolethMetadataScopeList
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         Assert::isArray($data, 'List of ShibbolethMetadataScopes must be array, got "%s"');
 
         $list = new ShibbolethMetadataScopeList();
         foreach (array_values($data) as $i => $scopeData) {
-            $list->scopes[] = ShibbolethMetadataScope::deserialise($scopeData, sprintf('%s[%d]', $propertyPath, $i));
+            $list->scopes[] = ShibbolethMetadataScope::deserialize($scopeData, sprintf('%s[%d]', $propertyPath, $i));
         }
 
         return $list;

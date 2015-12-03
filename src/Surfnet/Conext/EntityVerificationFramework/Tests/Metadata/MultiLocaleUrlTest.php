@@ -30,9 +30,9 @@ final class MultiLocaleUrlTest extends TestCase
      * @test
      * @group value
      */
-    public function it_deserialises_urls()
+    public function it_deserializes_urls()
     {
-        MultiLocaleUrl::deserialise(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
+        MultiLocaleUrl::deserialize(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
     }
 
     /**
@@ -45,7 +45,7 @@ final class MultiLocaleUrlTest extends TestCase
      */
     public function it_doesnt_accept_non_strings_as_url($nonString)
     {
-        MultiLocaleUrl::deserialise(['nl' => $nonString, 'en' => 'https://domain.invalid'], '');
+        MultiLocaleUrl::deserialize(['nl' => $nonString, 'en' => 'https://domain.invalid'], '');
     }
 
     /**
@@ -54,7 +54,7 @@ final class MultiLocaleUrlTest extends TestCase
      */
     public function it_can_test_whether_it_contains_a_valid_url_for_a_locale()
     {
-        $url = MultiLocaleUrl::deserialise(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
+        $url = MultiLocaleUrl::deserialize(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
 
         $this->assertFalse($url->hasValidUrlForLocale('de'));
         $this->assertFalse($url->hasValidUrlForLocale('nl'));
@@ -67,7 +67,7 @@ final class MultiLocaleUrlTest extends TestCase
      */
     public function it_is_valid_when_all_its_urls_are_valid()
     {
-        $url = MultiLocaleUrl::deserialise(['nl' => 'ftp://leech-access.invalid:21', 'en' => 'https://domain.invalid'], '');
+        $url = MultiLocaleUrl::deserialize(['nl' => 'ftp://leech-access.invalid:21', 'en' => 'https://domain.invalid'], '');
         $this->assertTrue($url->isValid());
     }
 
@@ -77,7 +77,7 @@ final class MultiLocaleUrlTest extends TestCase
      */
     public function it_is_invalid_when_some_of_its_urls_are_invalid()
     {
-        $url = MultiLocaleUrl::deserialise(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
+        $url = MultiLocaleUrl::deserialize(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
         $this->assertFalse($url->isValid());
     }
 
@@ -87,8 +87,8 @@ final class MultiLocaleUrlTest extends TestCase
      */
     public function two_urls_can_equal_each_other()
     {
-        $url0 = MultiLocaleUrl::deserialise(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
-        $url1 = MultiLocaleUrl::deserialise(['en' => 'https://domain.invalid', 'nl' => 'meh'], '');
+        $url0 = MultiLocaleUrl::deserialize(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
+        $url1 = MultiLocaleUrl::deserialize(['en' => 'https://domain.invalid', 'nl' => 'meh'], '');
 
         $this->assertTrue($url0->equals($url1));
     }
@@ -99,8 +99,8 @@ final class MultiLocaleUrlTest extends TestCase
      */
     public function two_urls_can_differ()
     {
-        $url0 = MultiLocaleUrl::deserialise(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
-        $url1 = MultiLocaleUrl::deserialise(['nl' => 'meh'], '');
+        $url0 = MultiLocaleUrl::deserialize(['nl' => 'meh', 'en' => 'https://domain.invalid'], '');
+        $url1 = MultiLocaleUrl::deserialize(['nl' => 'meh'], '');
 
         $this->assertFalse($url0->equals($url1));
     }
@@ -115,6 +115,6 @@ final class MultiLocaleUrlTest extends TestCase
      */
     public function it_doesnt_accept_non_strings_as_locale($key)
     {
-        MultiLocaleUrl::deserialise([$key => 'meh', 'en' => 'https://domain.invalid'], '');
+        MultiLocaleUrl::deserialize([$key => 'meh', 'en' => 'https://domain.invalid'], '');
     }
 }

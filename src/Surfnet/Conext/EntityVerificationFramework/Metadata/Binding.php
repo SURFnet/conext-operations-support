@@ -43,7 +43,7 @@ final class Binding
      * @param mixed $data
      * @return Binding
      */
-    public static function deserialise($data)
+    public static function deserialize($data)
     {
         $binding = new self();
         $binding->binding = $data;

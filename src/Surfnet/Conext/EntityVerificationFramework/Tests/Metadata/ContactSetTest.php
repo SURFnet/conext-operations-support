@@ -30,8 +30,8 @@ final class ContactSetTest extends TestCase
      */
     public function it_can_create_a_set_of_two_contacts()
     {
-        $contact0 = Contact::deserialise(['givenName' => 'Robèrt'], '');
-        $contact1 = Contact::deserialise(['givenName' => 'Jean-Claude'], '');
+        $contact0 = Contact::deserialize(['givenName' => 'Robèrt'], '');
+        $contact1 = Contact::deserialize(['givenName' => 'Jean-Claude'], '');
         new ContactSet([$contact0, $contact1]);
     }
     /**
@@ -49,10 +49,10 @@ final class ContactSetTest extends TestCase
      */
     public function it_can_check_whether_it_contains_a_contact()
     {
-        $set = new ContactSet([Contact::deserialise(['givenName' => 'Robèrt'], '')]);
+        $set = new ContactSet([Contact::deserialize(['givenName' => 'Robèrt'], '')]);
 
-        $this->assertTrue($set->contains(Contact::deserialise(['givenName' => 'Robèrt'], '')));
-        $this->assertFalse($set->contains(Contact::deserialise(['givenName' => 'Jean-Claude'], '')));
+        $this->assertTrue($set->contains(Contact::deserialize(['givenName' => 'Robèrt'], '')));
+        $this->assertFalse($set->contains(Contact::deserialize(['givenName' => 'Jean-Claude'], '')));
     }
 
     /**
@@ -61,8 +61,8 @@ final class ContactSetTest extends TestCase
      */
     public function it_is_countable()
     {
-        $contact0 = Contact::deserialise(['givenName' => 'Robèrt'], '');
-        $contact1 = Contact::deserialise(['givenName' => 'Jean-Claude'], '');
+        $contact0 = Contact::deserialize(['givenName' => 'Robèrt'], '');
+        $contact1 = Contact::deserialize(['givenName' => 'Jean-Claude'], '');
         $set = new ContactSet([$contact0, $contact1]);
 
         $this->assertCount(2, $set);
@@ -75,15 +75,15 @@ final class ContactSetTest extends TestCase
     public function it_behaves_as_a_set()
     {
         $set = new ContactSet([
-            Contact::deserialise(['contactType' => 'technical'], ''),
-            Contact::deserialise(['contactType' => 'technical'], ''),
+            Contact::deserialize(['contactType' => 'technical'], ''),
+            Contact::deserialize(['contactType' => 'technical'], ''),
         ]);
         $this->assertCount(1, $set);
 
-        $set = $set->add(Contact::deserialise(['givenName' => 'Renault', 'surName' => 'du Grande'], ''));
+        $set = $set->add(Contact::deserialize(['givenName' => 'Renault', 'surName' => 'du Grande'], ''));
         $this->assertCount(2, $set);
 
-        $set = $set->add(Contact::deserialise(['contactType' => 'technical'], ''));
+        $set = $set->add(Contact::deserialize(['contactType' => 'technical'], ''));
         $this->assertCount(2, $set);
     }
 }

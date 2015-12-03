@@ -34,7 +34,7 @@ final class EmailAddressTest extends TestCase
      * @test
      * @group value
      */
-    public function it_deserialises_emails()
+    public function it_deserializes_emails()
     {
         EmailAddress::fromString('juliette.dupree+spam@that.invalid');
     }

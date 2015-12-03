@@ -29,9 +29,9 @@ final class AssertionConsumerServiceTest extends TestCase
      * @test
      * @group value
      */
-    public function it_can_be_deserialised()
+    public function it_can_be_deserialized()
     {
-        AssertionConsumerService::deserialise([
+        AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
             'Location' => 'samba://media.invalid'
         ]);
@@ -43,7 +43,7 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function it_has_a_binding()
     {
-        $acs = AssertionConsumerService::deserialise([
+        $acs = AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
             'Location' => 'samba://media.invalid'
         ]);
@@ -58,7 +58,7 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function it_has_a_location()
     {
-        $acs = AssertionConsumerService::deserialise([
+        $acs = AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
             'Location' => 'samba://media.invalid'
         ]);
@@ -73,7 +73,7 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function it_is_valid()
     {
-        $acs = AssertionConsumerService::deserialise([
+        $acs = AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
             'Location' => 'samba://media.invalid'
         ]);
@@ -87,7 +87,7 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function the_binding_can_be_omitted()
     {
-        $acs = AssertionConsumerService::deserialise([
+        $acs = AssertionConsumerService::deserialize([
             'Location' => 'samba://media.invalid'
         ]);
 
@@ -103,7 +103,7 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function when_the_binding_is_omitted_the_binding_is_not_available()
     {
-        $acs = AssertionConsumerService::deserialise([
+        $acs = AssertionConsumerService::deserialize([
             'Location' => 'samba://media.invalid'
         ]);
         $acs->getBinding();
@@ -115,7 +115,7 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function the_location_can_be_omitted()
     {
-        $acs = AssertionConsumerService::deserialise([
+        $acs = AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
         ]);
 
@@ -131,7 +131,7 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function when_the_location_is_omitted_the_location_is_not_available()
     {
-        $acs = AssertionConsumerService::deserialise([
+        $acs = AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
         ]);
         $acs->getLocation();
@@ -143,11 +143,11 @@ final class AssertionConsumerServiceTest extends TestCase
      */
     public function two_acss_can_be_equals()
     {
-        $acs0 = AssertionConsumerService::deserialise([
+        $acs0 = AssertionConsumerService::deserialize([
             'Binding' => Binding::BINDING_HTTP_POST,
             'Location' => 'samba://media.invalid',
         ]);
-        $acs1 = AssertionConsumerService::deserialise([
+        $acs1 = AssertionConsumerService::deserialize([
             'Location' => 'samba://media.invalid',
             'Binding' => Binding::BINDING_HTTP_POST,
         ]);

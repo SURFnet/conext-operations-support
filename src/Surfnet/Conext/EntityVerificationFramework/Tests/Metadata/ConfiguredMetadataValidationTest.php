@@ -121,7 +121,7 @@ class ConfiguredMetadataValidationTest extends TestCase
      * @test
      * @group value
      */
-    public function it_recognises_the_redirect_signing_option_is_configured()
+    public function it_recognizes_the_redirect_signing_option_is_configured()
     {
         $metadata = new ConfiguredMetadata(
             EntityType::SP(),

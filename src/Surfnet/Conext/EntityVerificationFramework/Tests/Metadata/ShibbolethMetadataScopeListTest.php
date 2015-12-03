@@ -34,13 +34,13 @@ class ShibbolethMetadataScopeListTest extends TestCase
      * @param array                       $scopeListData
      * @param ShibbolethMetadataScopeList $expectedScopeList
      */
-    public function scope_lists_can_be_deserialised(
+    public function scope_lists_can_be_deserialized(
         array $scopeListData,
         ShibbolethMetadataScopeList $expectedScopeList
     ) {
         $this->assertEquals(
             $expectedScopeList,
-            ShibbolethMetadataScopeList::deserialise($scopeListData, 'shibmd.scope')
+            ShibbolethMetadataScopeList::deserialize($scopeListData, 'shibmd.scope')
         );
     }
 

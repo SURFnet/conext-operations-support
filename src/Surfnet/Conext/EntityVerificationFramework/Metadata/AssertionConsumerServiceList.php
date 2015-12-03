@@ -35,7 +35,7 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
      * @param string $propertyPath
      * @return AssertionConsumerServiceList
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         Assert::isArray(
             $data,
@@ -46,7 +46,7 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
         $list = new self();
         $list->acss = array_map(
             function ($data) {
-                return AssertionConsumerService::deserialise($data);
+                return AssertionConsumerService::deserialize($data);
             },
             $data
         );

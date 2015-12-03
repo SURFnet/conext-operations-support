@@ -64,23 +64,23 @@ class LogoValidationTest extends TestCase
     {
         return [
             'logo URL not hosted by SURFconext' => [
-                Logo::deserialise(['url' => 'https://logo.invalid/', 'width' => '100', 'height' => '100'], 'propPath'),
+                Logo::deserialize(['url' => 'https://logo.invalid/', 'width' => '100', 'height' => '100'], 'propPath'),
                 'Logo URL "https://logo.invalid/" does not match https://static.surfconext.nl/logos/idp/<name>.png'
             ],
             'logo width not a stringy number' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => 'dd', 'height' => '100'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => 'dd', 'height' => '100'], 'propPath'),
                 'Logo width "dd" is invalid: must be a number larger than 0'
             ],
             'logo width lower than 1' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '0', 'height' => '100'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '0', 'height' => '100'], 'propPath'),
                 'Logo width "0" is invalid: must be a number larger than 0'
             ],
             'logo height not a stringy number' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => 'dd'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => 'dd'], 'propPath'),
                 'Logo height "dd" is invalid: must be a number larger than 0'
             ],
             'logo height lower than 1' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => '0'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => '0'], 'propPath'),
                 'Logo height "0" is invalid: must be a number larger than 0'
             ],
         ];

@@ -66,7 +66,7 @@ final class ShibbolethMetadataScope implements ConfiguredMetadataValidatable
      * @param string $propertyPath
      * @return ShibbolethMetadataScope
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         Assert::keyExists($data, 'allowed', 'ShibbolethMetadataScope doesn\'t contain key "%s"', $propertyPath);
         Assert::string($data['allowed'], null, $propertyPath . '.allowed');

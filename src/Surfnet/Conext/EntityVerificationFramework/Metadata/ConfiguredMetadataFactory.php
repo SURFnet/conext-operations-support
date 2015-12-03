@@ -31,7 +31,7 @@ final class ConfiguredMetadataFactory
      * @param mixed $data
      * @return ConfiguredMetadata
      */
-    public static function deserialise($data)
+    public static function deserialize($data)
     {
         Assert::isArray($data, 'Configured metadata data must be an array structure');
 
@@ -48,7 +48,7 @@ final class ConfiguredMetadataFactory
         $metadataData = $data['metadata'];
 
         if (isset($metadataData['contacts'])) {
-            $contacts = ContactSet::deserialise($metadataData['contacts'], 'metadata.contacts');
+            $contacts = ContactSet::deserialize($metadataData['contacts'], 'metadata.contacts');
         } else {
             $contacts = new ContactSet();
         }
@@ -67,7 +67,7 @@ final class ConfiguredMetadataFactory
             $logoData = $metadataData['logo'];
             Assert::isArray($logoData, 'SP metadata\'s "logo" key must contain an array', 'metadata.logo');
 
-            $logos = LogoList::deserialise($metadataData['logo'], 'metadata.logo');
+            $logos = LogoList::deserialize($metadataData['logo'], 'metadata.logo');
         } else {
             $logos = new LogoList();
         }
@@ -101,7 +101,7 @@ final class ConfiguredMetadataFactory
         }
 
         if (isset($metadataData['AssertionConsumerService'])) {
-            $assertionConsumerServices = AssertionConsumerServiceList::deserialise(
+            $assertionConsumerServices = AssertionConsumerServiceList::deserialize(
                 $metadataData['AssertionConsumerService'],
                 'metadata.AssertionConsumerService'
             );
@@ -111,11 +111,11 @@ final class ConfiguredMetadataFactory
 
         $url = new MultiLocaleUrl();
         if (isset($metadataData['url'])) {
-            $url = MultiLocaleUrl::deserialise($metadataData['url'], 'metadata.url');
+            $url = MultiLocaleUrl::deserialize($metadataData['url'], 'metadata.url');
         }
 
         if (isset($metadataData['SingleSignOnService'])) {
-            $singleSignOnServices = SingleSignOnServiceList::deserialise(
+            $singleSignOnServices = SingleSignOnServiceList::deserialize(
                 $metadataData['SingleSignOnService'],
                 'metadata.SingleSignOnService'
             );
@@ -175,7 +175,7 @@ final class ConfiguredMetadataFactory
         }
 
         $scopeData = isset($metadataData['shibmd']['scope']) ? $metadataData['shibmd']['scope'] : [];
-        $scopes = ShibbolethMetadataScopeList::deserialise($scopeData, 'metadata.shibmd.scope');
+        $scopes = ShibbolethMetadataScopeList::deserialize($scopeData, 'metadata.shibmd.scope');
 
         return new ConfiguredMetadata(
             $entityType,

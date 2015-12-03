@@ -32,7 +32,7 @@ final class MultiLocaleUrl
      * @param string   $propertyPath
      * @return MultiLocaleUrl
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         Assert::allString($data, 'All URLs must be strings', $propertyPath);
 

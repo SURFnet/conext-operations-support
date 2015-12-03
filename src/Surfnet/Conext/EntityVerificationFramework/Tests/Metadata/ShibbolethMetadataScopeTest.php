@@ -28,19 +28,19 @@ class ShibbolethMetadataScopeTest extends TestCase
     /**
      * @test
      * @group Metadata
-     * @dataProvider validArrayStructuresToDeserialise
+     * @dataProvider validArrayStructuresToDeserialize
      *
      * @param array                   $arrayStructure
      * @param ShibbolethMetadataScope $expected
      */
-    public function shibmd_scope_can_be_deserialised(array $arrayStructure, ShibbolethMetadataScope $expected)
+    public function shibmd_scope_can_be_deserialized(array $arrayStructure, ShibbolethMetadataScope $expected)
     {
-        $actual = ShibbolethMetadataScope::deserialise($arrayStructure, 'prop.path');
+        $actual = ShibbolethMetadataScope::deserialize($arrayStructure, 'prop.path');
 
         $this->assertTrue(
             $expected->equals($actual),
             sprintf(
-                'Expected "%s" to be equal to deserialised "%s", "%s"',
+                'Expected "%s" to be equal to deserialized "%s", "%s"',
                 $expected,
                 json_encode($arrayStructure),
                 $actual
@@ -48,7 +48,7 @@ class ShibbolethMetadataScopeTest extends TestCase
         );
     }
 
-    public function validArrayStructuresToDeserialise()
+    public function validArrayStructuresToDeserialize()
     {
         return [
             'Literal'                 => [

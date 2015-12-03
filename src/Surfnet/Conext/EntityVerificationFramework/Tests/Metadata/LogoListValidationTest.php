@@ -34,8 +34,8 @@ class LogoListValidationTest extends TestCase
      */
     public function it_validates_its_logos()
     {
-        $logo0 = Logo::deserialise([], 'propPath');
-        $logo1 = Logo::deserialise([], 'propPath');
+        $logo0 = Logo::deserialize([], 'propPath');
+        $logo1 = Logo::deserialize([], 'propPath');
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);

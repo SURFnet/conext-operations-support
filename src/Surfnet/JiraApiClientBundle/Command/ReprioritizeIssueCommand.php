@@ -18,7 +18,7 @@
 
 namespace Surfnet\JiraApiClientBundle\Command;
 
-final class ReprioritiseIssueCommand
+final class ReprioritizeIssueCommand
 {
     /**
      * @var string

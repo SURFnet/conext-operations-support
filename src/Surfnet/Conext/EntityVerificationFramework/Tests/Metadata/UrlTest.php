@@ -30,7 +30,7 @@ class UrlTest extends TestCase
      * @test
      * @group value
      */
-    public function it_can_be_deserialised()
+    public function it_can_be_deserialized()
     {
         Url::fromString('https://domain.invalid');
     }

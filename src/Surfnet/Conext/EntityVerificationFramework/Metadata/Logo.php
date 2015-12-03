@@ -38,7 +38,7 @@ final class Logo implements ConfiguredMetadataValidatable
      * @param string $propertyPath
      * @return Logo
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         $logo = new Logo();
 

@@ -35,7 +35,7 @@ final class SingleSignOnServiceList implements IteratorAggregate, Countable
      * @param string $propertyPath
      * @return SingleSignOnServiceList
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         Assert::isArray(
             $data,
@@ -46,7 +46,7 @@ final class SingleSignOnServiceList implements IteratorAggregate, Countable
         $list = new self();
         $list->ssos = array_map(
             function ($data) {
-                return SingleSignOnService::deserialise($data);
+                return SingleSignOnService::deserialize($data);
             },
             $data
         );

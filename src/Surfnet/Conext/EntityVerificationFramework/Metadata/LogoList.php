@@ -36,12 +36,12 @@ final class LogoList implements ConfiguredMetadataValidatable
      * @param string $propertyPath
      * @return LogoList
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         $list = new self();
         $list->logos = array_map(
             function ($data) use ($propertyPath) {
-                return Logo::deserialise($data, $propertyPath . '[]');
+                return Logo::deserialize($data, $propertyPath . '[]');
             },
             $data
         );
