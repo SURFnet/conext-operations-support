@@ -42,7 +42,7 @@ final class Contact implements ConfiguredMetadataValidatable
      * @param string   $propertyPath
      * @return Contact
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         Assert::isArray($data, 'Contact data must be array structure', $propertyPath);
 

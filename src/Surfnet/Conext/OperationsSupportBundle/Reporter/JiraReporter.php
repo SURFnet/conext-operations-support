@@ -140,13 +140,13 @@ BODY;
             return;
         }
 
-        // ... or reprioritise...
+        // ... or reprioritize...
         if (!$issue->priorityEquals($issuePriority)) {
             $this->logger->debug(
-                sprintf('Reprioritising issue to %s', $this->severityToString($result->getSeverity()))
+                sprintf('Reprioritizing issue to %s', $this->severityToString($result->getSeverity()))
             );
 
-            $this->issueService->reprioritiseIssue($issueKey, $issuePriority);
+            $this->issueService->reprioritizeIssue($issueKey, $issuePriority);
         }
 
         $mostRecentCommentIsUpToDate = $report->wasCommentedOn()

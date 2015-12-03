@@ -133,7 +133,7 @@ class JiraReporterTest extends TestCase
      * @test
      * @group reporter
      */
-    public function it_reprioritises_issues()
+    public function it_reprioritizes_issues()
     {
         $entityId   = new EntityId('meh');
         $entityType = EntityType::IdP();
@@ -158,7 +158,7 @@ class JiraReporterTest extends TestCase
         $issueService = $this->getJiraIssueServiceMock();
         $issueService->shouldReceive('getIssue')->once()->with($issueKey)->andReturn($issue);
         $issueService
-            ->shouldReceive('reprioritiseIssue')
+            ->shouldReceive('reprioritizeIssue')
             ->once()
             ->with($issueKey, self::voEquals(new JiraIssuePriority(self::PRIORITY_ID_CRITICAL)))
             ->andReturn($issue);

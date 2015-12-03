@@ -34,11 +34,11 @@ final class AssertionConsumerService
      * @param array $data
      * @return AssertionConsumerService
      */
-    public static function deserialise($data)
+    public static function deserialize($data)
     {
         $binding = null;
         if (isset($data['Binding'])) {
-            $binding = Binding::deserialise($data['Binding']);
+            $binding = Binding::deserialize($data['Binding']);
         }
 
         $location = null;
@@ -55,7 +55,7 @@ final class AssertionConsumerService
 
         $binding = null;
         if ($acsXml['Binding'] !== null) {
-            $binding = Binding::deserialise((string) $acsXml['Binding']);
+            $binding = Binding::deserialize((string) $acsXml['Binding']);
         }
 
         $location = null;

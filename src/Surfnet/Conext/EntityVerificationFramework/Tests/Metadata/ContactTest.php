@@ -27,7 +27,7 @@ final class ContactTest extends TestCase
      * @test
      * @group value
      */
-    public function it_can_be_deserialised()
+    public function it_can_be_deserialized()
     {
         $data = [
             'contactType' => 'technical',
@@ -35,7 +35,7 @@ final class ContactTest extends TestCase
             'givenName' => 'Web',
             'surName' => 'Master',
         ];
-        Contact::deserialise($data, '');
+        Contact::deserialize($data, '');
     }
 
     /**
@@ -50,8 +50,8 @@ final class ContactTest extends TestCase
             'givenName' => 'Web',
             'surName' => 'Master',
         ];
-        $contact0 = Contact::deserialise($data, '');
-        $contact1 = Contact::deserialise($data, '');
+        $contact0 = Contact::deserialize($data, '');
+        $contact1 = Contact::deserialize($data, '');
 
         $this->assertTrue($contact0->equals($contact1));
     }
@@ -68,21 +68,21 @@ final class ContactTest extends TestCase
             'givenName' => 'Web',
             'surName' => 'Master',
         ];
-        $contact0 = Contact::deserialise($data, '');
+        $contact0 = Contact::deserialize($data, '');
 
         $data = [
             'emailAddress' => 'webmaster@example.invalid',
             'givenName' => 'Web',
             'surName' => 'Master',
         ];
-        $contact1 = Contact::deserialise($data, '');
+        $contact1 = Contact::deserialize($data, '');
 
         $data = [
             'contactType' => 'technical',
             'givenName' => 'Web',
             'surName' => 'Master',
         ];
-        $contact2 = Contact::deserialise($data, '');
+        $contact2 = Contact::deserialize($data, '');
 
         $data = [
             'contactType' => 'technical',
@@ -90,7 +90,7 @@ final class ContactTest extends TestCase
             'givenName' => 'Web',
             'surName' => 'Server',
         ];
-        $contact3 = Contact::deserialise($data, '');
+        $contact3 = Contact::deserialize($data, '');
 
         $this->assertFalse($contact0->equals($contact1));
         $this->assertFalse($contact0->equals($contact2));
