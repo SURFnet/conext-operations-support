@@ -22,7 +22,6 @@ use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Symfony\Component\HttpFoundation\Response;
 
 final class Logo implements ConfiguredMetadataValidatable
 {
@@ -66,10 +65,10 @@ final class Logo implements ConfiguredMetadataValidatable
     {
     }
 
-    public function validate(
-        ConfiguredMetadataValidator $validator,
-        ConfiguredMetadataValidationContext $context
-    ) {
+    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
+    {
+        $validator->validate($this->url, $context);
+
         if (!$this->isWidthValid()) {
             $validator->addViolation(
                 sprintf('Logo width "%s" is invalid: must be a number larger than 0', $this->width)
@@ -79,30 +78,6 @@ final class Logo implements ConfiguredMetadataValidatable
             $validator->addViolation(
                 sprintf('Logo height "%s" is invalid: must be a number larger than 0', $this->height)
             );
-        }
-
-        $validator->validate($this->url, $context);
-
-        if (!$this->url->isValid()) {
-            return;
-        }
-
-        if (!$this->url->matches('~^https://static\.surfconext\.nl/logos/idp/.+\.png$~')) {
-            $validator->addViolation(
-                sprintf(
-                    'Logo URL "%s" does not match https://static.surfconext.nl/logos/idp/<name>.png',
-                    $this->url
-                )
-            );
-        }
-
-        $response = $context->getHttpClient()->request('GET', $this->url->getValidUrl());
-        if ($response->getStatusCode() !== Response::HTTP_OK) {
-            $validator->addViolation(sprintf(
-                'Logo "%s" is not available, server returned status code %d',
-                $this->url,
-                $response->getStatusCode()
-            ));
         }
     }
 

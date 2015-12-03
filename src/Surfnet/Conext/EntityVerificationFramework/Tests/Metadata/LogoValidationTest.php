@@ -63,10 +63,6 @@ class LogoValidationTest extends TestCase
     public function logosWithViolations()
     {
         return [
-            'logo URL not hosted by SURFconext' => [
-                Logo::deserialize(['url' => 'https://logo.invalid/', 'width' => '100', 'height' => '100'], 'propPath'),
-                'Logo URL "https://logo.invalid/" does not match https://static.surfconext.nl/logos/idp/<name>.png'
-            ],
             'logo width not a stringy number' => [
                 Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => 'dd', 'height' => '100'], 'propPath'),
                 'Logo width "dd" is invalid: must be a number larger than 0'
