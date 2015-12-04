@@ -18,9 +18,11 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
+use GuzzleHttp\Exception\ConnectException;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SupportUrl extends MultiLocaleUrl implements ConfiguredMetadataValidatable
@@ -42,14 +44,27 @@ final class SupportUrl extends MultiLocaleUrl implements ConfiguredMetadataValid
             );
         }
 
+        $urlValidator = new SubpathValidator($validator, 'Support URL');
         foreach ($urls as $url) {
-            $validator->validate($url, $context);
+            $urlValidator->validate($url, $context);
 
             if (!$url->isValid()) {
                 continue;
             }
 
-            $response = $context->getHttpClient()->request('GET', $url->getValidUrl());
+            try {
+                $response = $context->getHttpClient()->request('GET', $url->getValidUrl());
+            } catch (ConnectException $e) {
+                $validator->addViolation(
+                    sprintf(
+                        'An error occurred while connecting to support URL "%s": "%s"',
+                        $url->getValidUrl(),
+                        $e->getMessage()
+                    )
+                );
+
+                continue;
+            }
             if ($response->getStatusCode() !== Response::HTTP_OK) {
                 $validator->addViolation(sprintf(
                     'Support URL is not available ("%s"), server returned status code %d',

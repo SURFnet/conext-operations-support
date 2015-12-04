@@ -20,13 +20,14 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ApplicationUrl extends Url
 {
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
-        parent::validate($validator, $context);
+        parent::validate(new SubpathValidator($validator, 'Application URL'), $context);
 
         if (!$this->isValid()) {
             return;
