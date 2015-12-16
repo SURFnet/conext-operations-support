@@ -32,6 +32,9 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
     /** @var BindingLocation */
     private $location;
 
+    /** @var string|mixed */
+    private $index;
+
     /**
      * @param array $data
      * @return AssertionConsumerService
@@ -48,7 +51,12 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
             $location = BindingLocation::fromString($data['Location']);
         }
 
-        return new AssertionConsumerService($binding, $location);
+        $index = null;
+        if (isset($data['index'])) {
+            $index = $data['index'];
+        }
+
+        return new AssertionConsumerService($binding, $location, $index);
     }
 
     public static function fromXml(SimpleXMLElement $acsXml)
@@ -65,23 +73,45 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
             $location = BindingLocation::fromString((string) $acsXml['Location']);
         }
 
-        return new AssertionConsumerService($binding, $location);
+        $index = null;
+        if ($acsXml['index'] !== null) {
+            $index = (string) $acsXml['index'];
+        }
+
+        return new AssertionConsumerService($binding, $location, $index);
     }
 
     /**
      * @param Binding         $binding
      * @param BindingLocation $location
+     * @param string|mixed    $index
      */
-    public function __construct(Binding $binding, BindingLocation $location)
+    public function __construct(Binding $binding, BindingLocation $location, $index)
     {
         $this->binding  = $binding;
         $this->location = $location;
+        $this->index    = $index;
     }
 
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
         $validator->validate($this->binding, $context);
         $validator->validate($this->location, $context);
+
+        if (!is_string($this->index)) {
+            $validator->addViolation(
+                sprintf(
+                    'Binding index must be a string, got a "%s"',
+                    is_object($this->index) ? get_class($this->index) : gettype($this->index)
+                )
+            );
+
+            return;
+        }
+
+        if (!ctype_digit($this->index)) {
+            $validator->addViolation(sprintf('Binding index must be a number, got "%s"', $this->index));
+        }
     }
 
     /**
@@ -93,8 +123,21 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
         return $this->binding->equals($other->binding) && $this->location->equals($other->location);
     }
 
+    /**
+     * @return mixed|string
+     */
+    public function getIndex()
+    {
+        return $this->index;
+    }
+
     public function __toString()
     {
-        return sprintf('AssertionConsumerService(binding=%s, location=%s)', $this->binding, $this->location);
+        return sprintf(
+            'AssertionConsumerService(binding=%s, location=%s, index=%s)',
+            $this->binding,
+            $this->location,
+            is_string($this->index) ? '"' . $this->index . '""' : '<invalid>'
+        );
     }
 }

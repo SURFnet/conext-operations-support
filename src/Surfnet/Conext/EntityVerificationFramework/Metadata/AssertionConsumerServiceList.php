@@ -79,8 +79,10 @@ final class AssertionConsumerServiceList implements ConfiguredMetadataValidatabl
 
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
-        foreach ($this->acss as $i => $acs) {
-            $subpathValidator = new SubpathValidator($validator, 'AssertionConsumerService #' . ($i + 1));
+        foreach ($this->acss as $acs) {
+            $index = $acs->getIndex();
+            $indexString = is_string($index) ? $index : '<invalid>';
+            $subpathValidator = new SubpathValidator($validator, 'AssertionConsumerService index ' . $indexString);
             $subpathValidator->validate($acs, $context);
         }
     }
