@@ -21,7 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\AssertionConsumerService;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Binding;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\BindingLocation;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 
 final class AssertionConsumerServiceTest extends TestCase
 {
@@ -41,7 +41,7 @@ final class AssertionConsumerServiceTest extends TestCase
             $acs->equals(
                 new AssertionConsumerService(
                     Binding::create(Binding::BINDING_HTTP_POST),
-                    BindingLocation::fromString($bindingLocation),
+                    Url::fromString($bindingLocation),
                     null
                 )
             )
@@ -63,7 +63,7 @@ final class AssertionConsumerServiceTest extends TestCase
             $acs->equals(
                 new AssertionConsumerService(
                     Binding::notSet(),
-                    BindingLocation::fromString($bindingLocation),
+                    Url::fromString($bindingLocation),
                     null
                 )
             )
@@ -84,7 +84,7 @@ final class AssertionConsumerServiceTest extends TestCase
             $acs->equals(
                 new AssertionConsumerService(
                     Binding::create(Binding::BINDING_HTTP_POST),
-                    BindingLocation::notSet(),
+                    Url::notSet(),
                     null
                 )
             )

@@ -29,7 +29,7 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
     /** @var Binding */
     private $binding;
 
-    /** @var BindingLocation */
+    /** @var Url */
     private $location;
 
     /**
@@ -43,9 +43,9 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
             $binding = Binding::deserialize($data['Binding']);
         }
 
-        $location = BindingLocation::notSet();
+        $location = Url::notSet();
         if (isset($data['Location'])) {
-            $location = BindingLocation::fromString($data['Location']);
+            $location = Url::fromString($data['Location']);
         }
 
         return new SingleSignOnService($binding, $location);
@@ -60,19 +60,19 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
             $binding = Binding::deserialize((string) $ssoXml['Binding']);
         }
 
-        $location = BindingLocation::notSet();
+        $location = Url::notSet();
         if ($ssoXml['Location'] !== null) {
-            $location = BindingLocation::fromString((string) $ssoXml['Location']);
+            $location = Url::fromString((string) $ssoXml['Location']);
         }
 
         return new SingleSignOnService($binding, $location);
     }
 
     /**
-     * @param Binding         $binding
-     * @param BindingLocation $location
+     * @param Binding $binding
+     * @param Url     $location
      */
-    public function __construct(Binding $binding, BindingLocation $location)
+    public function __construct(Binding $binding, Url $location)
     {
         $this->binding  = $binding;
         $this->location = $location;

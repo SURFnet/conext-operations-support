@@ -21,7 +21,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnService;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Binding;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\BindingLocation;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 
 final class SingleSignOnServiceTest extends TestCase
 {
@@ -41,7 +41,7 @@ final class SingleSignOnServiceTest extends TestCase
             $sso->equals(
                 new SingleSignOnService(
                     Binding::create(Binding::BINDING_HTTP_POST),
-                    BindingLocation::fromString($bindingLocation)
+                    Url::fromString($bindingLocation)
                 )
             )
         );
@@ -62,7 +62,7 @@ final class SingleSignOnServiceTest extends TestCase
             $sso->equals(
                 new SingleSignOnService(
                     Binding::notSet(),
-                    BindingLocation::fromString($bindingLocation)
+                    Url::fromString($bindingLocation)
                 )
             )
         );
@@ -82,7 +82,7 @@ final class SingleSignOnServiceTest extends TestCase
             $sso->equals(
                 new SingleSignOnService(
                     Binding::create(Binding::BINDING_HTTP_POST),
-                    BindingLocation::notSet()
+                    Url::notSet()
                 )
             )
         );

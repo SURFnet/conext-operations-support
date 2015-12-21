@@ -29,7 +29,7 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
     /** @var Binding */
     private $binding;
 
-    /** @var BindingLocation */
+    /** @var Url */
     private $location;
 
     /** @var string|mixed */
@@ -46,9 +46,9 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
             $binding = Binding::deserialize($data['Binding']);
         }
 
-        $location = BindingLocation::notSet();
+        $location = Url::notSet();
         if (isset($data['Location'])) {
-            $location = BindingLocation::fromString($data['Location']);
+            $location = Url::fromString($data['Location']);
         }
 
         $index = null;
@@ -68,9 +68,9 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
             $binding = Binding::deserialize((string) $acsXml['Binding']);
         }
 
-        $location = BindingLocation::notSet();
+        $location = Url::notSet();
         if ($acsXml['Location'] !== null) {
-            $location = BindingLocation::fromString((string) $acsXml['Location']);
+            $location = Url::fromString((string) $acsXml['Location']);
         }
 
         $index = null;
@@ -82,11 +82,11 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
     }
 
     /**
-     * @param Binding         $binding
-     * @param BindingLocation $location
-     * @param string|mixed    $index
+     * @param Binding      $binding
+     * @param Url          $location
+     * @param string|mixed $index
      */
-    public function __construct(Binding $binding, BindingLocation $location, $index)
+    public function __construct(Binding $binding, Url $location, $index)
     {
         $this->binding  = $binding;
         $this->location = $location;
