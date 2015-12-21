@@ -41,8 +41,15 @@ final class Binding implements ConfiguredMetadataValidatable
         self::BINDING_URI,
     ];
 
-    /** @var mixed */
+    /**
+     * @var mixed
+     */
     private $binding;
+
+    /**
+     * @var bool
+     */
+    private $set = true;
 
     /**
      * @param mixed $data
@@ -71,7 +78,10 @@ final class Binding implements ConfiguredMetadataValidatable
      */
     public static function notSet()
     {
-        return new self();
+        $binding = new self();
+        $binding->set = false;
+
+        return $binding;
     }
 
     private function __construct()
@@ -119,6 +129,6 @@ final class Binding implements ConfiguredMetadataValidatable
 
     public function __toString()
     {
-        return $this->binding === null ? 'Binding<not-set>' : 'Binding(' . $this->binding . ')';
+        return $this->set === false ? 'Binding<not-set>' : 'Binding(' . $this->binding . ')';
     }
 }
