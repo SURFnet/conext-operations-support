@@ -35,8 +35,8 @@ class ContactValidationTest extends TestCase
      */
     public function it_validates_its_type_and_email()
     {
-        $contactType  = ContactType::unknown();
-        $emailAddress = EmailAddress::unknown();
+        $contactType  = ContactType::notSet();
+        $emailAddress = EmailAddress::notSet();
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
@@ -64,7 +64,7 @@ class ContactValidationTest extends TestCase
         $validator->shouldReceive('addViolation')->with('Contact given name is not configured or empty')->once();
         $validator->shouldReceive('addViolation')->with('Contact surname is not configured or empty')->once();
 
-        $contact = new Contact(ContactType::unknown(), EmailAddress::unknown(), ' ', null);
+        $contact = new Contact(ContactType::notSet(), EmailAddress::notSet(), ' ', null);
         $contact->validate($validator, $context);
     }
 }

@@ -36,8 +36,8 @@ class ContactTypeTest extends TestCase
             'Two support contact types should equal each other'
         );
         $this->assertTrue(
-            ContactType::unknown()->equals(ContactType::unknown()),
-            'Two unknown contact types should equal each other'
+            ContactType::notSet()->equals(ContactType::notSet()),
+            'Two unset contact types should equal each other'
         );
     }
 
@@ -54,13 +54,13 @@ class ContactTypeTest extends TestCase
         );
         $this->assertFalse(
             ContactType::fromString(ContactType::TYPE_TECHNICAL)
-                ->equals(ContactType::unknown()),
-            'A technical contact type should not equal an unknown contact type'
+                ->equals(ContactType::notSet()),
+            'A technical contact type should not equal an unset contact type'
         );
         $this->assertFalse(
             ContactType::fromString('')
-                ->equals(ContactType::unknown()),
-            'An empty contact type should not equal an unknown contact type'
+                ->equals(ContactType::notSet()),
+            'An empty contact type should not equal an unset contact type'
         );
     }
 }

@@ -41,12 +41,12 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
      */
     public static function deserialize($data)
     {
-        $binding = Binding::unknown();
+        $binding = Binding::notSet();
         if (isset($data['Binding'])) {
             $binding = Binding::deserialize($data['Binding']);
         }
 
-        $location = BindingLocation::unknown();
+        $location = BindingLocation::notSet();
         if (isset($data['Location'])) {
             $location = BindingLocation::fromString($data['Location']);
         }
@@ -63,12 +63,12 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
     {
         Assert::simpleXmlName($acsXml, 'AssertionConsumerService');
 
-        $binding = Binding::unknown();
+        $binding = Binding::notSet();
         if ($acsXml['Binding'] !== null) {
             $binding = Binding::deserialize((string) $acsXml['Binding']);
         }
 
-        $location = BindingLocation::unknown();
+        $location = BindingLocation::notSet();
         if ($acsXml['Location'] !== null) {
             $location = BindingLocation::fromString((string) $acsXml['Location']);
         }

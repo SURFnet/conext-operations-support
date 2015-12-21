@@ -37,7 +37,7 @@ final class ContactType implements ConfiguredMetadataValidatable
     /**
      * @return ContactType
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new ContactType();
     }

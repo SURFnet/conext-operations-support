@@ -50,7 +50,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $description         = new Description();
         $contacts            = new ContactSet();
         $logos               = new LogoList();
-        $defaultNameIdFormat = NameIdFormat::unknown();
+        $defaultNameIdFormat = NameIdFormat::notSet();
         $shibmdScopeList     = new ShibbolethMetadataScopeList();
         $supportUrl          = new SupportUrl();
         $applicationUrl      = ApplicationUrl::fromString('https://app.invalid');
@@ -97,7 +97,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $description         = new Description();
         $contacts            = new ContactSet();
         $logos               = new LogoList();
-        $defaultNameIdFormat = NameIdFormat::unknown();
+        $defaultNameIdFormat = NameIdFormat::notSet();
         $shibmdScopeList     = new ShibbolethMetadataScopeList();
         $supportUrl          = new SupportUrl();
         $applicationUrl      = ApplicationUrl::fromString('https://app.invalid');
@@ -143,7 +143,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             EntityType::SP(),
             new AssertionConsumerServiceList(),
             new SingleSignOnServiceList(),
-            NameIdFormat::unknown(),
+            NameIdFormat::notSet(),
             new NameIdFormatList(),
             new ContactSet(),
             new Keywords(),
@@ -179,7 +179,7 @@ class ConfiguredMetadataValidationTest extends TestCase
             EntityType::SP(),
             new AssertionConsumerServiceList(),
             new SingleSignOnServiceList(),
-            NameIdFormat::unknown(),
+            NameIdFormat::notSet(),
             new NameIdFormatList(),
             new ContactSet(),
             new Keywords(),

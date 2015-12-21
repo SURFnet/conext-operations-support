@@ -38,12 +38,12 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
      */
     public static function deserialize($data)
     {
-        $binding = Binding::unknown();
+        $binding = Binding::notSet();
         if (isset($data['Binding'])) {
             $binding = Binding::deserialize($data['Binding']);
         }
 
-        $location = BindingLocation::unknown();
+        $location = BindingLocation::notSet();
         if (isset($data['Location'])) {
             $location = BindingLocation::fromString($data['Location']);
         }
@@ -55,12 +55,12 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
     {
         Assert::simpleXmlName($ssoXml, 'SingleSignOnService');
 
-        $binding = Binding::unknown();
+        $binding = Binding::notSet();
         if ($ssoXml['Binding'] !== null) {
             $binding = Binding::deserialize((string) $ssoXml['Binding']);
         }
 
-        $location = BindingLocation::unknown();
+        $location = BindingLocation::notSet();
         if ($ssoXml['Location'] !== null) {
             $location = BindingLocation::fromString((string) $ssoXml['Location']);
         }

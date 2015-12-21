@@ -43,7 +43,7 @@ final class Logo implements ConfiguredMetadataValidatable
 
         Assert::isArray($data, 'Logo data must be an array structure');
 
-        $logo->url = LogoUrl::unknown();
+        $logo->url = LogoUrl::notSet();
         if (array_key_exists('url', $data)) {
             $logo->url = LogoUrl::fromString($data['url']);
         }

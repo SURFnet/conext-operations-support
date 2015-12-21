@@ -46,7 +46,7 @@ final class Contact implements ConfiguredMetadataValidatable
     {
         Assert::isArray($data, 'Contact data must be array structure', $propertyPath);
 
-        $contact = new Contact(ContactType::unknown(), EmailAddress::unknown());
+        $contact = new Contact(ContactType::notSet(), EmailAddress::notSet());
 
         if (isset($data['contactType'])) {
             $contact->type = ContactType::fromString($data['contactType']);

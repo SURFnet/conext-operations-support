@@ -44,7 +44,7 @@ class Url implements ConfiguredMetadataValidatable
     /**
      * @return static
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new static();
     }

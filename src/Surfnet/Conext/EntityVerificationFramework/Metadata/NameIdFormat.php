@@ -43,7 +43,7 @@ final class NameIdFormat implements ConfiguredMetadataValidatable
     /**
      * @return NameIdFormat
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new NameIdFormat();
     }

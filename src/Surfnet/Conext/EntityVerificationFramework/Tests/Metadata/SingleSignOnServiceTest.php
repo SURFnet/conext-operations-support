@@ -61,7 +61,7 @@ final class SingleSignOnServiceTest extends TestCase
         $this->assertTrue(
             $sso->equals(
                 new SingleSignOnService(
-                    Binding::unknown(),
+                    Binding::notSet(),
                     BindingLocation::fromString($bindingLocation)
                 )
             )
@@ -82,7 +82,7 @@ final class SingleSignOnServiceTest extends TestCase
             $sso->equals(
                 new SingleSignOnService(
                     Binding::create(Binding::BINDING_HTTP_POST),
-                    BindingLocation::unknown()
+                    BindingLocation::notSet()
                 )
             )
         );

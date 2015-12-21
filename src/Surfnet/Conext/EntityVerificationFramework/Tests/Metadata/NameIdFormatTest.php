@@ -83,7 +83,7 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_be_unknown()
     {
-        NameIdFormat::unknown();
+        NameIdFormat::notSet();
     }
 
     /**

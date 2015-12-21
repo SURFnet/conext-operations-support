@@ -69,7 +69,7 @@ final class Binding implements ConfiguredMetadataValidatable
     /**
      * @return Binding
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new self();
     }
@@ -119,6 +119,6 @@ final class Binding implements ConfiguredMetadataValidatable
 
     public function __toString()
     {
-        return $this->binding === null ? 'Binding<unknown>' : 'Binding(' . $this->binding . ')';
+        return $this->binding === null ? 'Binding<not-set>' : 'Binding(' . $this->binding . ')';
     }
 }

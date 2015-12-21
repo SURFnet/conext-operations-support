@@ -62,7 +62,7 @@ final class AssertionConsumerServiceTest extends TestCase
         $this->assertTrue(
             $acs->equals(
                 new AssertionConsumerService(
-                    Binding::unknown(),
+                    Binding::notSet(),
                     BindingLocation::fromString($bindingLocation),
                     null
                 )
@@ -84,7 +84,7 @@ final class AssertionConsumerServiceTest extends TestCase
             $acs->equals(
                 new AssertionConsumerService(
                     Binding::create(Binding::BINDING_HTTP_POST),
-                    BindingLocation::unknown(),
+                    BindingLocation::notSet(),
                     null
                 )
             )

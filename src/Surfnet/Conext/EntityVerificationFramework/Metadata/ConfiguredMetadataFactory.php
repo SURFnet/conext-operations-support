@@ -78,7 +78,7 @@ final class ConfiguredMetadataFactory
             $signRedirects = $metadataData['redirect']['sign'];
         }
 
-        $defaultNameIdFormat = NameIdFormat::unknown();
+        $defaultNameIdFormat = NameIdFormat::notSet();
         if (isset($metadataData['NameIDFormat'])) {
             $defaultNameIdFormat = NameIdFormat::fromUrn($metadataData['NameIDFormat']);
         }
@@ -139,7 +139,7 @@ final class ConfiguredMetadataFactory
             $guestQualifier = new GuestQualifier($coinData['guest_qualifier']);
         }
 
-        $applicationUrl = ApplicationUrl::unknown();
+        $applicationUrl = ApplicationUrl::notSet();
         if (isset($coinData['application_url'])) {
             $applicationUrl = ApplicationUrl::fromString($coinData['application_url']);
         }
