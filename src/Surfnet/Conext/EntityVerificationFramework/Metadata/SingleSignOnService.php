@@ -51,6 +51,10 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
         return new SingleSignOnService($binding, $location);
     }
 
+    /**
+     * @param SimpleXMLElement $ssoXml
+     * @return SingleSignOnService
+     */
     public static function fromXml(SimpleXMLElement $ssoXml)
     {
         Assert::simpleXmlName($ssoXml, 'SingleSignOnService');

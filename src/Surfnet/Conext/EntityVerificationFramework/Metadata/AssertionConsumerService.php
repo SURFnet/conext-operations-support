@@ -59,6 +59,10 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
         return new AssertionConsumerService($binding, $location, $index);
     }
 
+    /**
+     * @param SimpleXMLElement $acsXml
+     * @return AssertionConsumerService
+     */
     public static function fromXml(SimpleXMLElement $acsXml)
     {
         Assert::simpleXmlName($acsXml, 'AssertionConsumerService');

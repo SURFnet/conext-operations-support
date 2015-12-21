@@ -19,8 +19,8 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 
 final class Binding implements ConfiguredMetadataValidatable
@@ -63,6 +63,10 @@ final class Binding implements ConfiguredMetadataValidatable
         return $binding;
     }
 
+    /**
+     * @param string $constant
+     * @return Binding
+     */
     public static function create($constant)
     {
         Assert::choice($constant, self::VALID_BINDINGS, 'Binding "%s" is not one of the valid bindings');
@@ -90,31 +94,21 @@ final class Binding implements ConfiguredMetadataValidatable
 
     public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
-        if (in_array($this->binding, [self::BINDING_HTTP_REDIRECT, self::BINDING_HTTP_POST], true)) {
+        if (in_array($this->binding, self::VALID_BINDINGS, true)) {
             return;
         }
 
         if (!is_string($this->binding)) {
             $type = is_object($this->binding) ? get_class($this->binding) : gettype($this->binding);
             $validator->addViolation(
-                sprintf(
-                    'Binding must be either "%s" or "%s", got type "%s"',
-                    self::BINDING_HTTP_REDIRECT,
-                    self::BINDING_HTTP_POST,
-                    $type
-                )
+                sprintf('Binding must be one of "%s", got type "%s"', join('", "', self::VALID_BINDINGS), $type)
             );
 
             return;
         }
 
         $validator->addViolation(
-            sprintf(
-                'Binding must be either "%s" or "%s", got "%s"',
-                self::BINDING_HTTP_REDIRECT,
-                self::BINDING_HTTP_POST,
-                $this->binding
-            )
+            sprintf('Binding must be one of "%s", got "%s"', join('", "', self::VALID_BINDINGS), $this->binding)
         );
     }
 
