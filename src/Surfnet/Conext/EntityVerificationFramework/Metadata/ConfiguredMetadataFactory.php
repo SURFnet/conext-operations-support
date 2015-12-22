@@ -31,7 +31,7 @@ final class ConfiguredMetadataFactory
      * @param mixed $data
      * @return ConfiguredMetadata
      */
-    public static function deserialise($data)
+    public static function deserialize($data)
     {
         Assert::isArray($data, 'Configured metadata data must be an array structure');
 
@@ -48,7 +48,7 @@ final class ConfiguredMetadataFactory
         $metadataData = $data['metadata'];
 
         if (isset($metadataData['contacts'])) {
-            $contacts = ContactSet::deserialise($metadataData['contacts'], 'metadata.contacts');
+            $contacts = ContactSet::deserialize($metadataData['contacts'], 'metadata.contacts');
         } else {
             $contacts = new ContactSet();
         }
@@ -67,7 +67,7 @@ final class ConfiguredMetadataFactory
             $logoData = $metadataData['logo'];
             Assert::isArray($logoData, 'SP metadata\'s "logo" key must contain an array', 'metadata.logo');
 
-            $logos = LogoList::deserialise($metadataData['logo'], 'metadata.logo');
+            $logos = LogoList::deserialize($metadataData['logo'], 'metadata.logo');
         } else {
             $logos = new LogoList();
         }
@@ -78,7 +78,7 @@ final class ConfiguredMetadataFactory
             $signRedirects = $metadataData['redirect']['sign'];
         }
 
-        $defaultNameIdFormat = NameIdFormat::unknown();
+        $defaultNameIdFormat = NameIdFormat::notSet();
         if (isset($metadataData['NameIDFormat'])) {
             $defaultNameIdFormat = NameIdFormat::fromUrn($metadataData['NameIDFormat']);
         }
@@ -101,7 +101,7 @@ final class ConfiguredMetadataFactory
         }
 
         if (isset($metadataData['AssertionConsumerService'])) {
-            $assertionConsumerServices = AssertionConsumerServiceList::deserialise(
+            $assertionConsumerServices = AssertionConsumerServiceList::deserialize(
                 $metadataData['AssertionConsumerService'],
                 'metadata.AssertionConsumerService'
             );
@@ -109,13 +109,13 @@ final class ConfiguredMetadataFactory
             $assertionConsumerServices = new AssertionConsumerServiceList();
         }
 
-        $url = new MultiLocaleUrl();
+        $url = new SupportUrl();
         if (isset($metadataData['url'])) {
-            $url = MultiLocaleUrl::deserialise($metadataData['url'], 'metadata.url');
+            $url = SupportUrl::deserialize($metadataData['url'], 'metadata.url');
         }
 
         if (isset($metadataData['SingleSignOnService'])) {
-            $singleSignOnServices = SingleSignOnServiceList::deserialise(
+            $singleSignOnServices = SingleSignOnServiceList::deserialize(
                 $metadataData['SingleSignOnService'],
                 'metadata.SingleSignOnService'
             );
@@ -137,6 +137,11 @@ final class ConfiguredMetadataFactory
         $guestQualifier = null;
         if (isset($coinData['guest_qualifier'])) {
             $guestQualifier = new GuestQualifier($coinData['guest_qualifier']);
+        }
+
+        $applicationUrl = ApplicationUrl::notSet();
+        if (isset($coinData['application_url'])) {
+            $applicationUrl = ApplicationUrl::fromString($coinData['application_url']);
         }
 
         $freeformProperties = [];
@@ -175,17 +180,7 @@ final class ConfiguredMetadataFactory
         }
 
         $scopeData = isset($metadataData['shibmd']['scope']) ? $metadataData['shibmd']['scope'] : [];
-        for ($i = 0; $i <= 5; ++$i) {
-            if (isset($scopeData[$i]['allowed'])) {
-                Assert::string($scopeData[$i]['allowed'], null, sprintf('metadata.shibmd.scope[%d].allowed', $i));
-                $freeformProperties[sprintf('shibmd:scope:%d:allowed', $i)] = $scopeData[$i]['allowed'];
-            }
-
-            if (isset($scopeData[$i]['regexp'])) {
-                Assert::boolean($scopeData[$i]['regexp'], null, sprintf('metadata.shibmd.scope[%d].regexp', $i));
-                $freeformProperties[sprintf('shibmd:scope:%d:regexp', $i)] = $scopeData[$i]['regexp'];
-            }
-        }
+        $scopes = ShibbolethMetadataScopeList::deserialize($scopeData, 'metadata.shibmd.scope');
 
         return new ConfiguredMetadata(
             $entityType,
@@ -199,6 +194,8 @@ final class ConfiguredMetadataFactory
             $name,
             $description,
             $url,
+            $applicationUrl,
+            $scopes,
             $publishedMetadataUrl,
             $certData,
             $signRedirects,

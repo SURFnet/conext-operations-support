@@ -147,12 +147,12 @@ final class PublishedMetadataFactory
             $givenName = null;
             $surName = null;
 
-            $contactType = ContactType::unknown();
+            $contactType = ContactType::notSet();
             if ($contactPersonXml['contactType']) {
                 $contactType = ContactType::fromString((string) $contactPersonXml['contactType']);
             }
 
-            $emailAddress = EmailAddress::unknown();
+            $emailAddress = EmailAddress::notSet();
             if (count($contactPersonXml->EmailAddress) > 0) {
                 $emailAddress = EmailAddress::fromString((string) $contactPersonXml->EmailAddress);
             }

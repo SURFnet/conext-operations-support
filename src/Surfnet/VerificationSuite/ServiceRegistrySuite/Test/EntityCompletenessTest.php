@@ -33,11 +33,9 @@ final class EntityCompletenessTest implements VerificationTest
         $context   = new ConfiguredMetadataValidationContext($verificationContext->getHttpClient());
 
         $metadata = $verificationContext->getConfiguredMetadata();
-        $validator->validate($metadata, $context);
-
-        $violations = $validator->getViolations();
+        $violations = $validator->validate($metadata, $context);
         if (count($violations) > 0) {
-            $notesString = ' * ' . join("\n * ", $violations);
+            $notesString = ' * ' . join("\n * ", $violations->all());
             return TestResult::failed('Entity incomplete', $notesString, TestResult::SEVERITY_MEDIUM);
         }
 

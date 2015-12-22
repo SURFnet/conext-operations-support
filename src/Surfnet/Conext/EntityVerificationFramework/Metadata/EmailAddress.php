@@ -19,9 +19,10 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class EmailAddress implements ConfiguredMetadataValidatable
 {
@@ -33,7 +34,7 @@ final class EmailAddress implements ConfiguredMetadataValidatable
     /**
      * @return EmailAddress
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new EmailAddress();
     }
@@ -57,11 +58,12 @@ final class EmailAddress implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
         if (!filter_var($this->emailAddress, FILTER_VALIDATE_EMAIL) !== false) {
-            $validator->addViolation('Contact e-mail address is not valid');
+            $violations->add('Contact e-mail address is not valid');
         }
     }
 

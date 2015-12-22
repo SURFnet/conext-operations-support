@@ -22,8 +22,9 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
 final class EmailAddressTest extends TestCase
@@ -32,16 +33,16 @@ final class EmailAddressTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
-    public function it_deserialises_emails()
+    public function it_deserializes_emails()
     {
         EmailAddress::fromString('juliette.dupree+spam@that.invalid');
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider nonStringProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *
@@ -54,44 +55,50 @@ final class EmailAddressTest extends TestCase
     
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_invalid()
     {
-        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
-
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with('Contact e-mail address is not valid')
             ->once();
 
-        $emailAddress = EmailAddress::fromString('invalid');
-        $emailAddress->validate($validator, $context);
-    }
-
-    /**
-     * @test
-     * @group value
-     */
-    public function it_can_be_valid()
-    {
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('addViolation')->never();
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
 
-        $emailAddress = EmailAddress::fromString('valid@valid.invalid');
-        $emailAddress->validate($validator, $context);
+        $emailAddress = EmailAddress::fromString('invalid');
+        $emailAddress->validate($visitor, $violations, $context);
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
+     */
+    public function it_can_be_valid()
+    {
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
+
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+
+        $emailAddress = EmailAddress::fromString('valid@valid.invalid');
+        $emailAddress->validate($visitor, $violations, $context);
+    }
+
+    /**
+     * @test
+     * @group Metadata
      */
     public function two_emails_can_equal_each_other()
     {
@@ -99,14 +106,14 @@ final class EmailAddressTest extends TestCase
         $url1 = EmailAddress::fromString('renee.dupree@datrijmtook.invalid');
         $this->assertTrue($url0->equals($url1), 'Two identical emails should equal each other');
 
-        $url0 = EmailAddress::unknown();
-        $url1 = EmailAddress::unknown();
-        $this->assertTrue($url0->equals($url1), 'Two unknown email should be equal to each other');
+        $url0 = EmailAddress::notSet();
+        $url1 = EmailAddress::notSet();
+        $this->assertTrue($url0->equals($url1), 'Two unset email should be equal to each other');
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_emails_can_differ()
     {
@@ -115,23 +122,23 @@ final class EmailAddressTest extends TestCase
         $this->assertFalse($url0->equals($url1), 'Two different emails should not equal each other');
 
         $url0 = EmailAddress::fromString('renee.boulanger@vara.invalid');
-        $url1 = EmailAddress::unknown();
-        $this->assertFalse($url0->equals($url1), 'An email should not equal an unknown email');
+        $url1 = EmailAddress::notSet();
+        $this->assertFalse($url0->equals($url1), 'An email should not equal an unset email');
     }
 
     public function an_empty_email_and_an_unknown_email_are_not_equal()
     {
         $url0 = EmailAddress::fromString('');
-        $url1 = EmailAddress::unknown();
-        $this->assertFalse($url0->equals($url1), 'An empty email should not be equal to an unknown email');
+        $url1 = EmailAddress::notSet();
+        $this->assertFalse($url0->equals($url1), 'An empty email should not be equal to an unset email');
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function an_email_address_can_be_unknown()
     {
-        EmailAddress::unknown();
+        EmailAddress::notSet();
     }
 }

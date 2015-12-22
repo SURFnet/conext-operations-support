@@ -16,17 +16,13 @@
  * limitations under the License.
  */
 
-namespace Surfnet\JiraApiClientBundle\Command;
+namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
 
-final class ReprioritiseIssueCommand
+interface ConfiguredMetadataConstraintViolationWriter
 {
     /**
-     * @var string
+     * @param string $violation
+     * @return void
      */
-    public $issueKey;
-
-    /**
-     * @var string
-     */
-    public $priorityId;
+    public function add($violation);
 }

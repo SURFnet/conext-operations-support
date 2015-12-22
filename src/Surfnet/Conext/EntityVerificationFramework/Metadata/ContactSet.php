@@ -22,10 +22,11 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 
 final class ContactSet implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
@@ -39,14 +40,14 @@ final class ContactSet implements ConfiguredMetadataValidatable, IteratorAggrega
      * @param string  $propertyPath
      * @return ContactSet
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
-        Assert::isArray($data, 'Data to deserialise must be an array', $propertyPath);
+        Assert::isArray($data, 'Data to deserialize must be an array', $propertyPath);
 
         return new ContactSet(
             array_map(
                 function ($data) use ($propertyPath) {
-                    return Contact::deserialise($data, $propertyPath . '[]');
+                    return Contact::deserialize($data, $propertyPath . '[]');
                 },
                 $data
             )
@@ -97,12 +98,16 @@ final class ContactSet implements ConfiguredMetadataValidatable, IteratorAggrega
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
         foreach ($this->contacts as $i => $contact) {
-            $subpathValidator = new SubpathValidator($validator, 'Contact #' . ($i + 1));
-            $subpathValidator->validate($contact, $context);
+            $visitor->visit(
+                $contact,
+                new SubpathConstraintViolationWriter($violations, 'Contact #' . ($i + 1)),
+                $context
+            );
         }
     }
 

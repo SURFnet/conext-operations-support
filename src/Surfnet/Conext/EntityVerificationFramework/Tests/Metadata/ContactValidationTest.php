@@ -24,47 +24,57 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 class ContactValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_type_and_email()
     {
-        $contactType  = ContactType::unknown();
-        $emailAddress = EmailAddress::unknown();
+        $contactType  = ContactType::notSet();
+        $emailAddress = EmailAddress::notSet();
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with($contactType, $context)->once();
-        $validator->shouldReceive('validate')->with($emailAddress, $context)->once();
-        $validator->shouldReceive('addViolation')->never();
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $anyViolationWriter = m::type(ConfiguredMetadataConstraintViolationWriter::class);
+        $visitor->shouldReceive('visit')->with($contactType, $anyViolationWriter, $context)->once();
+        $visitor->shouldReceive('visit')->with($emailAddress, $anyViolationWriter, $context)->once();
 
         $contact = new Contact($contactType, $emailAddress, 'Given name', 'Surname');
-        $contact->validate($validator, $context);
+        $contact->validate($visitor, $violations, $context);
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_given_name_and_surname()
     {
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->with('Contact given name is not configured or empty')->once();
+        $violations->shouldReceive('add')->with('Contact surname is not configured or empty')->once();
+
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate');
-        $validator->shouldReceive('addViolation')->with('Contact given name is not configured or empty')->once();
-        $validator->shouldReceive('addViolation')->with('Contact surname is not configured or empty')->once();
 
-        $contact = new Contact(ContactType::unknown(), EmailAddress::unknown(), ' ', null);
-        $contact->validate($validator, $context);
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit');
+
+        $contact = new Contact(ContactType::notSet(), EmailAddress::notSet(), ' ', null);
+        $contact->validate($visitor, $violations, $context);
     }
 }

@@ -28,16 +28,16 @@ class UrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
-    public function it_can_be_deserialised()
+    public function it_can_be_deserialized()
     {
         Url::fromString('https://domain.invalid');
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider nonStringProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *
@@ -50,7 +50,7 @@ class UrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_urls()
     {
@@ -60,7 +60,7 @@ class UrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider urlsToMatchUsingRegexes
      *
      * @param string $url

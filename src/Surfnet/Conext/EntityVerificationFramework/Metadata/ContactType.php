@@ -19,9 +19,10 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class ContactType implements ConfiguredMetadataValidatable
 {
@@ -37,7 +38,7 @@ final class ContactType implements ConfiguredMetadataValidatable
     /**
      * @return ContactType
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new ContactType();
     }
@@ -61,11 +62,12 @@ final class ContactType implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
         if (!in_array($this->type, self::VALID_TYPES, true)) {
-            $validator->addViolation('Contact type must be one of "support", "administrative", "technical"');
+            $violations->add('Contact type must be one of "support", "administrative", "technical"');
         }
     }
 

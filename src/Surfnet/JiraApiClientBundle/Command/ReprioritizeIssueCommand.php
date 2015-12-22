@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
+namespace Surfnet\JiraApiClientBundle\Command;
 
-final class Validator implements ConfiguredMetadataValidator
+final class ReprioritizeIssueCommand
 {
-    public function validate(
-        ConfiguredMetadataValidatable $validatable,
-        ConfiguredMetadataValidationContext $context
-    ) {
-        $violations = new ConstraintViolationList();
-        $validatable->validate(new Visitor(), $violations, $context);
+    /**
+     * @var string
+     */
+    public $issueKey;
 
-        return $violations;
-    }
+    /**
+     * @var string
+     */
+    public $priorityId;
 }
