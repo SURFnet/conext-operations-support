@@ -117,7 +117,7 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
             return;
         }
 
-        $options  = ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded']];
+        $options  = ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded'], 'allow_redirects' => false];
         $response = $context->getHttpClient()->request('POST', $this->location->getValidUrl(), $options);
 
         $statusCode = $response->getStatusCode();
