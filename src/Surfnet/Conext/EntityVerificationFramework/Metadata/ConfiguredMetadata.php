@@ -154,6 +154,7 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         if ($this->entityType->isServiceProvider()) {
             $validator->validate($this->supportUrl, $context);
             $validator->validate($this->applicationUrl, $context);
+            $validator->validate($this->assertionConsumerServices, $context);
         }
     }
 

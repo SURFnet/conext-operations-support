@@ -46,6 +46,7 @@ class ConfiguredMetadataValidationTest extends TestCase
      */
     public function sp_metadata_can_be_validated()
     {
+        $acsList             = new AssertionConsumerServiceList();
         $name                = new Name();
         $description         = new Description();
         $contacts            = new ContactSet();
@@ -57,7 +58,7 @@ class ConfiguredMetadataValidationTest extends TestCase
 
         $metadata = new ConfiguredMetadata(
             EntityType::SP(),
-            new AssertionConsumerServiceList(),
+            $acsList,
             new SingleSignOnServiceList(),
             $defaultNameIdFormat,
             new NameIdFormatList(),
@@ -75,6 +76,7 @@ class ConfiguredMetadataValidationTest extends TestCase
         $context = m::mock(ConfiguredMetadataValidationContext::class);
         /** @var ConfiguredMetadataValidator|MockInterface $validator */
         $validator = m::mock(ConfiguredMetadataValidator::class);
+        $validator->shouldReceive('validate')->with($acsList, $context)->once();
         $validator->shouldReceive('validate')->with($name, $context)->once();
         $validator->shouldReceive('validate')->with($description, $context)->once();
         $validator->shouldReceive('validate')->with($contacts, $context)->once();
