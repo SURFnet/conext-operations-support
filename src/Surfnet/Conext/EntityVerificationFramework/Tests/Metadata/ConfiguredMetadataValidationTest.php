@@ -19,6 +19,7 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
 use Mockery as m;
+use Mockery\Matcher\Type as TypeMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ApplicationUrl;
@@ -34,8 +35,10 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormatList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibbolethMetadataScopeList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnServiceList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SupportUrl;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 class ConfiguredMetadataValidationTest extends TestCase
@@ -72,22 +75,27 @@ class ConfiguredMetadataValidationTest extends TestCase
             $shibmdScopeList
         );
 
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add');
+
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with($acsList, $context)->once();
-        $validator->shouldReceive('validate')->with($name, $context)->once();
-        $validator->shouldReceive('validate')->with($description, $context)->once();
-        $validator->shouldReceive('validate')->with($contacts, $context)->once();
-        $validator->shouldReceive('validate')->with($logos, $context)->once();
-        $validator->shouldReceive('validate')->with($defaultNameIdFormat, $context)->once();
-        $validator->shouldReceive('validate')->with($shibmdScopeList, $context)->once();
-        $validator->shouldReceive('validate')->with($supportUrl, $context)->once();
-        $validator->shouldReceive('validate')->with($applicationUrl, $context)->once();
-        $validator->shouldReceive('addViolation');
 
-        $metadata->validate($validator, $context);
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit')->with(m::type(Url::class), $context);
+        $visitor->shouldReceive('visit')->with($acsList, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($name, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($description, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($contacts, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($logos, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($defaultNameIdFormat, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($shibmdScopeList, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($supportUrl, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($applicationUrl, $this->expectViolationWriter(), $context)->once();
+
+        $metadata->validate($visitor, $violations, $context);
     }
     /**
      * @test
@@ -120,19 +128,24 @@ class ConfiguredMetadataValidationTest extends TestCase
             $shibmdScopeList
         );
 
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add');
+
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with($name, $context)->once();
-        $validator->shouldReceive('validate')->with($description, $context)->once();
-        $validator->shouldReceive('validate')->with($contacts, $context)->once();
-        $validator->shouldReceive('validate')->with($logos, $context)->once();
-        $validator->shouldReceive('validate')->with($defaultNameIdFormat, $context)->once();
-        $validator->shouldReceive('validate')->with($shibmdScopeList, $context)->once();
-        $validator->shouldReceive('addViolation');
 
-        $metadata->validate($validator, $context);
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit')->with(m::type(Url::class), $context);
+        $visitor->shouldReceive('visit')->with($name, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($description, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($contacts, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($logos, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($defaultNameIdFormat, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($shibmdScopeList, $this->expectViolationWriter(), $context)->once();
+
+        $metadata->validate($visitor, $violations, $context);
     }
 
     /**
@@ -157,18 +170,21 @@ class ConfiguredMetadataValidationTest extends TestCase
             new ShibbolethMetadataScopeList()
         );
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate');
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit');
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with('The sign redirects option is not configured to be enabled or disabled')
             ->once();
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        $metadata->validate($validator, $context);
+        $metadata->validate($visitor, $violations, $context);
     }
 
     /**
@@ -196,14 +212,25 @@ class ConfiguredMetadataValidationTest extends TestCase
             true
         );
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate');
-        $validator->shouldReceive('addViolation')->never();
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit');
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        $metadata->validate($validator, $context);
+        $metadata->validate($visitor, $violations, $context);
+    }
+
+    /**
+     * @return TypeMatcher
+     */
+    private function expectViolationWriter()
+    {
+        return m::type(ConfiguredMetadataConstraintViolationWriter::class);
     }
 }

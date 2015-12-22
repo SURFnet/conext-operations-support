@@ -22,10 +22,11 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 
 final class ShibbolethMetadataScopeList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
@@ -61,11 +62,17 @@ final class ShibbolethMetadataScopeList implements ConfiguredMetadataValidatable
         $this->scopes = $scopes;
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
         foreach ($this->scopes as $i => $scope) {
-            $subpathValidator = new SubpathValidator($validator, 'ShibbolethMetadataScope #' . ($i + 1));
-            $subpathValidator->validate($scope, $context);
+            $visitor->visit(
+                $scope,
+                new SubpathConstraintViolationWriter($violations, 'ShibbolethMetadataScope #' . ($i + 1)),
+                $context
+            );
         }
     }
 

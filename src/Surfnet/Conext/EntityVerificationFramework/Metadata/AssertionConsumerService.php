@@ -20,9 +20,10 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class AssertionConsumerService implements ConfiguredMetadataValidatable
 {
@@ -97,20 +98,23 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
         $this->index    = $index;
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
-        $validator->validate($this->binding, $context);
-        $validator->validate($this->location, $context);
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        $visitor->visit($this->binding, $violations, $context);
+        $visitor->visit($this->location, $violations, $context);
 
         if (!is_string($this->index)) {
-            $validator->addViolation(
+            $violations->add(
                 sprintf(
                     'Binding index must set',
                     is_object($this->index) ? get_class($this->index) : gettype($this->index)
                 )
             );
         } elseif (!ctype_digit($this->index)) {
-            $validator->addViolation(sprintf('Binding index must be a number, got "%s"', $this->index));
+            $violations->add(sprintf('Binding index must be a number, got "%s"', $this->index));
         }
 
         if (!$this->location->isValid() || !$this->binding->equals(Binding::create(Binding::BINDING_HTTP_POST))) {
@@ -122,7 +126,7 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
 
         $statusCode = $response->getStatusCode();
         if ($statusCode === 404) {
-            $validator->addViolation(
+            $violations->add(
                 sprintf('AssertionConsumerService POST binding is not available, status code %d', $statusCode)
             );
         }

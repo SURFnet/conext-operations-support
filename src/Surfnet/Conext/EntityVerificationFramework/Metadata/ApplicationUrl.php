@@ -18,16 +18,20 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 use Symfony\Component\HttpFoundation\Response;
 
 final class ApplicationUrl extends Url
 {
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
-        parent::validate(new SubpathValidator($validator, 'Application URL'), $context);
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        parent::validate($visitor, new SubpathConstraintViolationWriter($violations, 'Application URL'), $context);
 
         if (!$this->isValid()) {
             return;
@@ -35,7 +39,7 @@ final class ApplicationUrl extends Url
 
         $response = $context->getHttpClient()->request('GET', $this->getValidUrl());
         if ($response->getStatusCode() !== Response::HTTP_OK) {
-            $validator->addViolation(sprintf(
+            $violations->add(sprintf(
                 'Application URL "%s" is not available, server returned status code %d',
                 $this,
                 $response->getStatusCode()

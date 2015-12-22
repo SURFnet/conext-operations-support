@@ -18,21 +18,23 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class Name extends MultiLocaleString implements ConfiguredMetadataValidatable
 {
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
         if (!$this->hasFilledTranslationForLocale('en')) {
-            $validator->addViolation('No English name configured');
+            $violations->add('No English name configured');
         }
         if (!$this->hasFilledTranslationForLocale('nl')) {
-            $validator->addViolation('No Dutch name configured');
+            $violations->add('No Dutch name configured');
         }
     }
 }

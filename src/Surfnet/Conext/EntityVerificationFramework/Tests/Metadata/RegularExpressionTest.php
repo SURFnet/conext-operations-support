@@ -22,8 +22,9 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\RegularExpression;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class RegularExpressionTest extends TestCase
 {
@@ -37,17 +38,20 @@ final class RegularExpressionTest extends TestCase
      */
     public function regular_expressions_can_be_invalid($pattern, array $errorMessages)
     {
-        /** @var MockInterface|ConfiguredMetadataValidationContext $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var MockInterface|ConfiguredMetadataValidator $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
         foreach ($errorMessages as $errorMessage) {
-            $validator->shouldReceive('addViolation')->once()->with($errorMessage);
+            $violations->shouldReceive('add')->once()->with($errorMessage);
         }
 
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+
         $regex = new RegularExpression($pattern);
-        $regex->validate($validator, $context);
+        $regex->validate($visitor, $violations, $context);
     }
 
     public function invalidRegularExpressions()

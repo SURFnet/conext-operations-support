@@ -25,8 +25,9 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Contact;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactSet;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\EmailAddress;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 class ContactSetValidationTest extends TestCase
 {
@@ -39,15 +40,20 @@ class ContactSetValidationTest extends TestCase
         $contact0 = new Contact(ContactType::notSet(), EmailAddress::notSet());
         $contact1 = new Contact(ContactType::fromString(ContactType::TYPE_SUPPORT), EmailAddress::notSet());
 
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
+
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with($contact0, $context)->once();
-        $validator->shouldReceive('validate')->with($contact1, $context)->once();
-        $validator->shouldReceive('addViolation')->never();
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $anyViolationWriter = m::type(ConfiguredMetadataConstraintViolationWriter::class);
+        $visitor->shouldReceive('visit')->with($contact0, $anyViolationWriter, $context);
+        $visitor->shouldReceive('visit')->with($contact1, $anyViolationWriter, $context);
 
         $contacts = new ContactSet([$contact0, $contact1]);
-        $contacts->validate($validator, $context);
+        $contacts->validate($visitor, $violations, $context);
     }
 }

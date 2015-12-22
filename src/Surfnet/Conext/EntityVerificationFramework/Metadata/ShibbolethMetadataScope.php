@@ -19,9 +19,10 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class ShibbolethMetadataScope implements ConfiguredMetadataValidatable
 {
@@ -88,17 +89,20 @@ final class ShibbolethMetadataScope implements ConfiguredMetadataValidatable
     {
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
         if ($this->literal !== null) {
             if (trim($this->literal) === '') {
-                $validator->addViolation('Literal ShibbolethMetadataScope may not be blank');
+                $violations->add('Literal ShibbolethMetadataScope may not be blank');
             }
 
             return;
         }
 
-        $validator->validate($this->regexp, $context);
+        $visitor->visit($this->regexp, $violations, $context);
     }
 
     /**

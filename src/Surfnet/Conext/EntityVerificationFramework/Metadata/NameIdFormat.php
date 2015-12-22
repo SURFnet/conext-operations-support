@@ -19,9 +19,10 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class NameIdFormat implements ConfiguredMetadataValidatable
 {
@@ -67,17 +68,18 @@ final class NameIdFormat implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
         if ($this->urn === null) {
-            $validator->addViolation('NameIDFormat is not configured');
+            $violations->add('NameIDFormat is not configured');
 
             return;
         }
 
         if (!in_array($this->urn, self::VALID_URNS, true)) {
-            $validator->addViolation(
+            $violations->add(
                 sprintf(
                     '"%s" is not a valid NameIDFormat, must be one of "%s"',
                     $this->urn,

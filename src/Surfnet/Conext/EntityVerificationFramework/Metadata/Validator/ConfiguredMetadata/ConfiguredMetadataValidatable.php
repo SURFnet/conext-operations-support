@@ -21,12 +21,14 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\Configur
 interface ConfiguredMetadataValidatable
 {
     /**
-     * @param ConfiguredMetadataValidator         $validator
-     * @param ConfiguredMetadataValidationContext $context
-     * @return void
+     * @param ConfiguredMetadataVisitor                   $visitor
+     * @param ConfiguredMetadataConstraintViolationWriter $violations
+     * @param ConfiguredMetadataValidationContext         $context
+     * @return
      */
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     );
 }

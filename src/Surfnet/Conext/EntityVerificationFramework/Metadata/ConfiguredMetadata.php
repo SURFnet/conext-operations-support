@@ -20,10 +20,11 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 /**
@@ -137,24 +138,29 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
-        $validator->validate($this->name, $context);
-        $validator->validate($this->description, $context);
-        $validator->validate($this->contacts, $context);
-        $validator->validate($this->logos, $context);
-        (new SubpathValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
-        $validator->validate($this->scopes, $context);
+        $visitor->visit($this->name, $violations, $context);
+        $visitor->visit($this->description, $violations, $context);
+        $visitor->visit($this->contacts, $violations, $context);
+        $visitor->visit($this->logos, $violations, $context);
+        $visitor->visit(
+            $this->defaultNameIdFormat,
+            new SubpathConstraintViolationWriter($violations, 'Default NameIDFormat'),
+            $context
+        );
+        $visitor->visit($this->scopes, $violations, $context);
 
         if ($this->signRedirects === null) {
-            $validator->addViolation('The sign redirects option is not configured to be enabled or disabled');
+            $violations->add('The sign redirects option is not configured to be enabled or disabled');
         }
 
         if ($this->entityType->isServiceProvider()) {
-            $validator->validate($this->supportUrl, $context);
-            $validator->validate($this->applicationUrl, $context);
-            $validator->validate($this->assertionConsumerServices, $context);
+            $visitor->visit($this->supportUrl, $violations, $context);
+            $visitor->visit($this->applicationUrl, $violations, $context);
+            $visitor->visit($this->assertionConsumerServices, $violations, $context);
         }
     }
 

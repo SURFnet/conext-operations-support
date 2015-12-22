@@ -22,8 +22,9 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Description;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 class DescriptionTest extends TestCase
 {
@@ -33,23 +34,26 @@ class DescriptionTest extends TestCase
      * @dataProvider descriptionsAndTheirViolations
      *
      * @param Description $description
-     * @param string[] $violations
+     * @param string[] $violationMessages
      */
-    public function it_reports_a_violation_when_a_locale_is_not_filled(Description $description, $violations)
+    public function it_reports_a_violation_when_a_locale_is_not_filled(Description $description, $violationMessages)
     {
-        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
-
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        foreach ($violations as $violation) {
-            $validator
-                ->shouldReceive('addViolation')
-                ->with($violation)
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        foreach ($violationMessages as $violationMessage) {
+            $violations
+                ->shouldReceive('add')
+                ->with($violationMessage)
                 ->once();
         }
 
-        $description->validate($validator, $context);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+
+        $description->validate($visitor, $violations, $context);
     }
 
     public function descriptionsAndTheirViolations()

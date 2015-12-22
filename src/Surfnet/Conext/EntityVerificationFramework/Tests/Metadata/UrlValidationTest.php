@@ -22,8 +22,9 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 class UrlValidationTest extends TestCase
 {
@@ -33,14 +34,18 @@ class UrlValidationTest extends TestCase
      */
     public function a_violation_is_reported_when_the_url_is_invalid()
     {
-        /** @var MockInterface|ConfiguredMetadataValidationContext $context */
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->with('URL "###" is not valid')->once();
+
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var MockInterface|ConfiguredMetadataValidator $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('addViolation')->with('URL "###" is not valid')->once();
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
 
         $url = Url::fromString('###');
-        $url->validate($validator, $context);
+        $url->validate($visitor, $violations, $context);
     }
 
     /**
@@ -49,13 +54,17 @@ class UrlValidationTest extends TestCase
      */
     public function no_violations_are_reported_when_the_url_is_valid()
     {
-        /** @var MockInterface|ConfiguredMetadataValidationContext $context */
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
+
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var MockInterface|ConfiguredMetadataValidator $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('addViolation')->never();
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
 
         $url = Url::fromString('https://surfc0next.invalid');
-        $url->validate($validator, $context);
+        $url->validate($visitor, $violations, $context);
     }
 }

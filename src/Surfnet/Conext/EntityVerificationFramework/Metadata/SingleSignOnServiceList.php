@@ -22,10 +22,11 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 
 final class SingleSignOnServiceList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
@@ -77,11 +78,17 @@ final class SingleSignOnServiceList implements ConfiguredMetadataValidatable, It
         return new SingleSignOnServiceList(array_merge($this->ssos, [$service]));
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
         foreach ($this->ssos as $i => $sso) {
-            $subpathValidator = new SubpathValidator($validator, 'SingleSignOnService #' . ($i + 1));
-            $subpathValidator->validate($sso, $context);
+            $visitor->visit(
+                $sso,
+                new SubpathConstraintViolationWriter($violations, 'SingleSignOnService #' . ($i + 1)),
+                $context
+            );
         }
     }
 

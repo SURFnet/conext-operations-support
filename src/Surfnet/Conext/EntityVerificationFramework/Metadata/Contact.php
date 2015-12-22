@@ -19,9 +19,10 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 /**
  * @SuppressWarnings(PHPMD.TooManyPublicMethods) -- Methods are relevant, not complex.
@@ -95,17 +96,18 @@ final class Contact implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
-        $validator->validate($this->type, $context);
-        $validator->validate($this->email, $context);
+        $visitor->visit($this->type, $violations, $context);
+        $visitor->visit($this->email, $violations, $context);
 
         if (trim($this->givenName) === '') {
-            $validator->addViolation('Contact given name is not configured or empty');
+            $violations->add('Contact given name is not configured or empty');
         }
         if (trim($this->surName) === '') {
-            $validator->addViolation('Contact surname is not configured or empty');
+            $violations->add('Contact surname is not configured or empty');
         }
     }
 

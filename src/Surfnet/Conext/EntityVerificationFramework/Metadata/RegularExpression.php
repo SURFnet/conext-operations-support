@@ -19,10 +19,10 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class RegularExpression implements ConfiguredMetadataValidatable
 {
@@ -46,10 +46,13 @@ final class RegularExpression implements ConfiguredMetadataValidatable
      *
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
-        set_error_handler(function ($level, $message) use ($validator) {
-            $validator->addViolation(sprintf(
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        set_error_handler(function ($level, $message) use ($violations) {
+            $violations->add(sprintf(
                 'An error would occur during execution of regular expression "%s": "%s"',
                 $this->pattern,
                 $message
@@ -59,7 +62,7 @@ final class RegularExpression implements ConfiguredMetadataValidatable
         restore_error_handler();
 
         if ($result === false) {
-            $validator->addViolation('Regular expression would not execute: it is somehow invalid');
+            $violations->add('Regular expression would not execute: it is somehow invalid');
         }
     }
 
