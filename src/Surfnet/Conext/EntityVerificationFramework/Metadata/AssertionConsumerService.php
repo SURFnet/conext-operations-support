@@ -18,6 +18,8 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
@@ -122,7 +124,21 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
         }
 
         $options  = ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded'], 'allow_redirects' => false];
-        $response = $context->getHttpClient()->request('POST', $this->location->getValidUrl(), $options);
+        try {
+            $response = $context->getHttpClient()->request('POST', $this->location->getValidUrl(), $options);
+        } catch (ConnectException $e) {
+            $violations->add(
+                sprintf('There was an error connecting to the ACS endpoint: "%s"', $e->getMessage())
+            );
+
+            return;
+        } catch (RequestException $e) {
+            $violations->add(
+                sprintf('There was an error while communicating with ACS endpoint: "%s"', $e->getMessage())
+            );
+
+            return;
+        }
 
         $statusCode = $response->getStatusCode();
         if ($statusCode === 404) {
