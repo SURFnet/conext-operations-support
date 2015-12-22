@@ -2,6 +2,9 @@
 VERSION 0  WORKING ENTITY VERIFICATION FRAMEWORK AND CLI AND JIRA REPORTERS
 ===========================================================================
 
+   Version 0.3 - EntityCompletenessTest expanded to check SP-specific completeness tests
+      22/12/2015 15:44  0.3.0  initial release
+
    Version 0.2 - EntityCompletenessTest added
       26/11/2015 10:16  0.2.0  initial release
 
