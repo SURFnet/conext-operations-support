@@ -86,7 +86,11 @@ final class AssertionConsumerServiceList implements ConfiguredMetadataValidatabl
         foreach ($this->acss as $acs) {
             $index = $acs->getIndex();
             $indexString = is_string($index) ? $index : '<invalid>';
-            $visitor->visit($acs, new SubpathConstraintViolationWriter($violations, 'AssertionConsumerService index #' . $indexString), $context);
+            $visitor->visit(
+                $acs,
+                new SubpathConstraintViolationWriter($violations, 'AssertionConsumerService index #' . $indexString),
+                $context
+            );
         }
     }
 
