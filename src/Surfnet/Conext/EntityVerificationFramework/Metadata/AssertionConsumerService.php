@@ -109,12 +109,22 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
                     is_object($this->index) ? get_class($this->index) : gettype($this->index)
                 )
             );
+        } elseif (!ctype_digit($this->index)) {
+            $validator->addViolation(sprintf('Binding index must be a number, got "%s"', $this->index));
+        }
 
+        if (!$this->location->isValid() || !$this->binding->equals(Binding::create(Binding::BINDING_HTTP_POST))) {
             return;
         }
 
-        if (!ctype_digit($this->index)) {
-            $validator->addViolation(sprintf('Binding index must be a number, got "%s"', $this->index));
+        $options  = ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded']];
+        $response = $context->getHttpClient()->request('POST', $this->location->getValidUrl(), $options);
+
+        $statusCode = $response->getStatusCode();
+        if ($statusCode === 404) {
+            $validator->addViolation(
+                sprintf('AssertionConsumerService POST binding is not available, status code %d', $statusCode)
+            );
         }
     }
 
