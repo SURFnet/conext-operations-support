@@ -105,7 +105,7 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
         if (!is_string($this->index)) {
             $validator->addViolation(
                 sprintf(
-                    'Binding index must be a string, got a "%s"',
+                    'Binding index must set',
                     is_object($this->index) ? get_class($this->index) : gettype($this->index)
                 )
             );
