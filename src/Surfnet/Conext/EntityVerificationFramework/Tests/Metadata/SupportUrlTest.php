@@ -19,14 +19,15 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
 use GuzzleHttp\ClientInterface as HttpClientInterface;
-use PHPUnit_Framework_TestCase as TestCase;
 use Mockery as m;
 use Mockery\MockInterface;
+use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SupportUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Symfony\Component\HttpFoundation\Response;
 
 class SupportUrlTest extends TestCase
@@ -37,25 +38,28 @@ class SupportUrlTest extends TestCase
      * @dataProvider supportUrlsMissingLocales
      *
      * @param SupportUrl $supportUrl
-     * @param string[]   $violations
+     * @param string[]   $violationMessages
      */
-    public function support_urls_are_required_to_have_en_nl_locales(SupportUrl $supportUrl, $violations)
+    public function support_urls_are_required_to_have_en_nl_locales(SupportUrl $supportUrl, $violationMessages)
     {
-        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
-
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate');
-
-        foreach ($violations as $violation) {
-            $validator
-                ->shouldReceive('addViolation')
-                ->with($violation)
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        foreach ($violationMessages as $violationMessage) {
+            $violations
+                ->shouldReceive('add')
+                ->with($violationMessage)
                 ->once();
         }
 
-        $supportUrl->validate($validator, $context);
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $anyViolationWriter = m::type(ConfiguredMetadataConstraintViolationWriter::class);
+        $visitor->shouldReceive('visit')->with(m::type(Url::class), $anyViolationWriter, $context);
+
+        $supportUrl->validate($visitor, $violations, $context);
     }
 
     public function supportUrlsMissingLocales()
@@ -89,16 +93,21 @@ class SupportUrlTest extends TestCase
         $urlNl = Url::fromString('nl');
         $urlEn = Url::fromString('en');
 
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
+
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with($urlNl, $context)->once();
-        $validator->shouldReceive('validate')->with($urlEn, $context)->once();
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $anyViolationWriter = m::type(ConfiguredMetadataConstraintViolationWriter::class);
+        $visitor->shouldReceive('visit')->with($urlNl, $anyViolationWriter, $context)->once();
+        $visitor->shouldReceive('visit')->with($urlEn, $anyViolationWriter, $context)->once();
 
         $supportUrl = new SupportUrl(['nl' => $urlNl, 'en' => $urlEn]);
-        $supportUrl->validate($validator, $context);
+        $supportUrl->validate($visitor, $violations, $context);
     }
 
     /**
@@ -120,19 +129,22 @@ class SupportUrlTest extends TestCase
 
         $context = new ConfiguredMetadataValidationContext($httpClient);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate');
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with('Support URL is not available ("https://voorbeeld.invalid"), server returned status code 404')
             ->once();
-        $validator
-            ->shouldReceive('addViolation')
+        $violations
+            ->shouldReceive('add')
             ->with('Support URL is not available ("https://example.invalid"), server returned status code 404')
             ->once();
 
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit');
+
         $supportUrl = new SupportUrl(['nl' => $urlNl, 'en' => $urlEn]);
-        $supportUrl->validate($validator, $context);
+        $supportUrl->validate($visitor, $violations, $context);
     }
 }

@@ -19,23 +19,27 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use GuzzleHttp\Exception\ConnectException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 use Symfony\Component\HttpFoundation\Response;
 
 final class SupportUrl extends MultiLocaleUrl implements ConfiguredMetadataValidatable
 {
     private static $requiredLocales = ['en', 'nl'];
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
         $urls = $this->getUrls();
         $locales = array_keys($urls);
 
         if (array_diff($locales, self::$requiredLocales) !== array_diff(self::$requiredLocales, $locales)) {
-            $validator->addViolation(
+            $violations->add(
                 sprintf(
                     'Support URL must have locales "%s" configured, has "%s"',
                     join('","', self::$requiredLocales),
@@ -44,9 +48,8 @@ final class SupportUrl extends MultiLocaleUrl implements ConfiguredMetadataValid
             );
         }
 
-        $urlValidator = new SubpathValidator($validator, 'Support URL');
         foreach ($urls as $url) {
-            $urlValidator->validate($url, $context);
+            $visitor->visit($url, new SubpathConstraintViolationWriter($violations, 'Support URL'), $context);
 
             if (!$url->isValid()) {
                 continue;
@@ -55,7 +58,7 @@ final class SupportUrl extends MultiLocaleUrl implements ConfiguredMetadataValid
             try {
                 $response = $context->getHttpClient()->request('GET', $url->getValidUrl());
             } catch (ConnectException $e) {
-                $validator->addViolation(
+                $violations->add(
                     sprintf(
                         'An error occurred while connecting to support URL "%s": "%s"',
                         $url->getValidUrl(),
@@ -66,7 +69,7 @@ final class SupportUrl extends MultiLocaleUrl implements ConfiguredMetadataValid
                 continue;
             }
             if ($response->getStatusCode() !== Response::HTTP_OK) {
-                $validator->addViolation(sprintf(
+                $violations->add(sprintf(
                     'Support URL is not available ("%s"), server returned status code %d',
                     $url->getValidUrl(),
                     $response->getStatusCode()

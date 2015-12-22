@@ -23,8 +23,9 @@ use Mockery\Matcher\Closure as ClosureMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Surfnet\Conext\EntityVerificationFramework\Tests\DataProvider\DataProvider;
 
 class NameIdFormatTest extends TestCase
@@ -92,18 +93,21 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_be_invalid()
     {
-        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
-
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with(self::containsString('"invalid" is not a valid NameIDFormat, must be one of "'))
             ->once();
 
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+
         $nameIdFormat = NameIdFormat::fromUrn('invalid');
-        $nameIdFormat->validate($validator, $context);
+        $nameIdFormat->validate($visitor, $violations, $context);
     }
 
     /**
@@ -112,15 +116,18 @@ class NameIdFormatTest extends TestCase
      */
     public function it_can_be_valid()
     {
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
+
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('addViolation')->never();
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
 
         $nameIdFormat = NameIdFormat::fromUrn(NameIdFormat::URN_SAML_20_PERSISTENT);
-        $nameIdFormat->validate($validator, $context);
+        $nameIdFormat->validate($visitor, $violations, $context);
     }
 
     /**

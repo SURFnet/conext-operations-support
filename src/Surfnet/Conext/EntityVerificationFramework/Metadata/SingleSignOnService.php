@@ -20,9 +20,10 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class SingleSignOnService implements ConfiguredMetadataValidatable
 {
@@ -82,10 +83,13 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
         $this->location = $location;
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
-        $validator->validate($this->binding, $context);
-        $validator->validate($this->location, $context);
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        $visitor->visit($this->binding, $violations, $context);
+        $visitor->visit($this->location, $violations, $context);
     }
 
     /**

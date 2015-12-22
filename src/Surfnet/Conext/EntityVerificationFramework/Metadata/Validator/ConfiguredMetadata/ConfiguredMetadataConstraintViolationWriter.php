@@ -18,15 +18,11 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata;
 
-final class Validator implements ConfiguredMetadataValidator
+interface ConfiguredMetadataConstraintViolationWriter
 {
-    public function validate(
-        ConfiguredMetadataValidatable $validatable,
-        ConfiguredMetadataValidationContext $context
-    ) {
-        $violations = new ConstraintViolationList();
-        $validatable->validate(new Visitor(), $violations, $context);
-
-        return $violations;
-    }
+    /**
+     * @param string $violation
+     * @return void
+     */
+    public function add($violation);
 }

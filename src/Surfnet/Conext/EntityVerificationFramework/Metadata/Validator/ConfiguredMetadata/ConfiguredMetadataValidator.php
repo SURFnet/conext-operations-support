@@ -23,18 +23,10 @@ interface ConfiguredMetadataValidator
     /**
      * @param ConfiguredMetadataValidatable       $validatable
      * @param ConfiguredMetadataValidationContext $context
-     * @return void
+     * @return ConfiguredMetadataConstraintViolationReader
      */
-    public function validate(ConfiguredMetadataValidatable $validatable, ConfiguredMetadataValidationContext $context);
-
-    /**
-     * @param string $violation
-     * @return void
-     */
-    public function addViolation($violation);
-
-    /**
-     * @return string[]
-     */
-    public function getViolations();
+    public function validate(
+        ConfiguredMetadataValidatable $validatable,
+        ConfiguredMetadataValidationContext $context
+    );
 }

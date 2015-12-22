@@ -22,10 +22,11 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 
 final class AssertionConsumerServiceList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
@@ -77,13 +78,19 @@ final class AssertionConsumerServiceList implements ConfiguredMetadataValidatabl
         return new AssertionConsumerServiceList(array_merge($this->acss, [$service]));
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
         foreach ($this->acss as $acs) {
             $index = $acs->getIndex();
             $indexString = is_string($index) ? $index : '<invalid>';
-            $subpathValidator = new SubpathValidator($validator, 'AssertionConsumerService index ' . $indexString);
-            $subpathValidator->validate($acs, $context);
+            $visitor->visit(
+                $acs,
+                new SubpathConstraintViolationWriter($violations, 'AssertionConsumerService index #' . $indexString),
+                $context
+            );
         }
     }
 

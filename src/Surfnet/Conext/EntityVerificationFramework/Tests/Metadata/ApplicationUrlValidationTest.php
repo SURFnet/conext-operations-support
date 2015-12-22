@@ -25,8 +25,9 @@ use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ApplicationUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApplicationUrlValidationTest extends TestCase
@@ -47,11 +48,14 @@ class ApplicationUrlValidationTest extends TestCase
         $httpClient->shouldReceive('request')->with('GET', $url)->once()->andReturn($response);
         $context = new ConfiguredMetadataValidationContext($httpClient);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit')->with(m::type(Url::class), $context);
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with(
                 sprintf(
                     'Application URL "%s" is not available, server returned status code %d',
@@ -62,6 +66,6 @@ class ApplicationUrlValidationTest extends TestCase
             ->once();
 
         $logoUrl = ApplicationUrl::fromString($url);
-        $logoUrl->validate($validator, $context);
+        $logoUrl->validate($visitor, $violations, $context);
     }
 }

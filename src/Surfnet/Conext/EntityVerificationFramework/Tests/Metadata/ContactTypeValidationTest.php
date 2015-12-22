@@ -23,8 +23,9 @@ use Mockery\Matcher\Closure as ClosureMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactType;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 class ContactTypeValidationTest extends TestCase
 {
@@ -34,18 +35,21 @@ class ContactTypeValidationTest extends TestCase
      */
     public function it_can_be_invalid()
     {
-        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
-
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with(self::containsString('Contact type must be one of "support", "administrative", "technical"'))
             ->once();
 
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+
         $contactType = ContactType::fromString('invalid');
-        $contactType->validate($validator, $context);
+        $contactType->validate($visitor, $violations, $context);
     }
 
     /**
@@ -54,15 +58,18 @@ class ContactTypeValidationTest extends TestCase
      */
     public function it_can_be_valid()
     {
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
+
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('addViolation')->never();
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
 
         $contactType = ContactType::fromString(ContactType::TYPE_SUPPORT);
-        $contactType->validate($validator, $context);
+        $contactType->validate($visitor, $violations, $context);
     }
 
     /**

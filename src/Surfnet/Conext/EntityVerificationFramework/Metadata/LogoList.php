@@ -19,10 +19,11 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 
 final class LogoList implements ConfiguredMetadataValidatable
 {
@@ -60,12 +61,12 @@ final class LogoList implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
         foreach ($this->logos as $i => $logo) {
-            $subpathValidator = new SubpathValidator($validator, 'Logo #' . $i);
-            $subpathValidator->validate($logo, $context);
+            $visitor->visit($logo, new SubpathConstraintViolationWriter($violations, 'Logo #' . ($i + 1)), $context);
         }
     }
 }
