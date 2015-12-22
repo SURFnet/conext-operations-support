@@ -33,7 +33,7 @@ class LogoValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider logosWithViolations
      *
      * @param Logo   $logo

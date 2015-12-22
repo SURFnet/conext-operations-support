@@ -18,7 +18,12 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
-final class Binding
+use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+
+final class Binding implements ConfiguredMetadataValidatable
 {
     const BINDING_HTTP_REDIRECT = 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect';
     const BINDING_HTTP_POST = 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST';
@@ -36,8 +41,15 @@ final class Binding
         self::BINDING_URI,
     ];
 
-    /** @var mixed */
+    /**
+     * @var mixed
+     */
     private $binding;
+
+    /**
+     * @var bool
+     */
+    private $set = true;
 
     /**
      * @param mixed $data
@@ -51,16 +63,53 @@ final class Binding
         return $binding;
     }
 
+    /**
+     * @param string $constant
+     * @return Binding
+     */
+    public static function create($constant)
+    {
+        Assert::choice($constant, self::VALID_BINDINGS, 'Binding "%s" is not one of the valid bindings');
+
+        $binding = new self();
+        $binding->binding = $constant;
+
+        return $binding;
+    }
+
+    /**
+     * @return Binding
+     */
+    public static function notSet()
+    {
+        $binding = new self();
+        $binding->set = false;
+
+        return $binding;
+    }
+
     private function __construct()
     {
     }
 
-    /**
-     * @return bool
-     */
-    public function isValid()
+    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
     {
-        return in_array($this->binding, self::VALID_BINDINGS, true);
+        if (in_array($this->binding, self::VALID_BINDINGS, true)) {
+            return;
+        }
+
+        if (!is_string($this->binding)) {
+            $type = is_object($this->binding) ? get_class($this->binding) : gettype($this->binding);
+            $validator->addViolation(
+                sprintf('Binding must be one of "%s", got type "%s"', join('", "', self::VALID_BINDINGS), $type)
+            );
+
+            return;
+        }
+
+        $validator->addViolation(
+            sprintf('Binding must be one of "%s", got "%s"', join('", "', self::VALID_BINDINGS), $this->binding)
+        );
     }
 
     /**
@@ -69,11 +118,11 @@ final class Binding
      */
     public function equals(Binding $other)
     {
-        return $this == $other;
+        return $this->binding === $other->binding;
     }
 
     public function __toString()
     {
-        return $this->binding;
+        return $this->set === false ? 'Binding<not-set>' : 'Binding(' . $this->binding . ')';
     }
 }

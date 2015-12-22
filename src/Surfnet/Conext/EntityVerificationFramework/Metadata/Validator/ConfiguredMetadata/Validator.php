@@ -27,11 +27,6 @@ final class Validator implements ConfiguredMetadataValidator
      */
     private $violations = [];
 
-    /**
-     * @param ConfiguredMetadataValidatable       $validatable
-     * @param ConfiguredMetadataValidationContext $context
-     * @return void
-     */
     public function validate(ConfiguredMetadataValidatable $validatable, ConfiguredMetadataValidationContext $context)
     {
         $validatable->validate($this, $context);

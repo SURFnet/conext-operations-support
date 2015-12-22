@@ -33,7 +33,7 @@ final class EmailAddress implements ConfiguredMetadataValidatable
     /**
      * @return EmailAddress
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new EmailAddress();
     }

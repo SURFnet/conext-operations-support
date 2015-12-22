@@ -26,7 +26,7 @@ final class SingleSignOnServiceListTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_deserialize_one_binding()
     {
@@ -43,7 +43,7 @@ final class SingleSignOnServiceListTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_deserialize_two_equal_bindings()
     {
@@ -64,7 +64,7 @@ final class SingleSignOnServiceListTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_deserialize_zero_bindings()
     {

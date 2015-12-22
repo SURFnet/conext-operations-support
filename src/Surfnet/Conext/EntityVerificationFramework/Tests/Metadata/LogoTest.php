@@ -28,7 +28,7 @@ class LogoTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_deserialized()
     {
@@ -39,7 +39,7 @@ class LogoTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider nonStringProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *
@@ -52,7 +52,7 @@ class LogoTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider nonStringProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *

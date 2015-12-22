@@ -78,7 +78,7 @@ final class ConfiguredMetadataFactory
             $signRedirects = $metadataData['redirect']['sign'];
         }
 
-        $defaultNameIdFormat = NameIdFormat::unknown();
+        $defaultNameIdFormat = NameIdFormat::notSet();
         if (isset($metadataData['NameIDFormat'])) {
             $defaultNameIdFormat = NameIdFormat::fromUrn($metadataData['NameIDFormat']);
         }
@@ -109,9 +109,9 @@ final class ConfiguredMetadataFactory
             $assertionConsumerServices = new AssertionConsumerServiceList();
         }
 
-        $url = new MultiLocaleUrl();
+        $url = new SupportUrl();
         if (isset($metadataData['url'])) {
-            $url = MultiLocaleUrl::deserialize($metadataData['url'], 'metadata.url');
+            $url = SupportUrl::deserialize($metadataData['url'], 'metadata.url');
         }
 
         if (isset($metadataData['SingleSignOnService'])) {
@@ -137,6 +137,11 @@ final class ConfiguredMetadataFactory
         $guestQualifier = null;
         if (isset($coinData['guest_qualifier'])) {
             $guestQualifier = new GuestQualifier($coinData['guest_qualifier']);
+        }
+
+        $applicationUrl = ApplicationUrl::notSet();
+        if (isset($coinData['application_url'])) {
+            $applicationUrl = ApplicationUrl::fromString($coinData['application_url']);
         }
 
         $freeformProperties = [];
@@ -189,6 +194,7 @@ final class ConfiguredMetadataFactory
             $name,
             $description,
             $url,
+            $applicationUrl,
             $scopes,
             $publishedMetadataUrl,
             $certData,

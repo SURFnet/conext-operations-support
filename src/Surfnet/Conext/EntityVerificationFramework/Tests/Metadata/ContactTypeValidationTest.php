@@ -30,7 +30,7 @@ class ContactTypeValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_invalid()
     {
@@ -50,7 +50,7 @@ class ContactTypeValidationTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_be_valid()
     {

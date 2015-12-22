@@ -22,8 +22,12 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
 
-final class SingleSignOnServiceList implements IteratorAggregate, Countable
+final class SingleSignOnServiceList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
     /**
      * @var SingleSignOnService[]
@@ -54,6 +58,9 @@ final class SingleSignOnServiceList implements IteratorAggregate, Countable
         return $list;
     }
 
+    /**
+     * @param SingleSignOnService[] $ssos
+     */
     public function __construct(array $ssos = [])
     {
         Assert::allIsInstanceOf($ssos, SingleSignOnService::class);
@@ -68,6 +75,14 @@ final class SingleSignOnServiceList implements IteratorAggregate, Countable
     public function add(SingleSignOnService $service)
     {
         return new SingleSignOnServiceList(array_merge($this->ssos, [$service]));
+    }
+
+    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
+    {
+        foreach ($this->ssos as $i => $sso) {
+            $subpathValidator = new SubpathValidator($validator, 'SingleSignOnService #' . ($i + 1));
+            $subpathValidator->validate($sso, $context);
+        }
     }
 
     public function getIterator()

@@ -29,7 +29,7 @@ class KeywordsTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider keywordsesAndTheirViolations
      *
      * @param Keywords $keywords

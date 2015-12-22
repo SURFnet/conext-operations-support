@@ -43,7 +43,7 @@ final class NameIdFormat implements ConfiguredMetadataValidatable
     /**
      * @return NameIdFormat
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new NameIdFormat();
     }
@@ -72,6 +72,8 @@ final class NameIdFormat implements ConfiguredMetadataValidatable
     ) {
         if ($this->urn === null) {
             $validator->addViolation('NameIDFormat is not configured');
+
+            return;
         }
 
         if (!in_array($this->urn, self::VALID_URNS, true)) {

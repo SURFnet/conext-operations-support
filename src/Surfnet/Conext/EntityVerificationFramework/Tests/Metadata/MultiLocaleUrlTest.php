@@ -28,7 +28,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_deserializes_urls()
     {
@@ -37,7 +37,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider nonStringProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *
@@ -50,7 +50,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_test_whether_it_contains_a_valid_url_for_a_locale()
     {
@@ -63,7 +63,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_is_valid_when_all_its_urls_are_valid()
     {
@@ -73,7 +73,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_is_invalid_when_some_of_its_urls_are_invalid()
     {
@@ -83,7 +83,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_urls_can_equal_each_other()
     {
@@ -95,7 +95,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function two_urls_can_differ()
     {
@@ -107,7 +107,7 @@ final class MultiLocaleUrlTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider intFloatBoolProvider
      * @expectedException \Surfnet\Conext\EntityVerificationFramework\Exception\AssertionFailedException
      *

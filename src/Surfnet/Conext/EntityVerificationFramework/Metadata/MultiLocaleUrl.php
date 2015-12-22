@@ -20,7 +20,7 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 
-final class MultiLocaleUrl
+class MultiLocaleUrl
 {
     /**
      * @var Url[]
@@ -30,13 +30,13 @@ final class MultiLocaleUrl
     /**
      * @param string[] $data URLs indexed by locale string
      * @param string   $propertyPath
-     * @return MultiLocaleUrl
+     * @return static
      */
     public static function deserialize($data, $propertyPath)
     {
         Assert::allString($data, 'All URLs must be strings', $propertyPath);
 
-        return new MultiLocaleUrl(
+        return new static(
             array_map('Surfnet\Conext\EntityVerificationFramework\Metadata\Url::fromString', $data)
         );
     }
@@ -44,9 +44,9 @@ final class MultiLocaleUrl
     /**
      * @param Url[] $urls URLs indexed by locale string
      */
-    public function __construct(array $urls = [])
+    final public function __construct(array $urls = [])
     {
-        Assert::allIsInstanceOf($urls, Url::class, 'URLs must be strings');
+        Assert::allIsInstanceOf($urls, Url::class, 'URLs must be instances of Url');
         Assert::allString(array_keys($urls), 'URLs must be indexed by locale');
 
         $this->urls = $urls;
@@ -127,5 +127,13 @@ final class MultiLocaleUrl
                 )
             )
         );
+    }
+
+    /**
+     * @return Url[] URLs indexed by their locales
+     */
+    protected function getUrls()
+    {
+        return $this->urls;
     }
 }

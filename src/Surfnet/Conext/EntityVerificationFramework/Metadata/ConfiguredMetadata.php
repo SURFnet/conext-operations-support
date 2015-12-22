@@ -51,8 +51,10 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     private $logos;
     /** @var boolean|null */
     private $signRedirects;
-    /** @var MultiLocaleUrl */
-    private $url;
+    /** @var SupportUrl */
+    private $supportUrl;
+    /** @var ApplicationUrl */
+    private $applicationUrl;
     /** @var Keywords */
     private $keywords;
     /** @var NameIdFormat */
@@ -79,7 +81,8 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
      * @param LogoList                       $logos
      * @param Name                           $name
      * @param Description                    $description
-     * @param MultiLocaleUrl                 $url
+     * @param SupportUrl                     $supportUrl
+     * @param ApplicationUrl                 $applicationUrl
      * @param ShibbolethMetadataScopeList    $scopes
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
@@ -100,7 +103,8 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         LogoList $logos,
         Name $name,
         Description $description,
-        MultiLocaleUrl $url,
+        SupportUrl $supportUrl,
+        ApplicationUrl $applicationUrl,
         ShibbolethMetadataScopeList $scopes,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
@@ -121,7 +125,8 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         $this->description               = $description;
         $this->logos                     = $logos;
         $this->signRedirects             = $signRedirects;
-        $this->url                       = $url;
+        $this->supportUrl                = $supportUrl;
+        $this->applicationUrl            = $applicationUrl;
         $this->scopes                    = $scopes;
         $this->keywords                  = $keywords;
         $this->defaultNameIdFormat       = $defaultNameIdFormat;
@@ -144,6 +149,12 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
 
         if ($this->signRedirects === null) {
             $validator->addViolation('The sign redirects option is not configured to be enabled or disabled');
+        }
+
+        if ($this->entityType->isServiceProvider()) {
+            $validator->validate($this->supportUrl, $context);
+            $validator->validate($this->applicationUrl, $context);
+            $validator->validate($this->assertionConsumerServices, $context);
         }
     }
 

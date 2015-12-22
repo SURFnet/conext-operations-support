@@ -44,7 +44,7 @@ class Url implements ConfiguredMetadataValidatable
     /**
      * @return static
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new static();
     }
@@ -148,7 +148,7 @@ class Url implements ConfiguredMetadataValidatable
      */
     public function equals(Url $other)
     {
-        return $this == $other;
+        return $this->url === $other->url;
     }
 
     public function __toString()

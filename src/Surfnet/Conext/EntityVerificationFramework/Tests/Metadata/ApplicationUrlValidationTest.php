@@ -23,48 +23,21 @@ use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoUrl;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ApplicationUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
 use Symfony\Component\HttpFoundation\Response;
 
-class LogoUrlValidationTest extends TestCase
+class ApplicationUrlValidationTest extends TestCase
 {
-    /**
-     * @test
-     * @group Metadata
-     */
-    public function logo_url_must_be_hosted_on_static_dot_surfconext_dot_nl()
-    {
-        $url = 'https://cdn.invalid/logo.bmp';
-
-        /** @var MockInterface|ResponseInterface $response200 */
-        $response200 = m::mock(ResponseInterface::class);
-        $response200->shouldReceive('getStatusCode')->andReturn(Response::HTTP_OK);
-        /** @var MockInterface|ClientInterface $httpClient */
-        $httpClient = m::mock(ClientInterface::class);
-        $httpClient->shouldReceive('request')->andReturn($response200);
-        $context = new ConfiguredMetadataValidationContext($httpClient);
-
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator
-            ->shouldReceive('addViolation')
-            ->with(sprintf('Logo URL "%s" does not match https://static.surfconext.nl/logos/idp/<name>.png', $url))
-            ->once();
-
-        $logoUrl = LogoUrl::fromString($url);
-        $logoUrl->validate($validator, $context);
-    }
-
     /**
      * @test
      * @group Metadata
      */
     public function logo_url_can_be_unavailable()
     {
-        $url = 'https://static.surfconext.nl/logos/idp/test.png';
+        $url = 'https://app.invalid';
 
         /** @var MockInterface|ResponseInterface $response */
         $response = m::mock(ResponseInterface::class);
@@ -79,10 +52,16 @@ class LogoUrlValidationTest extends TestCase
         $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
         $validator
             ->shouldReceive('addViolation')
-            ->with(sprintf('Logo "%s" is not available, server returned status code %d', $url, Response::HTTP_NOT_FOUND))
+            ->with(
+                sprintf(
+                    'Application URL "%s" is not available, server returned status code %d',
+                    $url,
+                    Response::HTTP_NOT_FOUND
+                )
+            )
             ->once();
 
-        $logoUrl = LogoUrl::fromString($url);
+        $logoUrl = ApplicationUrl::fromString($url);
         $logoUrl->validate($validator, $context);
     }
 }

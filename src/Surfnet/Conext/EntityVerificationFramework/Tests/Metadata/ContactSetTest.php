@@ -26,7 +26,7 @@ final class ContactSetTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_create_a_set_of_two_contacts()
     {
@@ -36,7 +36,7 @@ final class ContactSetTest extends TestCase
     }
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_create_a_set_containing_no_contacts()
     {
@@ -45,7 +45,7 @@ final class ContactSetTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_can_check_whether_it_contains_a_contact()
     {
@@ -57,7 +57,7 @@ final class ContactSetTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_is_countable()
     {
@@ -70,7 +70,7 @@ final class ContactSetTest extends TestCase
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_behaves_as_a_set()
     {

@@ -32,12 +32,12 @@ class ContactSetValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_contacts()
     {
-        $contact0 = new Contact(ContactType::unknown(), EmailAddress::unknown());
-        $contact1 = new Contact(ContactType::fromString(ContactType::TYPE_SUPPORT), EmailAddress::unknown());
+        $contact0 = new Contact(ContactType::notSet(), EmailAddress::notSet());
+        $contact1 = new Contact(ContactType::fromString(ContactType::TYPE_SUPPORT), EmailAddress::notSet());
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
