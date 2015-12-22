@@ -24,7 +24,7 @@ interface ConfiguredMetadataValidatable
      * @param ConfiguredMetadataVisitor                   $visitor
      * @param ConfiguredMetadataConstraintViolationWriter $violations
      * @param ConfiguredMetadataValidationContext         $context
-     * @return
+     * @return void
      */
     public function validate(
         ConfiguredMetadataVisitor $visitor,
