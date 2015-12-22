@@ -23,29 +23,35 @@ use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoList;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 class LogoListValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_validates_its_logos()
     {
-        $logo0 = Logo::deserialise([], 'propPath');
-        $logo1 = Logo::deserialise([], 'propPath');
+        $logo0 = Logo::deserialize([], 'propPath');
+        $logo1 = Logo::deserialize([], 'propPath');
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with($logo0, $context)->once();
-        $validator->shouldReceive('validate')->with($logo1, $context)->once();
-        $validator->shouldReceive('addViolation')->never();
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $anyViolationWriter = m::type(ConfiguredMetadataConstraintViolationWriter::class);
+        $visitor->shouldReceive('visit')->with($logo0, $anyViolationWriter, $context)->once();
+        $visitor->shouldReceive('visit')->with($logo1, $anyViolationWriter, $context)->once();
 
         $logos = new LogoList([$logo0, $logo1]);
-        $logos->validate($validator, $context);
+        $logos->validate($visitor, $violations, $context);
     }
 }

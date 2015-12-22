@@ -20,10 +20,11 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 /**
@@ -51,14 +52,18 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     private $logos;
     /** @var boolean|null */
     private $signRedirects;
-    /** @var MultiLocaleUrl */
-    private $url;
+    /** @var SupportUrl */
+    private $supportUrl;
+    /** @var ApplicationUrl */
+    private $applicationUrl;
     /** @var Keywords */
     private $keywords;
     /** @var NameIdFormat */
     private $defaultNameIdFormat;
     /** @var NameIdFormatList */
     private $acceptableNameIdFormats;
+    /** @var ShibbolethMetadataScopeList */
+    private $scopes;
     /** @var PemEncodedX509Certificate|null */
     private $certData;
     /** @var GuestQualifier|null */
@@ -77,7 +82,9 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
      * @param LogoList                       $logos
      * @param Name                           $name
      * @param Description                    $description
-     * @param MultiLocaleUrl                 $url
+     * @param SupportUrl                     $supportUrl
+     * @param ApplicationUrl                 $applicationUrl
+     * @param ShibbolethMetadataScopeList    $scopes
      * @param null|Url                       $publishedMetadataUrl
      * @param null|PemEncodedX509Certificate $certData
      * @param bool|null                      $signRedirects
@@ -97,7 +104,9 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         LogoList $logos,
         Name $name,
         Description $description,
-        MultiLocaleUrl $url,
+        SupportUrl $supportUrl,
+        ApplicationUrl $applicationUrl,
+        ShibbolethMetadataScopeList $scopes,
         Url $publishedMetadataUrl = null,
         PemEncodedX509Certificate $certData = null,
         $signRedirects = null,
@@ -117,7 +126,9 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
         $this->description               = $description;
         $this->logos                     = $logos;
         $this->signRedirects             = $signRedirects;
-        $this->url                       = $url;
+        $this->supportUrl                = $supportUrl;
+        $this->applicationUrl            = $applicationUrl;
+        $this->scopes                    = $scopes;
         $this->keywords                  = $keywords;
         $this->defaultNameIdFormat       = $defaultNameIdFormat;
         $this->acceptableNameIdFormats   = $acceptableNameIdFormats;
@@ -127,17 +138,29 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
     }
 
     public function validate(
-        ConfiguredMetadataValidator $validator,
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
-        $validator->validate($this->name, $context);
-        $validator->validate($this->description, $context);
-        $validator->validate($this->contacts, $context);
-        $validator->validate($this->logos, $context);
-        (new SubpathValidator($validator, 'Default NameIDFormat'))->validate($this->defaultNameIdFormat, $context);
+        $visitor->visit($this->name, $violations, $context);
+        $visitor->visit($this->description, $violations, $context);
+        $visitor->visit($this->contacts, $violations, $context);
+        $visitor->visit($this->logos, $violations, $context);
+        $visitor->visit(
+            $this->defaultNameIdFormat,
+            new SubpathConstraintViolationWriter($violations, 'Default NameIDFormat'),
+            $context
+        );
+        $visitor->visit($this->scopes, $violations, $context);
 
         if ($this->signRedirects === null) {
-            $validator->addViolation('The sign redirects option is not configured to be enabled or disabled');
+            $violations->add('The sign redirects option is not configured to be enabled or disabled');
+        }
+
+        if ($this->entityType->isServiceProvider()) {
+            $visitor->visit($this->supportUrl, $violations, $context);
+            $visitor->visit($this->applicationUrl, $violations, $context);
+            $visitor->visit($this->assertionConsumerServices, $violations, $context);
         }
     }
 

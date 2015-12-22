@@ -28,54 +28,38 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMeta
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 
-final class SingleSignOnServiceList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
+final class ShibbolethMetadataScopeList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
     /**
-     * @var SingleSignOnService[]
+     * @var ShibbolethMetadataScope[]
      */
-    private $ssos;
+    private $scopes = [];
 
     /**
-     * @param array  $data
+     * @param mixed $data An array of ShibbolethMetadataScope array structures
      * @param string $propertyPath
-     * @return SingleSignOnServiceList
+     * @return ShibbolethMetadataScopeList
      */
     public static function deserialize($data, $propertyPath)
     {
-        Assert::isArray(
-            $data,
-            'SP metadata\'s "SingleSignOnService" key must contain an array',
-            $propertyPath
-        );
+        Assert::isArray($data, 'List of ShibbolethMetadataScopes must be array, got "%s"');
 
-        $list = new self();
-        $list->ssos = array_map(
-            function ($data) {
-                return SingleSignOnService::deserialize($data);
-            },
-            $data
-        );
+        $list = new ShibbolethMetadataScopeList();
+        foreach (array_values($data) as $i => $scopeData) {
+            $list->scopes[] = ShibbolethMetadataScope::deserialize($scopeData, sprintf('%s[%d]', $propertyPath, $i));
+        }
 
         return $list;
     }
 
     /**
-     * @param SingleSignOnService[] $ssos
+     * @param ShibbolethMetadataScope[] $scopes
      */
-    public function __construct(array $ssos = [])
+    public function __construct(array $scopes = [])
     {
-        Assert::allIsInstanceOf($ssos, SingleSignOnService::class);
+        Assert::allIsInstanceOf($scopes, ShibbolethMetadataScope::class);
 
-        $this->ssos = $ssos;
-    }
-
-    /**
-     * @param SingleSignOnService $service
-     * @return SingleSignOnServiceList
-     */
-    public function add(SingleSignOnService $service)
-    {
-        return new SingleSignOnServiceList(array_merge($this->ssos, [$service]));
+        $this->scopes = $scopes;
     }
 
     public function validate(
@@ -83,27 +67,36 @@ final class SingleSignOnServiceList implements ConfiguredMetadataValidatable, It
         ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
-        foreach ($this->ssos as $i => $sso) {
+        foreach ($this->scopes as $i => $scope) {
             $visitor->visit(
-                $sso,
-                new SubpathConstraintViolationWriter($violations, 'SingleSignOnService #' . ($i + 1)),
+                $scope,
+                new SubpathConstraintViolationWriter($violations, 'ShibbolethMetadataScope #' . ($i + 1)),
                 $context
             );
         }
     }
 
+    /**
+     * @param ShibbolethMetadataScope $scope
+     * @return ShibbolethMetadataScopeList
+     */
+    public function add(ShibbolethMetadataScope $scope)
+    {
+        return new ShibbolethMetadataScopeList(array_merge($this->scopes, [$scope]));
+    }
+
     public function getIterator()
     {
-        return new ArrayIterator($this->ssos);
+        return new ArrayIterator($this->scopes);
     }
 
     public function count()
     {
-        return count($this->ssos);
+        return count($this->scopes);
     }
 
     public function __toString()
     {
-        return sprintf('SingleSignOnServiceList(%s)', join(', ', array_map('strval', $this->ssos)));
+        return sprintf('ShibbolethMetadataScopeList(%s)', join(', ', array_map('strval', $this->scopes)));
     }
 }

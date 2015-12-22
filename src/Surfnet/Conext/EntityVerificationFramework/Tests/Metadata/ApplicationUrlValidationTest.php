@@ -18,53 +18,54 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
+use GuzzleHttp\ClientInterface;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ApplicationUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Symfony\Component\HttpFoundation\Response;
 
-class UrlValidationTest extends TestCase
+class ApplicationUrlValidationTest extends TestCase
 {
     /**
      * @test
-     * @group validation
+     * @group Metadata
      */
-    public function a_violation_is_reported_when_the_url_is_invalid()
+    public function logo_url_can_be_unavailable()
     {
-        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
-        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
-        $violations->shouldReceive('add')->with('URL "###" is not valid')->once();
+        $url = 'https://app.invalid';
 
-        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
+        /** @var MockInterface|ResponseInterface $response */
+        $response = m::mock(ResponseInterface::class);
+        $response->shouldReceive('getStatusCode')->andReturn(Response::HTTP_NOT_FOUND);
+        /** @var MockInterface|ClientInterface $httpClient */
+        $httpClient = m::mock(ClientInterface::class);
+        $httpClient->shouldReceive('request')->with('GET', $url)->once()->andReturn($response);
+        $context = new ConfiguredMetadataValidationContext($httpClient);
 
         /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
         $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit')->with(m::type(Url::class), $context);
 
-        $url = Url::fromString('###');
-        $url->validate($visitor, $violations, $context);
-    }
-
-    /**
-     * @test
-     * @group validation
-     */
-    public function no_violations_are_reported_when_the_url_is_valid()
-    {
         /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
         $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
-        $violations->shouldReceive('add')->never();
+        $violations
+            ->shouldReceive('add')
+            ->with(
+                sprintf(
+                    'Application URL "%s" is not available, server returned status code %d',
+                    $url,
+                    Response::HTTP_NOT_FOUND
+                )
+            )
+            ->once();
 
-        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
-        $context = m::mock(ConfiguredMetadataValidationContext::class);
-
-        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
-        $visitor = m::mock(ConfiguredMetadataVisitor::class);
-
-        $url = Url::fromString('https://surfc0next.invalid');
-        $url->validate($visitor, $violations, $context);
+        $logoUrl = ApplicationUrl::fromString($url);
+        $logoUrl->validate($visitor, $violations, $context);
     }
 }

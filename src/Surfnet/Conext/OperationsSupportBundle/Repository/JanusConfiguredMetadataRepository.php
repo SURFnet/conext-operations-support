@@ -64,8 +64,8 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
         $data = $this->apiService->read('connections/%d.json', [$id]);
         $this->logger->debug('Fetched connection detail');
 
-        $metadata = ConfiguredMetadataFactory::deserialise($data);
-        $this->logger->debug('Deserialised into configured metadata');
+        $metadata = ConfiguredMetadataFactory::deserialize($data);
+        $this->logger->debug('deserialized into configured metadata');
 
         return $metadata;
     }
@@ -99,7 +99,7 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
 
         $data = $this->apiService->read('connections.json');
 
-        $this->initialiseEntityConnectionIdMap($data);
+        $this->initializeEntityConnectionIdMap($data);
 
         Assert::keyExists($data, 'connections');
         Assert::allIsArray($data['connections'], null, 'connections');
@@ -137,8 +137,8 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
     private function getConnectionIdForEntity(Entity $entity)
     {
         if ($this->entityConnectionIdMap === null) {
-            $this->logger->debug('Entity connection ID map is not initialised, writing map...');
-            $this->initialiseEntityConnectionIdMap($this->apiService->read('connections.json'));
+            $this->logger->debug('Entity connection ID map is not initialized, writing map...');
+            $this->initializeEntityConnectionIdMap($this->apiService->read('connections.json'));
         }
 
         $entityKey = sprintf('%s:%s', $entity->getEntityId(), $entity->getEntityType());
@@ -154,7 +154,7 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
      *
      * @param array $connectionsData Connection list blob
      */
-    private function initialiseEntityConnectionIdMap($connectionsData)
+    private function initializeEntityConnectionIdMap($connectionsData)
     {
         Assert::keyExists($connectionsData, 'connections');
         Assert::allIsArray($connectionsData['connections'], null, 'connections');
@@ -185,6 +185,6 @@ final class JanusConfiguredMetadataRepository implements ConfiguredMetadataRepos
 
         $this->entityConnectionIdMap = $entityConnectionIdMap;
 
-        $this->logger->debug('Initialise entity connection ID map');
+        $this->logger->debug('Initialize entity connection ID map');
     }
 }

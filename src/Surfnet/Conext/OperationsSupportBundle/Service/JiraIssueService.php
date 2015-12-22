@@ -26,7 +26,7 @@ use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssuePriority;
 use Surfnet\Conext\OperationsSupportBundle\Value\JiraIssueStatus;
 use Surfnet\JiraApiClientBundle\Command\CommentOnIssueCommand;
 use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Command\ReprioritiseIssueCommand;
+use Surfnet\JiraApiClientBundle\Command\ReprioritizeIssueCommand;
 use Surfnet\JiraApiClientBundle\Service\IssueService;
 
 class JiraIssueService
@@ -87,15 +87,15 @@ class JiraIssueService
      * @param string            $issueKey
      * @param JiraIssuePriority $priority
      */
-    public function reprioritiseIssue($issueKey, JiraIssuePriority $priority)
+    public function reprioritizeIssue($issueKey, JiraIssuePriority $priority)
     {
-        $command = new ReprioritiseIssueCommand();
+        $command = new ReprioritizeIssueCommand();
         $command->issueKey = $issueKey;
         $command->priorityId = $priority->getPriorityId();
 
-        $this->issueApiService->reprioritiseIssue($command);
+        $this->issueApiService->reprioritizeIssue($command);
 
-        $this->logger->info(sprintf('Reprioritised JIRA issue "%s"', $issueKey));
+        $this->logger->info(sprintf('Reprioritized JIRA issue "%s"', $issueKey));
     }
 
     /**

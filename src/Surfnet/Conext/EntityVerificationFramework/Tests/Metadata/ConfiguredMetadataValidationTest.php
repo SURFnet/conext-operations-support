@@ -19,39 +19,101 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Tests\Metadata;
 
 use Mockery as m;
+use Mockery\Matcher\Type as TypeMatcher;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ApplicationUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\AssertionConsumerServiceList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ContactSet;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Description;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Keywords;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoList;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\MultiLocaleUrl;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Name;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormat;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\NameIdFormatList;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\ShibbolethMetadataScopeList;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\SingleSignOnServiceList;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\SupportUrl;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Surfnet\Conext\EntityVerificationFramework\Value\EntityType;
 
 class ConfiguredMetadataValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
-    public function it_validates_its_metadata_objects()
+    public function sp_metadata_can_be_validated()
+    {
+        $acsList             = new AssertionConsumerServiceList();
+        $name                = new Name();
+        $description         = new Description();
+        $contacts            = new ContactSet();
+        $logos               = new LogoList();
+        $defaultNameIdFormat = NameIdFormat::notSet();
+        $shibmdScopeList     = new ShibbolethMetadataScopeList();
+        $supportUrl          = new SupportUrl();
+        $applicationUrl      = ApplicationUrl::fromString('https://app.invalid');
+
+        $metadata = new ConfiguredMetadata(
+            EntityType::SP(),
+            $acsList,
+            new SingleSignOnServiceList(),
+            $defaultNameIdFormat,
+            new NameIdFormatList(),
+            $contacts,
+            new Keywords(),
+            $logos,
+            $name,
+            $description,
+            $supportUrl,
+            $applicationUrl,
+            $shibmdScopeList
+        );
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add');
+
+        /** @var ConfiguredMetadataValidationContext|MockInterface $context */
+        $context = m::mock(ConfiguredMetadataValidationContext::class);
+
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit')->with(m::type(Url::class), $context);
+        $visitor->shouldReceive('visit')->with($acsList, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($name, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($description, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($contacts, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($logos, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($defaultNameIdFormat, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($shibmdScopeList, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($supportUrl, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($applicationUrl, $this->expectViolationWriter(), $context)->once();
+
+        $metadata->validate($visitor, $violations, $context);
+    }
+    /**
+     * @test
+     * @group Metadata
+     */
+    public function idp_metadata_can_be_validated()
     {
         $name                = new Name();
         $description         = new Description();
         $contacts            = new ContactSet();
         $logos               = new LogoList();
-        $defaultNameIdFormat = NameIdFormat::unknown();
+        $defaultNameIdFormat = NameIdFormat::notSet();
+        $shibmdScopeList     = new ShibbolethMetadataScopeList();
+        $supportUrl          = new SupportUrl();
+        $applicationUrl      = ApplicationUrl::fromString('https://app.invalid');
 
-        $metadata = new ConfiguredMetadata(
-            EntityType::SP(),
+        $metadata   = new ConfiguredMetadata(
+            EntityType::IdP(),
             new AssertionConsumerServiceList(),
             new SingleSignOnServiceList(),
             $defaultNameIdFormat,
@@ -61,26 +123,34 @@ class ConfiguredMetadataValidationTest extends TestCase
             $logos,
             $name,
             $description,
-            new MultiLocaleUrl()
+            $supportUrl,
+            $applicationUrl,
+            $shibmdScopeList
         );
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add');
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with($name, $context)->once();
-        $validator->shouldReceive('validate')->with($description, $context)->once();
-        $validator->shouldReceive('validate')->with($contacts, $context)->once();
-        $validator->shouldReceive('validate')->with($logos, $context)->once();
-        $validator->shouldReceive('validate')->with($defaultNameIdFormat, $context)->once();
-        $validator->shouldReceive('addViolation');
 
-        $metadata->validate($validator, $context);
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit')->with(m::type(Url::class), $context);
+        $visitor->shouldReceive('visit')->with($name, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($description, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($contacts, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($logos, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($defaultNameIdFormat, $this->expectViolationWriter(), $context)->once();
+        $visitor->shouldReceive('visit')->with($shibmdScopeList, $this->expectViolationWriter(), $context)->once();
+
+        $metadata->validate($visitor, $violations, $context);
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function it_requires_the_redirect_signing_option_to_be_configured()
     {
@@ -88,61 +158,79 @@ class ConfiguredMetadataValidationTest extends TestCase
             EntityType::SP(),
             new AssertionConsumerServiceList(),
             new SingleSignOnServiceList(),
-            NameIdFormat::unknown(),
+            NameIdFormat::notSet(),
             new NameIdFormatList(),
             new ContactSet(),
             new Keywords(),
             new LogoList(),
             new Name(),
             new Description(),
-            new MultiLocaleUrl()
+            new SupportUrl(),
+            ApplicationUrl::fromString(''),
+            new ShibbolethMetadataScopeList()
         );
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate');
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit');
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with('The sign redirects option is not configured to be enabled or disabled')
             ->once();
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        $metadata->validate($validator, $context);
+        $metadata->validate($visitor, $violations, $context);
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
-    public function it_recognises_the_redirect_signing_option_is_configured()
+    public function it_recognizes_the_redirect_signing_option_is_configured()
     {
         $metadata = new ConfiguredMetadata(
             EntityType::SP(),
             new AssertionConsumerServiceList(),
             new SingleSignOnServiceList(),
-            NameIdFormat::unknown(),
+            NameIdFormat::notSet(),
             new NameIdFormatList(),
             new ContactSet(),
             new Keywords(),
             new LogoList(),
             new Name(),
             new Description(),
-            new MultiLocaleUrl(),
+            new SupportUrl(),
+            ApplicationUrl::fromString(''),
+            new ShibbolethMetadataScopeList(),
             null,
             null,
             true
         );
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate');
-        $validator->shouldReceive('addViolation')->never();
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $visitor->shouldReceive('visit');
+
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations->shouldReceive('add')->never();
 
         /** @var ConfiguredMetadataValidationContext|MockInterface $context */
         $context = m::mock(ConfiguredMetadataValidationContext::class);
 
-        $metadata->validate($validator, $context);
+        $metadata->validate($visitor, $violations, $context);
+    }
+
+    /**
+     * @return TypeMatcher
+     */
+    private function expectViolationWriter()
+    {
+        return m::type(ConfiguredMetadataConstraintViolationWriter::class);
     }
 }

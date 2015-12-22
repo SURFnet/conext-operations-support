@@ -23,7 +23,7 @@ use Surfnet\JiraApiClientBundle\ApiClient;
 use Surfnet\JiraApiClientBundle\Assert;
 use Surfnet\JiraApiClientBundle\Command\CommentOnIssueCommand;
 use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Command\ReprioritiseIssueCommand;
+use Surfnet\JiraApiClientBundle\Command\ReprioritizeIssueCommand;
 use Surfnet\JiraApiClientBundle\Dto\Comment;
 use Surfnet\JiraApiClientBundle\Dto\Issue;
 use Surfnet\JiraApiClientBundle\Exception\RuntimeException;
@@ -84,7 +84,7 @@ final class RestIssueService implements IssueService
         return $resource['key'];
     }
 
-    public function reprioritiseIssue(ReprioritiseIssueCommand $command)
+    public function reprioritizeIssue(ReprioritizeIssueCommand $command)
     {
         /** @var ApiResult|false $result */
         $result = $this->apiClient->editIssue($command->issueKey, [
@@ -96,7 +96,7 @@ final class RestIssueService implements IssueService
         ]);
 
         if ($result) {
-            throw new RuntimeException('Unknown error while reprioritising JIRA issue: expected HTTP 204 No Content');
+            throw new RuntimeException('Unknown error while reprioritizing JIRA issue: expected HTTP 204 No Content');
         }
     }
 

@@ -20,9 +20,10 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 class Url implements ConfiguredMetadataValidatable
 {
@@ -44,7 +45,7 @@ class Url implements ConfiguredMetadataValidatable
     /**
      * @return static
      */
-    public static function unknown()
+    public static function notSet()
     {
         return new static();
     }
@@ -87,10 +88,13 @@ class Url implements ConfiguredMetadataValidatable
     {
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
         if (!$this->isValid()) {
-            $validator->addViolation(sprintf('URL "%s" is not valid', $this->url));
+            $violations->add(sprintf('URL "%s" is not valid', $this->url));
         }
     }
 
@@ -148,7 +152,7 @@ class Url implements ConfiguredMetadataValidatable
      */
     public function equals(Url $other)
     {
-        return $this == $other;
+        return $this->url === $other->url;
     }
 
     public function __toString()

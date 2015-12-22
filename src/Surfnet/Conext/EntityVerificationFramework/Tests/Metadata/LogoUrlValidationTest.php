@@ -24,16 +24,16 @@ use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoUrl;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogoUrlValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function logo_url_must_be_hosted_on_static_dot_surfconext_dot_nl()
     {
@@ -47,20 +47,23 @@ class LogoUrlValidationTest extends TestCase
         $httpClient->shouldReceive('request')->andReturn($response200);
         $context = new ConfiguredMetadataValidationContext($httpClient);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator
-            ->shouldReceive('addViolation')
-            ->with(sprintf('Logo URL "%s" does not match https://static.surfconext.nl/logos/idp/<name>.png', $url))
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
+            ->with(sprintf('Logo URL "%s" does not match https://static.surfconext.nl/*.*', $url))
             ->once();
 
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+
         $logoUrl = LogoUrl::fromString($url);
-        $logoUrl->validate($validator, $context);
+        $logoUrl->validate($visitor, $violations, $context);
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
     public function logo_url_can_be_unavailable()
     {
@@ -74,15 +77,17 @@ class LogoUrlValidationTest extends TestCase
         $httpClient->shouldReceive('request')->with('GET', $url)->once()->andReturn($response);
         $context = new ConfiguredMetadataValidationContext($httpClient);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with(sprintf('Logo "%s" is not available, server returned status code %d', $url, Response::HTTP_NOT_FOUND))
             ->once();
 
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+
         $logoUrl = LogoUrl::fromString($url);
-        $logoUrl->validate($validator, $context);
+        $logoUrl->validate($visitor, $violations, $context);
     }
 }

@@ -26,9 +26,9 @@ final class SingleSignOnServiceListTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
-    public function it_can_deserialise_one_binding()
+    public function it_can_deserialize_one_binding()
     {
         $bindings = [
             [
@@ -36,16 +36,16 @@ final class SingleSignOnServiceListTest extends TestCase
                 'Location' => 'samba://media.invalid'
             ]
         ];
-        $list = SingleSignOnServiceList::deserialise($bindings, '');
+        $list = SingleSignOnServiceList::deserialize($bindings, '');
 
         $this->assertCount(1, $list);
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
-    public function it_can_deserialise_two_equal_bindings()
+    public function it_can_deserialize_two_equal_bindings()
     {
         $bindings = [
             [
@@ -57,19 +57,19 @@ final class SingleSignOnServiceListTest extends TestCase
                 'Location' => 'samba://media.invalid'
             ]
         ];
-        $list = SingleSignOnServiceList::deserialise($bindings, '');
+        $list = SingleSignOnServiceList::deserialize($bindings, '');
 
         $this->assertCount(2, $list);
     }
 
     /**
      * @test
-     * @group value
+     * @group Metadata
      */
-    public function it_can_deserialise_zero_bindings()
+    public function it_can_deserialize_zero_bindings()
     {
         $bindings = [];
-        $list = SingleSignOnServiceList::deserialise($bindings, '');
+        $list = SingleSignOnServiceList::deserialize($bindings, '');
 
         $this->assertCount(0, $list);
     }

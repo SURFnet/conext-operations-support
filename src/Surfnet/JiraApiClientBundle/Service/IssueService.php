@@ -20,7 +20,7 @@ namespace Surfnet\JiraApiClientBundle\Service;
 
 use Surfnet\JiraApiClientBundle\Command\CommentOnIssueCommand;
 use Surfnet\JiraApiClientBundle\Command\CreateIssueCommand;
-use Surfnet\JiraApiClientBundle\Command\ReprioritiseIssueCommand;
+use Surfnet\JiraApiClientBundle\Command\ReprioritizeIssueCommand;
 use Surfnet\JiraApiClientBundle\Dto\Comment;
 use Surfnet\JiraApiClientBundle\Dto\Issue;
 
@@ -33,10 +33,10 @@ interface IssueService
     public function createIssue(CreateIssueCommand $command);
 
     /**
-     * @param ReprioritiseIssueCommand $command
+     * @param ReprioritizeIssueCommand $command
      * @return void
      */
-    public function reprioritiseIssue(ReprioritiseIssueCommand $command);
+    public function reprioritizeIssue(ReprioritizeIssueCommand $command);
 
     /**
      * @param CommentOnIssueCommand $command

@@ -19,9 +19,10 @@
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
 final class Logo implements ConfiguredMetadataValidatable
 {
@@ -37,13 +38,13 @@ final class Logo implements ConfiguredMetadataValidatable
      * @param string $propertyPath
      * @return Logo
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         $logo = new Logo();
 
         Assert::isArray($data, 'Logo data must be an array structure');
 
-        $logo->url = LogoUrl::unknown();
+        $logo->url = LogoUrl::notSet();
         if (array_key_exists('url', $data)) {
             $logo->url = LogoUrl::fromString($data['url']);
         }
@@ -65,17 +66,20 @@ final class Logo implements ConfiguredMetadataValidatable
     {
     }
 
-    public function validate(ConfiguredMetadataValidator $validator, ConfiguredMetadataValidationContext $context)
-    {
-        $validator->validate($this->url, $context);
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        $visitor->visit($this->url, $violations, $context);
 
         if (!$this->isWidthValid()) {
-            $validator->addViolation(
+            $violations->add(
                 sprintf('Logo width "%s" is invalid: must be a number larger than 0', $this->width)
             );
         }
         if (!$this->isHeightValid()) {
-            $validator->addViolation(
+            $violations->add(
                 sprintf('Logo height "%s" is invalid: must be a number larger than 0', $this->height)
             );
         }

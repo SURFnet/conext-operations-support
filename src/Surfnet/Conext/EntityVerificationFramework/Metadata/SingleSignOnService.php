@@ -20,28 +20,31 @@ namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
 use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
-final class SingleSignOnService
+final class SingleSignOnService implements ConfiguredMetadataValidatable
 {
-    /** @var Binding|null */
+    /** @var Binding */
     private $binding;
 
-    /** @var Url|null */
+    /** @var Url */
     private $location;
 
     /**
      * @param array $data
      * @return SingleSignOnService
      */
-    public static function deserialise($data)
+    public static function deserialize($data)
     {
-        $binding = null;
+        $binding = Binding::notSet();
         if (isset($data['Binding'])) {
-            $binding = Binding::deserialise($data['Binding']);
+            $binding = Binding::deserialize($data['Binding']);
         }
 
-        $location = null;
+        $location = Url::notSet();
         if (isset($data['Location'])) {
             $location = Url::fromString($data['Location']);
         }
@@ -49,16 +52,20 @@ final class SingleSignOnService
         return new SingleSignOnService($binding, $location);
     }
 
+    /**
+     * @param SimpleXMLElement $ssoXml
+     * @return SingleSignOnService
+     */
     public static function fromXml(SimpleXMLElement $ssoXml)
     {
         Assert::simpleXmlName($ssoXml, 'SingleSignOnService');
 
-        $binding = null;
+        $binding = Binding::notSet();
         if ($ssoXml['Binding'] !== null) {
-            $binding = Binding::deserialise((string) $ssoXml['Binding']);
+            $binding = Binding::deserialize((string) $ssoXml['Binding']);
         }
 
-        $location = null;
+        $location = Url::notSet();
         if ($ssoXml['Location'] !== null) {
             $location = Url::fromString((string) $ssoXml['Location']);
         }
@@ -67,77 +74,22 @@ final class SingleSignOnService
     }
 
     /**
-     * @param Binding|null $binding
-     * @param Url|null     $location
+     * @param Binding $binding
+     * @param Url     $location
      */
-    private function __construct(Binding $binding = null, Url $location = null)
+    public function __construct(Binding $binding, Url $location)
     {
-        $this->binding = $binding;
+        $this->binding  = $binding;
         $this->location = $location;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasBinding()
-    {
-        return $this->binding !== null;
-    }
-
-    /**
-     * @return Binding
-     */
-    public function getBinding()
-    {
-        if ($this->binding === null) {
-            throw new LogicException('AssertionConsumerService Binding is not known');
-        }
-
-        return $this->binding;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasLocation()
-    {
-        return $this->location !== null;
-    }
-
-    /**
-     * @return Url
-     */
-    public function getLocation()
-    {
-        if ($this->location === null) {
-            throw new LogicException('AssertionConsumerService Location is not known');
-        }
-
-        return $this->location;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValid()
-    {
-        return $this->isBindingValid() && $this->isLocationValid();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBindingValid()
-    {
-        return $this->binding && $this->binding->isValid();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLocationValid()
-    {
-        return $this->location && $this->location->isValid();
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        $visitor->visit($this->binding, $violations, $context);
+        $visitor->visit($this->location, $violations, $context);
     }
 
     /**
@@ -146,21 +98,11 @@ final class SingleSignOnService
      */
     public function equals(SingleSignOnService $other)
     {
-        if ($this->binding === null || $other->binding === null) {
-            $valid = $this->binding === $other->binding;
-        } else {
-            $valid = $this->binding->equals($other->binding);
-        }
-
-        if ($this->location === null || $other->location === null) {
-            return $valid && $this->location === $other->location;
-        } else {
-            return $valid && $this->location->equals($other->location);
-        }
+        return $this->binding->equals($other->binding) && $this->location->equals($other->location);
     }
 
     public function __toString()
     {
-        return sprintf('SingleSignOnService(Binding=%s, Location=%s)', $this->binding, $this->location);
+        return sprintf('SingleSignOnService(binding=%s, location=%s)', $this->binding, $this->location);
     }
 }

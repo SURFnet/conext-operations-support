@@ -18,126 +18,134 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use SimpleXMLElement;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
-use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
-final class AssertionConsumerService
+final class AssertionConsumerService implements ConfiguredMetadataValidatable
 {
-    /** @var Binding|null */
+    /** @var Binding */
     private $binding;
 
-    /** @var Url|null */
+    /** @var Url */
     private $location;
+
+    /** @var string|mixed */
+    private $index;
 
     /**
      * @param array $data
      * @return AssertionConsumerService
      */
-    public static function deserialise($data)
+    public static function deserialize($data)
     {
-        $binding = null;
+        $binding = Binding::notSet();
         if (isset($data['Binding'])) {
-            $binding = Binding::deserialise($data['Binding']);
+            $binding = Binding::deserialize($data['Binding']);
         }
 
-        $location = null;
+        $location = Url::notSet();
         if (isset($data['Location'])) {
             $location = Url::fromString($data['Location']);
         }
 
-        return new AssertionConsumerService($binding, $location);
+        $index = null;
+        if (isset($data['index'])) {
+            $index = $data['index'];
+        }
+
+        return new AssertionConsumerService($binding, $location, $index);
     }
 
+    /**
+     * @param SimpleXMLElement $acsXml
+     * @return AssertionConsumerService
+     */
     public static function fromXml(SimpleXMLElement $acsXml)
     {
         Assert::simpleXmlName($acsXml, 'AssertionConsumerService');
 
-        $binding = null;
+        $binding = Binding::notSet();
         if ($acsXml['Binding'] !== null) {
-            $binding = Binding::deserialise((string) $acsXml['Binding']);
+            $binding = Binding::deserialize((string) $acsXml['Binding']);
         }
 
-        $location = null;
+        $location = Url::notSet();
         if ($acsXml['Location'] !== null) {
             $location = Url::fromString((string) $acsXml['Location']);
         }
 
-        return new AssertionConsumerService($binding, $location);
+        $index = null;
+        if ($acsXml['index'] !== null) {
+            $index = (string) $acsXml['index'];
+        }
+
+        return new AssertionConsumerService($binding, $location, $index);
     }
 
     /**
-     * @param Binding|null $binding
-     * @param Url|null     $location
+     * @param Binding      $binding
+     * @param Url          $location
+     * @param string|mixed $index
      */
-    private function __construct(Binding $binding = null, Url $location = null)
+    public function __construct(Binding $binding, Url $location, $index)
     {
-        $this->binding = $binding;
+        $this->binding  = $binding;
         $this->location = $location;
+        $this->index    = $index;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasBinding()
-    {
-        return $this->binding !== null;
-    }
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        $visitor->visit($this->binding, $violations, $context);
+        $visitor->visit($this->location, $violations, $context);
 
-    /**
-     * @return Binding
-     */
-    public function getBinding()
-    {
-        if ($this->binding === null) {
-            throw new LogicException('AssertionConsumerService Binding is not known');
+        if (!is_string($this->index)) {
+            $violations->add(
+                sprintf(
+                    'Binding index must set',
+                    is_object($this->index) ? get_class($this->index) : gettype($this->index)
+                )
+            );
+        } elseif (!ctype_digit($this->index)) {
+            $violations->add(sprintf('Binding index must be a number, got "%s"', $this->index));
         }
 
-        return $this->binding;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasLocation()
-    {
-        return $this->location !== null;
-    }
-
-    /**
-     * @return Url
-     */
-    public function getLocation()
-    {
-        if ($this->location === null) {
-            throw new LogicException('AssertionConsumerService Location is not known');
+        if (!$this->location->isValid() || !$this->binding->equals(Binding::create(Binding::BINDING_HTTP_POST))) {
+            return;
         }
 
-        return $this->location;
-    }
+        $options  = ['headers' => ['Content-Type' => 'application/x-www-form-urlencoded'], 'allow_redirects' => false];
+        try {
+            $response = $context->getHttpClient()->request('POST', $this->location->getValidUrl(), $options);
+        } catch (ConnectException $e) {
+            $violations->add(
+                sprintf('There was an error connecting to the ACS endpoint: "%s"', $e->getMessage())
+            );
 
-    /**
-     * @return bool
-     */
-    public function isValid()
-    {
-        return $this->isBindingValid() && $this->isLocationValid();
-    }
+            return;
+        } catch (RequestException $e) {
+            $violations->add(
+                sprintf('There was an error while communicating with ACS endpoint: "%s"', $e->getMessage())
+            );
 
-    /**
-     * @return bool
-     */
-    public function isBindingValid()
-    {
-        return $this->binding && $this->binding->isValid();
-    }
+            return;
+        }
 
-    /**
-     * @return bool
-     */
-    public function isLocationValid()
-    {
-        return $this->location && $this->location->isValid();
+        $statusCode = $response->getStatusCode();
+        if ($statusCode === 404) {
+            $violations->add(
+                sprintf('AssertionConsumerService POST binding is not available, status code %d', $statusCode)
+            );
+        }
     }
 
     /**
@@ -146,21 +154,24 @@ final class AssertionConsumerService
      */
     public function equals(AssertionConsumerService $other)
     {
-        if ($this->binding === null || $other->binding === null) {
-            $valid = $this->binding === $other->binding;
-        } else {
-            $valid = $this->binding->equals($other->binding);
-        }
+        return $this->binding->equals($other->binding) && $this->location->equals($other->location);
+    }
 
-        if ($this->location === null || $other->location === null) {
-            return $valid && $this->location === $other->location;
-        } else {
-            return $valid && $this->location->equals($other->location);
-        }
+    /**
+     * @return mixed|string
+     */
+    public function getIndex()
+    {
+        return $this->index;
     }
 
     public function __toString()
     {
-        return sprintf('AssertionConsumerService(Binding=%s, Location=%s)', $this->binding, $this->location);
+        return sprintf(
+            'AssertionConsumerService(binding=%s, location=%s, index=%s)',
+            $this->binding,
+            $this->location,
+            is_string($this->index) ? '"' . $this->index . '""' : '<invalid>'
+        );
     }
 }

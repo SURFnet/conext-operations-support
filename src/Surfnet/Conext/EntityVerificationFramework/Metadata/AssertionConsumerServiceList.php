@@ -22,8 +22,13 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Surfnet\Conext\EntityVerificationFramework\Assert;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\SubpathConstraintViolationWriter;
 
-final class AssertionConsumerServiceList implements IteratorAggregate, Countable
+final class AssertionConsumerServiceList implements ConfiguredMetadataValidatable, IteratorAggregate, Countable
 {
     /**
      * @var AssertionConsumerService[]
@@ -35,7 +40,7 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
      * @param string $propertyPath
      * @return AssertionConsumerServiceList
      */
-    public static function deserialise($data, $propertyPath)
+    public static function deserialize($data, $propertyPath)
     {
         Assert::isArray(
             $data,
@@ -46,7 +51,7 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
         $list = new self();
         $list->acss = array_map(
             function ($data) {
-                return AssertionConsumerService::deserialise($data);
+                return AssertionConsumerService::deserialize($data);
             },
             $data
         );
@@ -54,6 +59,9 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
         return $list;
     }
 
+    /**
+     * @param AssertionConsumerService[] $acss
+     */
     public function __construct(array $acss = [])
     {
         Assert::allIsInstanceOf($acss, AssertionConsumerService::class);
@@ -68,6 +76,22 @@ final class AssertionConsumerServiceList implements IteratorAggregate, Countable
     public function add(AssertionConsumerService $service)
     {
         return new AssertionConsumerServiceList(array_merge($this->acss, [$service]));
+    }
+
+    public function validate(
+        ConfiguredMetadataVisitor $visitor,
+        ConfiguredMetadataConstraintViolationWriter $violations,
+        ConfiguredMetadataValidationContext $context
+    ) {
+        foreach ($this->acss as $acs) {
+            $index = $acs->getIndex();
+            $indexString = is_string($index) ? $index : '<invalid>';
+            $visitor->visit(
+                $acs,
+                new SubpathConstraintViolationWriter($violations, 'AssertionConsumerService index #' . $indexString),
+                $context
+            );
+        }
     }
 
     public function getIterator()

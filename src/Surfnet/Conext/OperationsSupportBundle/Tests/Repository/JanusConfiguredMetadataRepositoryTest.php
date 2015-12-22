@@ -201,7 +201,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
 
         $metadata = m::mock(ConfiguredMetadata::class);
         m::mock('alias:' . ConfiguredMetadataFactory::class)
-            ->shouldReceive('deserialise')
+            ->shouldReceive('deserialize')
             ->with($connectionData)
             ->once()
             ->andReturn($metadata);
@@ -251,7 +251,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
 
         $metadata = m::mock(ConfiguredMetadata::class);
         m::mock('alias:' . ConfiguredMetadataFactory::class)
-            ->shouldReceive('deserialise')
+            ->shouldReceive('deserialize')
             ->with($connectionData)
             ->once()
             ->andReturn($metadata);
@@ -300,7 +300,7 @@ class JanusConfiguredMetadataRepositoryTest extends TestCase
 
         $metadata = m::mock(ConfiguredMetadata::class);
         m::mock('alias:' . ConfiguredMetadataFactory::class)
-            ->shouldReceive('deserialise')
+            ->shouldReceive('deserialize')
             ->with($connectionData)
             ->once()
             ->andReturn($metadata);

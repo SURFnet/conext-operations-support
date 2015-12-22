@@ -18,23 +18,65 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Metadata;
 
+use Surfnet\Conext\EntityVerificationFramework\Assert;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidatable;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 
-final class Name extends MultiLocaleString implements ConfiguredMetadataValidatable
+final class RegularExpression implements ConfiguredMetadataValidatable
 {
+    /**
+     * @var string
+     */
+    private $pattern;
+
+    /**
+     * @param string $pattern
+     */
+    public function __construct($pattern)
+    {
+        Assert::string($pattern, 'Regular expression "%s" must be a string, got "%s"');
+
+        $this->pattern = $pattern;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
+     */
     public function validate(
         ConfiguredMetadataVisitor $visitor,
         ConfiguredMetadataConstraintViolationWriter $violations,
         ConfiguredMetadataValidationContext $context
     ) {
-        if (!$this->hasFilledTranslationForLocale('en')) {
-            $violations->add('No English name configured');
+        set_error_handler(function ($level, $message) use ($violations) {
+            $violations->add(sprintf(
+                'An error would occur during execution of regular expression "%s": "%s"',
+                $this->pattern,
+                $message
+            ));
+        });
+        $result = preg_match($this->pattern, 'test');
+        restore_error_handler();
+
+        if ($result === false) {
+            $violations->add('Regular expression would not execute: it is somehow invalid');
         }
-        if (!$this->hasFilledTranslationForLocale('nl')) {
-            $violations->add('No Dutch name configured');
-        }
+    }
+
+    /**
+     * @param RegularExpression $other
+     * @return bool
+     */
+    public function equals(RegularExpression $other)
+    {
+        return $this->pattern === $other->pattern;
+    }
+
+    public function __toString()
+    {
+        return $this->pattern;
     }
 }

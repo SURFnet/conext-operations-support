@@ -24,16 +24,17 @@ use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Logo;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\LogoUrl;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataConstraintViolationWriter;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidationContext;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataValidator;
+use Surfnet\Conext\EntityVerificationFramework\Metadata\Validator\ConfiguredMetadata\ConfiguredMetadataVisitor;
 use Symfony\Component\HttpFoundation\Response;
 
 class LogoValidationTest extends TestCase
 {
     /**
      * @test
-     * @group value
+     * @group Metadata
      * @dataProvider logosWithViolations
      *
      * @param Logo   $logo
@@ -49,34 +50,38 @@ class LogoValidationTest extends TestCase
         $httpClient->shouldReceive('request')->andReturn($response200);
         $context = new ConfiguredMetadataValidationContext($httpClient);
 
-        /** @var ConfiguredMetadataValidator|MockInterface $validator */
-        $validator = m::mock(ConfiguredMetadataValidator::class);
-        $validator->shouldReceive('validate')->with(m::type(Url::class), $context);
-        $validator
-            ->shouldReceive('addViolation')
+        /** @var MockInterface|ConfiguredMetadataConstraintViolationWriter $violations */
+        $violations = m::mock(ConfiguredMetadataConstraintViolationWriter::class);
+        $violations
+            ->shouldReceive('add')
             ->with($violation)
             ->once();
 
-        $logo->validate($validator, $context);
+        /** @var MockInterface|ConfiguredMetadataVisitor $visitor */
+        $visitor = m::mock(ConfiguredMetadataVisitor::class);
+        $anyViolationWriter = m::type(ConfiguredMetadataConstraintViolationWriter::class);
+        $visitor->shouldReceive('visit')->with(m::type(LogoUrl::class), $anyViolationWriter, $context);
+
+        $logo->validate($visitor, $violations, $context);
     }
 
     public function logosWithViolations()
     {
         return [
             'logo width not a stringy number' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => 'dd', 'height' => '100'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => 'dd', 'height' => '100'], 'propPath'),
                 'Logo width "dd" is invalid: must be a number larger than 0'
             ],
             'logo width lower than 1' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '0', 'height' => '100'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '0', 'height' => '100'], 'propPath'),
                 'Logo width "0" is invalid: must be a number larger than 0'
             ],
             'logo height not a stringy number' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => 'dd'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => 'dd'], 'propPath'),
                 'Logo height "dd" is invalid: must be a number larger than 0'
             ],
             'logo height lower than 1' => [
-                Logo::deserialise(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => '0'], 'propPath'),
+                Logo::deserialize(['url' => 'https://static.surfconext.nl/logos/idp/test.png', 'width' => '100', 'height' => '0'], 'propPath'),
                 'Logo height "0" is invalid: must be a number larger than 0'
             ],
         ];
