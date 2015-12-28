@@ -126,6 +126,7 @@ services:
               exceptions: false
               connect_timeout: 2
               timeout: 2
+              verify: false
 
     surfnet_conext_operations_support.guzzle.test_client.handler_stack:
         public: false
