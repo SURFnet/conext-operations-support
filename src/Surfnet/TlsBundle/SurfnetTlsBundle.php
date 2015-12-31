@@ -20,6 +20,6 @@ namespace Surfnet\TlsBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-final class TlsBundle extends Bundle
+final class SurfnetTlsBundle extends Bundle
 {
 }
