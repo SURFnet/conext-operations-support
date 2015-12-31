@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Surfnet\VerificationSuite\ServiceRegistrySuite;
+namespace Surfnet\VerificationSuite\TlsSuite;
 
 use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
