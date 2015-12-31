@@ -32,6 +32,7 @@ use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Runner;
+use Surfnet\Conext\EntityVerificationFramework\Service\TlsService;
 use Surfnet\Conext\EntityVerificationFramework\SuiteResult;
 use Surfnet\Conext\EntityVerificationFramework\TestResult;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
@@ -98,7 +99,8 @@ class RunnerTest extends UnitTest
             new ContextFactory(
                 $this->configuredMetadataRepository,
                 $this->publishedMetadataRepository,
-                m::mock(ClientInterface::class)
+                m::mock(ClientInterface::class),
+                m::mock(TlsService::class)
             ),
             new NullLogger()
         );

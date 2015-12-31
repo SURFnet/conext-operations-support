@@ -49,4 +49,9 @@ interface VerificationContext
      * @return \Psr\Log\LoggerInterface
      */
     public function getLogger();
+
+    /**
+     * @return \Surfnet\Conext\EntityVerificationFramework\Service\TlsService
+     */
+    public function getTlsService();
 }

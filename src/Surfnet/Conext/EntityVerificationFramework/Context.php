@@ -25,6 +25,7 @@ use Surfnet\Conext\EntityVerificationFramework\Api\VerificationContext;
 use Surfnet\Conext\EntityVerificationFramework\Exception\LogicException;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\ConfiguredMetadata;
 use Surfnet\Conext\EntityVerificationFramework\Metadata\PublishedMetadata;
+use Surfnet\Conext\EntityVerificationFramework\Service\TlsService;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 
 class Context implements VerificationContext
@@ -55,6 +56,11 @@ class Context implements VerificationContext
     private $httpClient;
 
     /**
+     * @var TlsService
+     */
+    private $tlsService;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -64,6 +70,7 @@ class Context implements VerificationContext
         ConfiguredMetadata $configuredMetadata,
         Closure $publishedMetadataCallable,
         ClientInterface $httpClient,
+        TlsService $tlsService,
         LoggerInterface $logger
     ) {
         $this->entity                    = $entity;
@@ -71,6 +78,7 @@ class Context implements VerificationContext
         $this->publishedMetadataCallable = $publishedMetadataCallable;
         $this->logger                    = $logger;
         $this->httpClient                = $httpClient;
+        $this->tlsService                = $tlsService;
     }
 
     public function getEntity()
@@ -115,5 +123,10 @@ class Context implements VerificationContext
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    public function getTlsService()
+    {
+        return $this->tlsService;
     }
 }

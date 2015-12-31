@@ -14,6 +14,7 @@ services:
             - @surfnet_conext_operations_support.repository.configured_metadata
             - @surfnet_conext_operations_support.repository.published_metadata
             - @surfnet_conext_operations_support.guzzle.test_client
+            - @surfnet_tls.service.tls
 
     surfnet_conext_operations_support.repository.configured_metadata:
         public: false

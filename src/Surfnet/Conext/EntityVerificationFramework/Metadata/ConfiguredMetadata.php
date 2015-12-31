@@ -191,4 +191,20 @@ class ConfiguredMetadata implements ConfiguredMetadataValidatable
 
         return $this->publishedMetadataUrl;
     }
+
+    /**
+     * @return AssertionConsumerServiceList
+     */
+    public function getAssertionConsumerServices()
+    {
+        return $this->assertionConsumerServices;
+    }
+
+    /**
+     * @return SingleSignOnServiceList
+     */
+    public function getSingleSignOnServices()
+    {
+        return $this->singleSignOnServices;
+    }
 }

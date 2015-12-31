@@ -158,6 +158,14 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
     }
 
     /**
+     * @return Url
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
      * @return mixed|string
      */
     public function getIndex()

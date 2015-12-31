@@ -1,0 +1,21 @@
+services:
+    surfnet_tls.openssl.client.cli:
+        public: false
+        class: Surfnet\TlsBundle\OpenSsl\CliClient
+        arguments: [ @logger ]
+
+    surfnet_tls.openssl.openssl.extension:
+        public: false
+        class: Surfnet\TlsBundle\OpenSsl\ExtensionOpenSsl
+
+    surfnet_tls.parser.x509_certificate_parser.openssl:
+        public: false
+        class: Surfnet\TlsBundle\Parser\OpenSslX509CertificateParser
+        arguments: [ @surfnet_tls.openssl.openssl.extension ]
+
+    surfnet_tls.service.tls:
+        public: false
+        class: Surfnet\TlsBundle\Service\TlsService
+        arguments:
+            - @surfnet_tls.openssl.client.cli
+            - @surfnet_tls.parser.x509_certificate_parser.openssl

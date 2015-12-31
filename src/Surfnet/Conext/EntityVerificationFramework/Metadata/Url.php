@@ -68,9 +68,9 @@ class Url implements ConfiguredMetadataValidatable
 
         $isValid = $parts !== false;
 
-        $url->url   = $string;
+        $url->url     = $string;
         $url->isValid = $isValid;
-        $url->parts = ($parts ?: []) + [
+        $url->parts   = ($parts ?: []) + [
             'scheme'   => null,
             'host'     => null,
             'port'     => null,
@@ -102,7 +102,7 @@ class Url implements ConfiguredMetadataValidatable
      * @param string $scheme
      * @return bool
      */
-    public function isScheme($scheme)
+    public function hasScheme($scheme)
     {
         if (!$this->isValid()) {
             throw new LogicException('Cannot check whether URL has a certain scheme; the URL is not valid');
@@ -153,6 +153,62 @@ class Url implements ConfiguredMetadataValidatable
     public function equals(Url $other)
     {
         return $this->url === $other->url;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAHostname()
+    {
+        if (!$this->isValid()) {
+            throw new LogicException('Cannot retrieve valid URL; it is not valid');
+        }
+
+        return trim($this->parts['host']) !== '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getHostname()
+    {
+        if (!$this->isValid()) {
+            throw new LogicException('Cannot retrieve valid URL; it is not valid');
+        }
+
+        if (!$this->hasAHostname()) {
+            throw new LogicException('This URL doesn\'t have a hostname');
+        }
+
+        return $this->parts['host'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAPort()
+    {
+        if (!$this->isValid()) {
+            throw new LogicException('Cannot retrieve valid URL; it is not valid');
+        }
+
+        return is_int($this->parts['port']);
+    }
+
+    /**
+     * @return int
+     */
+    public function getPort()
+    {
+        if (!$this->isValid()) {
+            throw new LogicException('Cannot retrieve valid URL; it is not valid');
+        }
+
+        if (!$this->hasAPort()) {
+            throw new LogicException('This URL doesn\'t have a port');
+        }
+
+        return $this->parts['port'];
     }
 
     public function __toString()

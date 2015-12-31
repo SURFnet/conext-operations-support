@@ -22,6 +22,7 @@ use GuzzleHttp\ClientInterface;
 use Psr\Log\LoggerInterface;
 use Surfnet\Conext\EntityVerificationFramework\Repository\ConfiguredMetadataRepository;
 use Surfnet\Conext\EntityVerificationFramework\Repository\PublishedMetadataRepository;
+use Surfnet\Conext\EntityVerificationFramework\Service\TlsService;
 use Surfnet\Conext\EntityVerificationFramework\Value\Entity;
 
 final class ContextFactory
@@ -43,14 +44,21 @@ final class ContextFactory
      */
     private $testHttpClient;
 
+    /**
+     * @var TlsService
+     */
+    private $tlsService;
+
     public function __construct(
         ConfiguredMetadataRepository $configuredMetadataRepository,
         PublishedMetadataRepository $publishedMetadataRepository,
-        ClientInterface $testHttpClient
+        ClientInterface $testHttpClient,
+        TlsService $tlsService
     ) {
         $this->configuredMetadataRepository = $configuredMetadataRepository;
         $this->publishedMetadataRepository  = $publishedMetadataRepository;
         $this->testHttpClient               = $testHttpClient;
+        $this->tlsService                   = $tlsService;
     }
 
     /**
@@ -67,6 +75,7 @@ final class ContextFactory
                 return $this->publishedMetadataRepository->getMetadataFor($entity);
             },
             $this->testHttpClient,
+            $this->tlsService,
             $logger
         );
     }
