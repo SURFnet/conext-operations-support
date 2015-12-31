@@ -16,6 +16,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Surfnet\JiraApiClientBundle\SurfnetJiraApiClientBundle(),
             new Surfnet\JanusApiClientBundle\SurfnetJanusApiClientBundle(),
+            new Surfnet\TlsBundle\TlsBundle(),
             new Surfnet\Conext\OperationsSupportBundle\SurfnetConextOperationsSupportBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new VasekPurchart\DoctrineDateTimeImmutableTypesBundle\DoctrineDateTimeImmutableTypesBundle(),
