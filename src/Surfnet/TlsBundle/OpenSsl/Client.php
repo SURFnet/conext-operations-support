@@ -17,16 +17,14 @@
 
 namespace Surfnet\TlsBundle\OpenSsl;
 
-use Surfnet\TlsBundle\Exception\InvalidArgumentException;
+use Surfnet\Conext\EntityVerificationFramework\Value\Host;
 use Surfnet\TlsBundle\OpenSsl\Client\GetEndUserCertificateResult;
-use Surfnet\TlsBundle\Value\Url;
 
 interface Client
 {
     /**
-     * @param Url $url Must be a URL with scheme 'https' and a hostname.
+     * @param Host $host
      * @return GetEndUserCertificateResult
-     * @throws InvalidArgumentException When the given URL does not have the scheme 'https'.
      */
-    public function getEndUserCertificateForUrl(Url $url);
+    public function getEndUserCertificateForHost(Host $host);
 }

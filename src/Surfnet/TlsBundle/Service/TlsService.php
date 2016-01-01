@@ -17,12 +17,11 @@
 
 namespace Surfnet\TlsBundle\Service;
 
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Url as MetadataUrl;
 use Surfnet\Conext\EntityVerificationFramework\Service\Tls\GetEndUserCertificateResult;
+use Surfnet\Conext\EntityVerificationFramework\Value\Host;
 use Surfnet\TlsBundle\OpenSsl\Client as OpenSslClient;
 use Surfnet\TlsBundle\Parser\Exception\ParseException;
 use Surfnet\TlsBundle\Parser\X509CertificateParser;
-use Surfnet\TlsBundle\Value\Url;
 
 final class TlsService implements \Surfnet\Conext\EntityVerificationFramework\Service\TlsService
 {
@@ -42,9 +41,9 @@ final class TlsService implements \Surfnet\Conext\EntityVerificationFramework\Se
         $this->certificateParser = $certificateParser;
     }
 
-    public function getEndUserCertificateForUrl(MetadataUrl $url)
+    public function getEndUserCertificateForHost(Host $host)
     {
-        $certificateResult = $this->openSslClient->getEndUserCertificateForUrl(Url::fromString($url->getValidUrl()));
+        $certificateResult = $this->openSslClient->getEndUserCertificateForHost($host);
 
         if ($certificateResult->didConnectionFail()) {
             return GetEndUserCertificateResult::connectionFailed($certificateResult->getErrorMessage());

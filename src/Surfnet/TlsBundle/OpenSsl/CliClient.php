@@ -19,9 +19,8 @@
 namespace Surfnet\TlsBundle\OpenSsl;
 
 use Psr\Log\LoggerInterface;
-use Surfnet\TlsBundle\Exception\InvalidArgumentException;
+use Surfnet\Conext\EntityVerificationFramework\Value\Host;
 use Surfnet\TlsBundle\OpenSsl\Client\GetEndUserCertificateResult;
-use Surfnet\TlsBundle\Value\Url;
 use Symfony\Component\Process\ProcessBuilder;
 
 final class CliClient implements Client
@@ -36,22 +35,15 @@ final class CliClient implements Client
         $this->logger = $logger;
     }
 
-    public function getEndUserCertificateForUrl(Url $url)
+    public function getEndUserCertificateForHost(Host $host)
     {
-        $this->logger->info(sprintf('Fetching end user certificate for URL "%s" using OpenSSL', $url->getUrl()));
+        $this->logger->info(sprintf('Fetching end user certificate for %s using OpenSSL', $host));
 
-        if (!$url->hasScheme('https')) {
-            $this->logger->error('URL does not have an "https" scheme');
-            throw new InvalidArgumentException(sprintf('URL "%s" does not have an "https" scheme', $url));
-        }
-        if (!$url->hasAHostname()) {
-            $this->logger->error('URL does not have a hostname');
-            throw new InvalidArgumentException(sprintf('URL "%s" does not have a hostname', $url));
-        }
-
-        $port = $url->hasAPort() ? $url->getPort() : 443;
-        $this->logger->info(sprintf('Fetching connection information for %s:%s', $url->getHostname(), $port));
-        $sClientProcess = ProcessBuilder::create(['openssl', 's_client', '-connect', $url->getHostname() . ':' . $port])
+        $this->logger->info(sprintf('Fetching connection information for %s', $host));
+        $sClientProcess =
+            ProcessBuilder::create(
+                ['openssl', 's_client', '-connect', $host->getHostname() . ':' . $host->getPort()]
+            )
             ->setInput('')
             ->getProcess();
         $exitCode = $sClientProcess->run();

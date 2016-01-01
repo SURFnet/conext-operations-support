@@ -17,14 +17,14 @@
 
 namespace Surfnet\Conext\EntityVerificationFramework\Service;
 
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Url;
 use Surfnet\Conext\EntityVerificationFramework\Service\Tls\GetEndUserCertificateResult;
+use Surfnet\Conext\EntityVerificationFramework\Value\Host;
 
 interface TlsService
 {
     /**
-     * @param Url $url
+     * @param Host $host
      * @return GetEndUserCertificateResult
      */
-    public function getEndUserCertificateForUrl(Url $url);
+    public function getEndUserCertificateForHost(Host $host);
 }

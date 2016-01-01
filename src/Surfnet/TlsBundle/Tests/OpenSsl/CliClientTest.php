@@ -21,8 +21,8 @@ namespace Surfnet\TlsBundle\Tests\OpenSsl;
 use Mockery as m;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Log\NullLogger;
+use Surfnet\Conext\EntityVerificationFramework\Value\Host;
 use Surfnet\TlsBundle\OpenSsl\CliClient;
-use Surfnet\TlsBundle\Value\Url;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -70,7 +70,7 @@ class CliClientTest extends TestCase
             ->andReturn($x509ProcessBuilder);
 
         $client = new CliClient(new NullLogger());
-        $result = $client->getEndUserCertificateForUrl(Url::fromString('https://idp.example'));
+        $result = $client->getEndUserCertificateForHost(new Host('idp.example', 443));
 
         $this->assertTrue($result->wasSuccessful(), 'Fetch of end-user certificate should be successful');
         $this->assertSame($expectedCertificate, $result->getCertificate());
@@ -100,7 +100,7 @@ class CliClientTest extends TestCase
             ->andReturn($sClientProcessBuilder);
 
         $client = new CliClient(new NullLogger());
-        $result = $client->getEndUserCertificateForUrl(Url::fromString('https://idp.example'));
+        $result = $client->getEndUserCertificateForHost(new Host('idp.example', 443));
 
         $this->assertFalse($result->wasSuccessful(), 'Fetch of end-user certificate should not be successful');
         $this->assertTrue($result->didConnectionFail(), 'Connection to SSL endpoint should have failed');
@@ -147,7 +147,7 @@ class CliClientTest extends TestCase
             ->andReturn($x509ProcessBuilder);
 
         $client = new CliClient(new NullLogger());
-        $result = $client->getEndUserCertificateForUrl(Url::fromString('https://idp.example'));
+        $result = $client->getEndUserCertificateForHost(new Host('idp.example', 443));
 
         $this->assertFalse($result->wasSuccessful(), 'Fetch of end-user certificate should not be successful');
         $this->assertTrue($result->didCertificateExtractionFail(), 'Extraction of certificate should have failed');

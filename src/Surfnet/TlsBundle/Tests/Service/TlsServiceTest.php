@@ -22,13 +22,12 @@ use DateTimeImmutable;
 use Mockery as m;
 use Mockery\MockInterface;
 use PHPUnit_Framework_TestCase as TestCase;
-use Surfnet\Conext\EntityVerificationFramework\Metadata\Url as MetadataUrl;
+use Surfnet\Conext\EntityVerificationFramework\Value\Host;
 use Surfnet\Conext\EntityVerificationFramework\Value\X509Certificate;
 use Surfnet\TlsBundle\OpenSsl\Client;
 use Surfnet\TlsBundle\OpenSsl\Client\GetEndUserCertificateResult;
 use Surfnet\TlsBundle\Parser\X509CertificateParser;
 use Surfnet\TlsBundle\Service\TlsService;
-use Surfnet\TlsBundle\Value\Url;
 
 class TlsServiceTest extends TestCase
 {
@@ -39,7 +38,7 @@ class TlsServiceTest extends TestCase
      */
     public function certificates_get_be_fetched()
     {
-        $url                 = 'https://domain.example';
+        $host                = new Host('domain.example', 443);
         $certificateString   = 'CERT';
         $certificateResult   = GetEndUserCertificateResult::success($certificateString);
         $expectedCertificate = new X509Certificate('987a52', new DateTimeImmutable('2017-01-02 03:04:05'));
@@ -47,9 +46,9 @@ class TlsServiceTest extends TestCase
         /** @var MockInterface|Client $openSslClient */
         $openSslClient = m::mock(Client::class);
         $openSslClient
-            ->shouldReceive('getEndUserCertificateForUrl')
+            ->shouldReceive('getEndUserCertificateForHost')
             ->once()
-            ->with(m::anyOf(Url::fromString($url)))
+            ->with(m::anyOf($host))
             ->andReturn($certificateResult);
         
         /** @var MockInterface|X509CertificateParser $certificateParser */
@@ -61,7 +60,7 @@ class TlsServiceTest extends TestCase
             ->andReturn($expectedCertificate);
 
         $service = new TlsService($openSslClient, $certificateParser);
-        $result = $service->getEndUserCertificateForUrl(MetadataUrl::fromString($url));
+        $result = $service->getEndUserCertificateForHost($host);
 
         $this->assertTrue($result->wasSuccessful());
         $this->assertTrue($expectedCertificate->equals($result->getCertificate()));
