@@ -117,6 +117,14 @@ final class Binding implements ConfiguredMetadataValidatable
     }
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        return in_array($this->binding, self::VALID_BINDINGS, true);
+    }
+
+    /**
      * @param Binding $other
      * @return bool
      */

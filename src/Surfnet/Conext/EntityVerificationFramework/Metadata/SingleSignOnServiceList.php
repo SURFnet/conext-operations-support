@@ -92,6 +92,24 @@ final class SingleSignOnServiceList implements ConfiguredMetadataValidatable, It
         }
     }
 
+    /**
+     * @param callable $predicate (SingleSignOnService):bool
+     * @return SingleSignOnServiceList
+     */
+    public function filter(callable $predicate)
+    {
+        return new SingleSignOnServiceList(array_filter($this->ssos, $predicate));
+    }
+
+    /**
+     * @param callable $mapper (SingleSignOnService):mixed
+     * @return mixed[]
+     */
+    public function map(callable $mapper)
+    {
+        return array_map($mapper, $this->ssos);
+    }
+
     public function getIterator()
     {
         return new ArrayIterator($this->ssos);

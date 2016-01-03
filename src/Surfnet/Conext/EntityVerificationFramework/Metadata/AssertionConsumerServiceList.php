@@ -94,6 +94,24 @@ final class AssertionConsumerServiceList implements ConfiguredMetadataValidatabl
         }
     }
 
+    /**
+     * @param callable $predicate (AssertionConsumerService):bool
+     * @return AssertionConsumerServiceList
+     */
+    public function filter(callable $predicate)
+    {
+        return new AssertionConsumerServiceList(array_filter($this->acss, $predicate));
+    }
+
+    /**
+     * @param callable $mapper (AssertionConsumerService):mixed
+     * @return mixed[]
+     */
+    public function map(callable $mapper)
+    {
+        return array_map($mapper, $this->acss);
+    }
+
     public function getIterator()
     {
         return new ArrayIterator($this->acss);

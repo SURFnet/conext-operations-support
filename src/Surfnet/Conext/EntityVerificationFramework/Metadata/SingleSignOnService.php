@@ -93,12 +93,29 @@ final class SingleSignOnService implements ConfiguredMetadataValidatable
     }
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        return $this->binding instanceof Binding && $this->binding->isValid()
+            && $this->location instanceof Url && $this->location->isValid();
+    }
+
+    /**
      * @param SingleSignOnService $other
      * @return bool
      */
     public function equals(SingleSignOnService $other)
     {
         return $this->binding->equals($other->binding) && $this->location->equals($other->location);
+    }
+
+    /**
+     * @return Url
+     */
+    public function getLocation()
+    {
+        return $this->location;
     }
 
     public function __toString()

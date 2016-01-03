@@ -4,5 +4,7 @@ surfnet_conext_operations_support:
             - is_available_test
         service_registry_suite:
             - entity_completeness_test
+        tls_suite:
+            - certificate_expiry_test
     blacklist:
         # foo: []

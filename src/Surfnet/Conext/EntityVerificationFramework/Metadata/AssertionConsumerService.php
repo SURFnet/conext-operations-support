@@ -149,6 +149,16 @@ final class AssertionConsumerService implements ConfiguredMetadataValidatable
     }
 
     /**
+     * @return bool
+     */
+    public function isValid()
+    {
+        return $this->binding instanceof Binding && $this->binding->isValid()
+            && $this->location instanceof Url && $this->location->isValid()
+            && is_string($this->index);
+    }
+
+    /**
      * @param AssertionConsumerService $other
      * @return bool
      */
