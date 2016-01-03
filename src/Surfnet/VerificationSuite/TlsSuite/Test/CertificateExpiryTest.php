@@ -63,7 +63,7 @@ final class CertificateExpiryTest implements VerificationTest
                 $logger->error(
                     sprintf(
                         "Certificate retrieved from entity service host %s:%s could not be parsed:\n" .
-                        "%s",
+                        '%s',
                         $host->getHostname(),
                         $host->getPort(),
                         $result->getErrorMessage()

@@ -51,7 +51,7 @@ final class OpenSslX509CertificateParser implements X509CertificateParser
     }
 
     /**
-     * @param $string
+     * @param string $string
      * @return array
      */
     private function parseCertificateInfo($string)

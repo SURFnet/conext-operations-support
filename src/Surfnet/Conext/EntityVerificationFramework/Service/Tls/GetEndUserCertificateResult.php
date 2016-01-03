@@ -107,7 +107,7 @@ final class GetEndUserCertificateResult
     }
 
     /**
-     * @return string
+     * @return bool
      */
     public function wasSuccessful()
     {
