@@ -18,11 +18,9 @@
 
 namespace Surfnet\TlsBundle\DependencyInjection;
 
-use GuzzleHttp\Subscriber\Oauth\Oauth1;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 final class SurfnetTlsExtension extends Extension

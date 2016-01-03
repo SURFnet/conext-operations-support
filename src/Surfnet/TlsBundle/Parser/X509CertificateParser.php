@@ -17,7 +17,6 @@
 
 namespace Surfnet\TlsBundle\Parser;
 
-use Surfnet\Conext\EntityVerificationFramework\Value\X509Certificate;
 use Surfnet\TlsBundle\Exception\InvalidArgumentException;
 use Surfnet\TlsBundle\Parser\Exception\ParseException;
 
